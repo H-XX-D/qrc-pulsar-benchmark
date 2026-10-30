@@ -8,14 +8,16 @@ directly within standard PINT parameter files (.par) and TOA tables (.tim).
 
 Hardened against smuggled mechanics and numerical artifacts:
   - Time-invariance: Orbit integration is permanently anchored to a fixed catalog
-    reference epoch (PEPOCH / TASC1). Evaluated delays at any MJD are strictly
-    invariant with respect to TOA slicing or dataset partitioning.
-  - Zero Spline Error: Evaluates the native high-order (8th-order DOP853) continuous
-    dense-output polynomial directly at the exact observation epochs, eliminating
-    the ~99 us interpolation errors of coarse cubic splines.
-  - Active Parameters: Dynamic system reconstruction from `self.params`, ensuring
-    masses (M1, M2, M3), orbital periods, and ascending node epochs directly drive
-    the underlying dynamical equations of motion during fitting iterations.
+    reference epoch (T0 = PEPOCH = 55920.0 MJD). Evaluated delays at any MJD are
+    strictly invariant with respect to TOA slicing or dataset partitioning.
+  - Ransom's Measured Node Times: Uses Ransom et al. (2014) Table 1 measured epochs
+    (TASC1 = 55920.407717436, TASC2 = 56233.935815) to dynamically derive initial
+    orbital phases (no hardcoded angles).
+  - High-Density Resolution: Samples at least 200 points per inner orbit with
+    DOP853 native continuous dense-output collocation (sol.sol), eliminating all
+    coarse spline interpolation errors.
+  - Integrated Derivatives: Partial derivatives (d_delay/d_TASC1, d_delay/d_TASC2)
+    are calculated directly by central finite-difference of the numerical integration.
 =====================================================================================
 """
 
@@ -26,26 +28,66 @@ from .constants import G, c, M_sun, day_s
 from .dynamics import RelationalThreeBodyIntegrator, _initial_state
 from .systems import HierarchicalTripleSystem, PSR_J0337_1715
 
-# Check if PINT (pulsar package) is available in the environment
+# Check if PINT (pulsar timing package) is available in the environment
 _HAS_PINT = False
 try:
+    import astropy.units as u
+    from astropy.time import Time
     import pint.models.timing_model as tm
-    from pint.models.parameter import floatParameter, maskParameter
+    from pint.models.parameter import floatParameter, MJDParameter
+    _BaseComponent = tm.DelayComponent
     _HAS_PINT = True
 except (ImportError, AttributeError):
+    _BaseComponent = object
     _HAS_PINT = False
 
 
-class RelationalTripleDelayComponent:
+class RelationalTripleDelayComponent(_BaseComponent):
     """
-    PINT-compatible 3-body relational delay component.
-    Replaces the Cartesian post-Newtonian triple approximation with the
-    gauge-eliminated Jacobi three-body equations of motion.
+    PINT DelayComponent wrapping the gauge-eliminated Jacobi three-body equations of motion.
     """
+    register = True
+    category = "relational_triple"
 
     def __init__(self, system: HierarchicalTripleSystem = PSR_J0337_1715):
-        self.default_system = system
-        self.category = "delay"
+        if _HAS_PINT and isinstance(self, tm.DelayComponent):
+            super().__init__()
+            self._init_pint_params(system)
+        else:
+            self._init_standalone_params(system)
+
+    def _init_pint_params(self, system: HierarchicalTripleSystem):
+        """Initializes parameters as PINT Parameter objects."""
+        import astropy.units as u
+        from pint.models.parameter import floatParameter, MJDParameter
+
+        self.add_param(floatParameter(name="M1", value=system.m1_msun, units="Msun", description="Pulsar mass", tcb2tdb_scale_factor=u.Quantity(1)))
+        self.add_param(floatParameter(name="M2", value=system.m2_msun, units="Msun", description="Inner companion mass", tcb2tdb_scale_factor=u.Quantity(1)))
+        self.add_param(floatParameter(name="M3", value=system.m3_msun, units="Msun", description="Outer companion mass", tcb2tdb_scale_factor=u.Quantity(1)))
+        self.add_param(floatParameter(name="PB1", value=system.Pb1_days, units="d", description="Inner orbital period", tcb2tdb_scale_factor=u.Quantity(1)))
+        self.add_param(floatParameter(name="PB2", value=system.Pb2_days, units="d", description="Outer orbital period", tcb2tdb_scale_factor=u.Quantity(1)))
+        self.add_param(floatParameter(name="E1", value=system.e1, units="", description="Inner eccentricity", tcb2tdb_scale_factor=u.Quantity(1)))
+        self.add_param(floatParameter(name="E2", value=system.e2, units="", description="Outer eccentricity", tcb2tdb_scale_factor=u.Quantity(1)))
+        self.add_param(floatParameter(name="COSI1", value=system.cos_i1, units="", description="Cosine of inner inclination", tcb2tdb_scale_factor=u.Quantity(1)))
+        self.add_param(floatParameter(name="COSI2", value=system.cos_i2, units="", description="Cosine of outer inclination", tcb2tdb_scale_factor=u.Quantity(1)))
+        self.add_param(MJDParameter(name="TASC1", description="Inner ascending node epoch (MJD)", time_scale="tdb", tcb2tdb_scale_factor=u.Quantity(1)))
+        self.add_param(MJDParameter(name="TASC2", description="Outer ascending node epoch (MJD)", time_scale="tdb", tcb2tdb_scale_factor=u.Quantity(1)))
+        self.add_param(MJDParameter(name="PEPOCH_REF", description="Trajectory reference epoch (MJD)", time_scale="tdb", tcb2tdb_scale_factor=u.Quantity(1)))
+
+        # Ransom et al. (2014) Table 1 measured epochs
+        self.TASC1.value = 55920.407717436
+        self.TASC2.value = 56233.935815
+        self.PEPOCH_REF.value = 55920.0
+
+        self.delay_funcs_component += [self.triple_delay]
+        self.register_deriv_funcs(self.d_triple_delay_d_TASC1, "TASC1")
+        self.register_deriv_funcs(self.d_triple_delay_d_TASC2, "TASC2")
+        self.register_deriv_funcs(self.d_triple_delay_d_M1, "M1")
+        self.register_deriv_funcs(self.d_triple_delay_d_M2, "M2")
+        self.register_deriv_funcs(self.d_triple_delay_d_M3, "M3")
+
+    def _init_standalone_params(self, system: HierarchicalTripleSystem):
+        """Initializes parameter dictionary for standalone mode."""
         self.params = {
             "M1": system.m1_msun,
             "M2": system.m2_msun,
@@ -56,67 +98,58 @@ class RelationalTripleDelayComponent:
             "E2": system.e2,
             "COSI1": system.cos_i1,
             "COSI2": system.cos_i2,
-            "TASC1": 55956.70,
-            "TASC2": 55956.70,
-            "PEPOCH": 55956.70,
+            "TASC1": 55920.407717436,
+            "TASC2": 56233.935815,
+            "PEPOCH_REF": 55920.0,
         }
 
+    def _get_param(self, name: str, default: float) -> float:
+        if _HAS_PINT and hasattr(self, name):
+            val = getattr(self, name).value
+            return float(val) if val is not None else default
+        elif hasattr(self, "params"):
+            return float(self.params.get(name, default))
+        return default
+
+    def _set_param(self, name: str, val: float):
+        if _HAS_PINT and hasattr(self, name):
+            getattr(self, name).value = val
+        elif hasattr(self, "params"):
+            self.params[name] = val
+
     def _build_system(self) -> HierarchicalTripleSystem:
-        """Dynamically constructs system from current parameter state."""
         return HierarchicalTripleSystem(
-            name=f"dynamic_{self.default_system.name}",
+            name="relational_triple",
             description="Dynamically instantiated triple for PINT fitting",
-            literature_ref=self.default_system.literature_ref,
-            m1_msun=float(self.params.get("M1", self.default_system.m1_msun)),
-            m2_msun=float(self.params.get("M2", self.default_system.m2_msun)),
-            m3_msun=float(self.params.get("M3", self.default_system.m3_msun)),
-            Pb1_days=float(self.params.get("PB1", self.default_system.Pb1_days)),
-            Pb2_days=float(self.params.get("PB2", self.default_system.Pb2_days)),
-            e1=float(self.params.get("E1", self.default_system.e1)),
-            e2=float(self.params.get("E2", self.default_system.e2)),
-            cos_i1=float(self.params.get("COSI1", self.default_system.cos_i1)),
-            cos_i2=float(self.params.get("COSI2", self.default_system.cos_i2)),
-            f0_hz=self.default_system.f0_hz,
+            literature_ref="Ransom et al. (2014) / Archibald et al. (2018)",
+            m1_msun=self._get_param("M1", 1.4378),
+            m2_msun=self._get_param("M2", 0.19751),
+            m3_msun=self._get_param("M3", 0.4101),
+            Pb1_days=self._get_param("PB1", 1.629401788),
+            Pb2_days=self._get_param("PB2", 327.257541),
+            e1=self._get_param("E1", 0.0006917),
+            e2=self._get_param("E2", 0.035356),
+            cos_i1=self._get_param("COSI1", 0.77435),
+            cos_i2=self._get_param("COSI2", 0.77435),
+            f0_hz=PSR_J0337_1715.f0_hz,
         )
 
-    def delay(self, toas):
-        """
-        Calculates the 3-body geometric Roemer delay for an array of TOAs (MJDs).
-
-        Parameters:
-        -----------
-        toas : array-like or PINT TOAs object
-            Observation epochs in MJD.
-
-        Returns:
-        --------
-        np.ndarray
-            Roemer delays in seconds for each TOA epoch.
-        """
-        if hasattr(toas, 'table'):
-            mjd = toas.table['mjd'].to_value('mjd')
-        elif hasattr(toas, 'mjd'):
-            mjd = np.asarray(toas.mjd, dtype=float)
-        else:
-            mjd = np.asarray(toas, dtype=float)
-
+    def _integrate_delay_array(self, mjd: np.ndarray) -> np.ndarray:
+        mjd = np.asarray(mjd, dtype=float)
         if len(mjd) == 0:
             return np.array([])
 
         system = self._build_system()
+        t0_mjd = self._get_param("PEPOCH_REF", 55920.0)
+        tasc1 = self._get_param("TASC1", 55920.407717436)
+        tasc2 = self._get_param("TASC2", 56233.935815)
+        pb1 = system.Pb1_days
+        pb2 = system.Pb2_days
 
-        # Fixed reference epoch anchors the dynamical trajectory (ensures time-invariance)
-        t0_mjd = float(self.params.get("PEPOCH", 55956.70))
-        tasc1 = float(self.params.get("TASC1", 55956.70))
-        tasc2 = float(self.params.get("TASC2", 55956.70))
-        pb1 = float(self.params.get("PB1", system.Pb1_days))
-        pb2 = float(self.params.get("PB2", system.Pb2_days))
-
-        # Initial orbital phases at reference epoch t0_mjd
+        # Dynamically compute initial orbital phases at fixed reference epoch T0
         phi1_0 = (2.0 * np.pi * ((t0_mjd - tasc1) / pb1)) % (2.0 * np.pi)
         phi2_0 = (2.0 * np.pi * ((t0_mjd - tasc2) / pb2)) % (2.0 * np.pi)
 
-        # Integration time offsets in seconds from t0_mjd
         t_eval_s = (mjd - t0_mjd) * day_s
         t_min_s = float(np.min(t_eval_s))
         t_max_s = float(np.max(t_eval_s))
@@ -131,7 +164,6 @@ class RelationalTripleDelayComponent:
 
         f2 = state.m2 / state.M12
         F3 = state.m3 / state.M_tot
-
         roemer_delays_s = np.zeros(len(mjd), dtype=float)
 
         # Forward integration for epochs t >= 0
@@ -168,39 +200,101 @@ class RelationalTripleDelayComponent:
 
         return roemer_delays_s
 
+    def delay(self, toas):
+        """
+        Calculates 3-body geometric Roemer delays.
+        Works for both numpy array inputs and PINT TOAs objects.
+        """
+        if hasattr(toas, "get_mjds"):
+            mjd = toas.get_mjds().value
+        elif hasattr(toas, "table") and "mjd" in toas.table.colnames:
+            mjd = toas.table["mjd"].to_value("mjd") if hasattr(toas.table["mjd"], "to_value") else np.asarray(toas.table["mjd"])
+        elif hasattr(toas, "mjd"):
+            mjd = np.asarray(toas.mjd, dtype=float)
+        else:
+            mjd = np.asarray(toas, dtype=float)
+
+        delays_s = self._integrate_delay_array(mjd)
+        return delays_s
+
+    def triple_delay(self, toas, acc_delay=None):
+        """PINT delay callback returning astropy Quantity."""
+        delays_s = self.delay(toas)
+        if _HAS_PINT:
+            import astropy.units as u
+            return delays_s * u.s
+        return delays_s
+
+    def _numerical_deriv(self, toas, param_name: str, delta: float, acc_delay=None):
+        orig_val = self._get_param(param_name, 0.0)
+        self._set_param(param_name, orig_val + delta)
+        d_plus = self.delay(toas)
+        self._set_param(param_name, orig_val - delta)
+        d_minus = self.delay(toas)
+        self._set_param(param_name, orig_val)
+        deriv = (d_plus - d_minus) / (2.0 * delta)
+        return deriv
+
+    def d_triple_delay_d_TASC1(self, toas, param_name="TASC1", acc_delay=None):
+        """Partial derivative d(Delay)/d(TASC1) taken from numerical integration."""
+        deriv = self._numerical_deriv(toas, "TASC1", delta=1e-4, acc_delay=acc_delay) # delta = 1e-4 days (~8.64s)
+        if _HAS_PINT:
+            import astropy.units as u
+            return (deriv * (u.s / u.d))
+        return deriv
+
+    def d_triple_delay_d_TASC2(self, toas, param_name="TASC2", acc_delay=None):
+        """Partial derivative d(Delay)/d(TASC2) taken from numerical integration."""
+        deriv = self._numerical_deriv(toas, "TASC2", delta=1e-4, acc_delay=acc_delay)
+        if _HAS_PINT:
+            import astropy.units as u
+            return (deriv * (u.s / u.d))
+        return deriv
+
+    def d_triple_delay_d_M1(self, toas, param_name="M1", acc_delay=None):
+        """Partial derivative d(Delay)/d(M1) taken from numerical integration."""
+        deriv = self._numerical_deriv(toas, "M1", delta=1e-3, acc_delay=acc_delay)
+        if _HAS_PINT:
+            import astropy.units as u
+            return (deriv * (u.s / u.Msun))
+        return deriv
+
+    def d_triple_delay_d_M2(self, toas, param_name="M2", acc_delay=None):
+        """Partial derivative d(Delay)/d(M2) taken from numerical integration."""
+        deriv = self._numerical_deriv(toas, "M2", delta=1e-4, acc_delay=acc_delay)
+        if _HAS_PINT:
+            import astropy.units as u
+            return (deriv * (u.s / u.Msun))
+        return deriv
+
+    def d_triple_delay_d_M3(self, toas, param_name="M3", acc_delay=None):
+        """Partial derivative d(Delay)/d(M3) taken from numerical integration."""
+        deriv = self._numerical_deriv(toas, "M3", delta=1e-4, acc_delay=acc_delay)
+        if _HAS_PINT:
+            import astropy.units as u
+            return (deriv * (u.s / u.Msun))
+        return deriv
+
+
+# Backward-compatible alias
+RelationalTripleDelay = RelationalTripleDelayComponent
+
 
 def register_qrc_with_pint():
     """
-    Registers the RelationalTripleDelayComponent with PINT's component registry
-    if PINT (pulsar timing package) is installed.
+    Registers RelationalTripleDelayComponent with PINT's component registry.
     """
     if not _HAS_PINT:
         return (
             False,
-            "PINT (pulsar timing package) is not installed in the active Python environment "
-            "(note: the installed package 'pint' 0.25.2 is the physical units library; "
-            "'pint-pulsar' is the pulsar timing framework)."
+            "PINT (pulsar timing package) is not installed in the active Python environment."
         )
 
     try:
-        class PINTRelationalTriple(tm.DelayComponent):
-            register = True
-            category = "relational_triple"
-
-            def __init__(self):
-                super().__init__()
-                self.add_param(floatParameter(name="M1", value=PSR_J0337_1715.m1_msun, units="Msun", description="Pulsar mass"))
-                self.add_param(floatParameter(name="M2", value=PSR_J0337_1715.m2_msun, units="Msun", description="Inner companion mass"))
-                self.add_param(floatParameter(name="M3", value=PSR_J0337_1715.m3_msun, units="Msun", description="Outer companion mass"))
-                self.component = RelationalTripleDelayComponent()
-
-            def delay(self, toas, acc_delay=None):
-                # Synchronize parameters from PINT model
-                for param_name in ["M1", "M2", "M3", "PB1", "PB2", "E1", "E2", "COSI1", "COSI2", "TASC1", "TASC2", "PEPOCH"]:
-                    if hasattr(self, param_name):
-                        self.component.params[param_name] = getattr(self, param_name).value
-                return self.component.delay(toas)
-
-        return True, "Successfully registered PINTRelationalTriple with PINT component registry."
+        class_name = RelationalTripleDelayComponent.__name__
+        if class_name in tm.Component.component_types:
+            return True, f"Successfully verified {class_name} in PINT component registry."
+        tm.Component.component_types[class_name] = RelationalTripleDelayComponent
+        return True, f"Successfully registered {class_name} with PINT component registry."
     except Exception as e:
         return False, f"Failed to register with PINT: {e}"
