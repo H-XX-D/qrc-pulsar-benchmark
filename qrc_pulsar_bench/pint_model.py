@@ -73,6 +73,16 @@ class RelationalTripleDelayComponent:
         if span_days <= 0:
             span_days = 1.0
 
+        t_start_days = mjd_min
+        # Dynamically compute orbital phase angles from TASC parameters (NO HARDCODED ANGLES)
+        tasc1 = float(self.params.get("TASC1", 55956.70))
+        tasc2 = float(self.params.get("TASC2", 55956.70))
+        pb1 = float(self.params.get("PB1", self.system.Pb1_days))
+        pb2 = float(self.params.get("PB2", self.system.Pb2_days))
+
+        phi1 = (2.0 * np.pi * ((t_start_days - tasc1) / pb1)) % (2.0 * np.pi)
+        phi2 = (2.0 * np.pi * ((t_start_days - tasc2) / pb2)) % (2.0 * np.pi)
+
         num_inner_orbits = max(5.0, span_days / self.system.Pb1_days)
         num_points = max(500, int(num_inner_orbits * 25))
 
@@ -82,8 +92,8 @@ class RelationalTripleDelayComponent:
             num_output_points=num_points,
             rtol=1e-10,
             atol=1e-10,
-            inner_angles_rad=(0.0, 0.0, 5.33808),
-            outer_angles_rad=(0.0, 0.0, 4.18296),
+            inner_angles_rad=(0.0, 0.0, phi1),
+            outer_angles_rad=(0.0, 0.0, phi2),
             line_of_sight=(0.0, 0.0, 1.0)
         )
 

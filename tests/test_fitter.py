@@ -34,14 +34,13 @@ def test_relational_fitter_synthetic():
     # Synthetic residuals with 0.1 us noise
     res = 0.5 + 0.05 * (mjd - 56000.0) / 365.25 + 0.1 * np.random.randn(len(mjd))
 
-    fit = RelationalTimingFitter.fit(mjd, res, unc, PSR_J0337_1715, num_eval_points=500)
+    fit = RelationalTimingFitter.fit(mjd, res, unc, PSR_J0337_1715)
     assert fit["num_toas"] == 20
     assert "phase_offset_us" in fit["params"]
     assert "delta_tasc1_s" in fit["params"]
     assert "delta_tasc2_s" in fit["params"]
-    assert fit["post_fit_rms_us"] < fit["pre_fit_rms_us"]
+    assert fit["residual_after_perturbation_rms_us"] < fit["input_postfit_rms_us"]
     assert fit["chi2_dof"] > 0.0
-    assert fit["sim_energy_err"] < 1e-7
 
 @pytest.mark.real_data
 def test_relational_fitter_real_zenodo():
@@ -60,8 +59,8 @@ def test_relational_fitter_real_zenodo():
     res_us = res_phase * P0_us
     unc_us = unc_phase * P0_us
 
-    fit = RelationalTimingFitter.fit(mjd, res_us, unc_us, PSR_J0337_1715, num_eval_points=1000)
+    fit = RelationalTimingFitter.fit(mjd, res_us, unc_us, PSR_J0337_1715)
     assert fit["num_toas"] == 500
-    assert fit["post_fit_rms_us"] < 2.0
+    assert fit["residual_after_perturbation_rms_us"] < 2.0
     assert abs(fit["params"]["delta_tasc1_s"]) < 1.0  # Under 1 second
     assert abs(fit["params"]["delta_tasc2_s"]) < 1.0  # Under 1 second

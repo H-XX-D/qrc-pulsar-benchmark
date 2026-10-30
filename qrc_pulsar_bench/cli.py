@@ -189,27 +189,24 @@ def cmd_fit(args):
         title = "Standalone Relational Least-Squares Fit: All Observatories"
 
     print_header(title)
-    print("Fitting reference phase anchors (Delta phi0, Delta f0, Delta T_asc,1, Delta T_asc,2)")
-    print("coupled to the Relational Three-Body ODE across real observation epochs.")
+    print("Linearized sensitivity regression for reference phase anchors (Delta phi0, Delta f0, Delta T_asc)")
+    print("on upstream post-fit residuals. This does not fit raw TOAs from scratch.")
 
-    fit_res = RelationalTimingFitter.fit(mjd, res_us, unc_us, system)
+    fit_res = RelationalTimingFitter.fit_linearized_perturbations(mjd, res_us, unc_us, system)
 
-    print_row("Observations fitted", f"{fit_res['num_toas']:,} TOAs")
+    print_row("Observations analyzed", f"{fit_res['num_toas']:,} TOAs")
     print_row("Baseline duration", f"{fit_res['span_days']:.2f} days ({fit_res['span_years']:.2f} years)")
-    print_row("Pre-fit residual RMS", f"{fit_res['pre_fit_rms_us']:.4f} us ({fit_res['pre_fit_rms_us']*1000.0:.1f} ns)")
-    print_row("Post-fit residual RMS", f"{fit_res['post_fit_rms_us']:.4f} us ({fit_res['post_fit_rms_us']*1000.0:.1f} ns)")
-    print_row("Post-fit standard deviation", f"{fit_res['post_fit_std_us']:.4f} us")
-    print_row("Post-fit mean offset", f"{fit_res['post_fit_mean_us']:+.6f} us")
+    print_row("Upstream input post-fit RMS", f"{fit_res['input_postfit_rms_us']:.4f} us ({fit_res['input_postfit_rms_us']*1000.0:.1f} ns)")
+    print_row("Residual after perturbation RMS", f"{fit_res['residual_after_perturbation_rms_us']:.4f} us ({fit_res['residual_after_perturbation_rms_us']*1000.0:.1f} ns)")
+    print_row("Residual standard deviation", f"{fit_res['residual_std_us']:.4f} us")
+    print_row("Residual mean offset", f"{fit_res['residual_mean_us']:+.6f} us")
     print_row("Reduced Chi-square / dof", f"{fit_res['chi2_dof']:.4f}")
-    print("\nBest-Fit Reference Anchors:")
+    print("\nFitted Nuisance Perturbations about Reference Fit:")
     print_row("Phase offset (Delta phi0)", f"{fit_res['params']['phase_offset_us']:+.4f} +/- {fit_res['uncertainties']['phase_offset_us']:.4f} us")
     print_row("Frequency drift (Delta f0)", f"{fit_res['params']['frequency_drift_us_yr']:+.4f} +/- {fit_res['uncertainties']['frequency_drift_us_yr']:.4f} us/yr")
     print_row("Inner Node Shift (Delta T_asc,1)", f"{fit_res['params']['delta_tasc1_s']*1000.0:+.4f} +/- {fit_res['uncertainties']['delta_tasc1_s']*1000.0:.4f} ms")
     print_row("Outer Node Shift (Delta T_asc,2)", f"{fit_res['params']['delta_tasc2_s']*1000.0:+.4f} +/- {fit_res['uncertainties']['delta_tasc2_s']*1000.0:.4f} ms")
-    print("\nNumerical Dynamical Diagnostics:")
-    print_row("3-Body ODE wall time", f"{fit_res['sim_wall_time_s']:.2f} s")
-    print_row("ODE Energy conservation error", f"{fit_res['sim_energy_err']:.2e}")
-    print_row("ODE Center-of-mass drift", f"{fit_res['sim_com_drift_m']:.2e} m (Gauge Invariant)")
+    print(f"\nNote: {fit_res['note']}")
 
 
 def cmd_formula_cost(args):

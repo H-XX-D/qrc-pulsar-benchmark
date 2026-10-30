@@ -1,10 +1,15 @@
 """
 =====================================================================================
-QRC-PULSAR-BENCH: Standalone Relational Timing Least-Squares Fitter
+QRC-PULSAR-BENCH: Linearized Residual Perturbation Estimator & Trajectory Confrontation
 =====================================================================================
-Performs joint linear and non-linear least-squares fitting of reference phase
-anchors (Delta phi0, Delta f0, Delta T_asc,1, Delta T_asc,2) coupled to the
-Relational Three-Body Integrator.
+Explicitly distinguishes between:
+  1. Residual Perturbation Estimation: Linearized nuisance parameter shifts (Delta phi0,
+     Delta f0, Delta T_asc) around an upstream converged post-fit residual baseline.
+  2. Forward Trajectory Confrontation: Comparing the pure 3-body Jacobi ODE Roemer
+     delay directly against the full astronomical orbital modulation.
+
+NO SMUGGLED MECHANICS: Post-fit residuals are never claimed as outputs of this solver.
+Unused simulated arrays are eliminated. All assumptions and baselines are explicit.
 =====================================================================================
 """
 
@@ -16,28 +21,37 @@ from .constants import G, c, M_sun, day_s
 from .dynamics import RelationalThreeBodyIntegrator
 from .systems import HierarchicalTripleSystem
 
+
 class RelationalTimingFitter:
     """
-    Joint least-squares estimator fitting reference phase anchors and
-    times of ascending node passage (T_asc) coupled to the relational 3-body ODE.
+    Evaluates linearized parameter sensitivity and reference phase alignment
+    on pulsar timing data coupled to the Relational Three-Body Integrator.
     """
 
     @staticmethod
-    def fit(mjd, residuals_us, uncertainties_us, system: HierarchicalTripleSystem,
-            phi_inner_0: float = 5.33808, phi_outer_0: float = 4.18296,
-            num_eval_points: int = 25000):
+    def fit_linearized_perturbations(mjd, post_fit_residuals_us, uncertainties_us,
+                                     system: HierarchicalTripleSystem,
+                                     phi_inner_0: float = 5.33808,
+                                     phi_outer_0: float = 4.18296):
         """
-        Fits reference phase parameters to align relational 3-body dynamics
-        with observational radio pulse arrival times.
+        Fits small residual perturbations (Delta phi0, Delta f0, Delta T_asc,1, Delta T_asc,2)
+        around an upstream converged post-fit residual table (e.g., Archibald et al. 2018).
+
+        IMPORTANT / EPISTEMIC HONESTY:
+        ------------------------------
+        The input `post_fit_residuals_us` represents leftover residuals after an upstream
+        40-parameter TEMPO fit. This function does NOT fit raw pulse arrival times from
+        scratch; it measures the marginal residual sensitivity of the leftover noise
+        to perturbations in the ascending node epochs.
 
         Parameters:
         -----------
         mjd : np.ndarray
-            Observation epochs in Modified Julian Date.
-        residuals_us : np.ndarray
-            Timing residuals in microseconds.
+            Observation epochs in MJD.
+        post_fit_residuals_us : np.ndarray
+            Post-fit residuals from upstream timing solution in microseconds.
         uncertainties_us : np.ndarray
-            Single-TOA 1-sigma timing uncertainties in microseconds.
+            Single-TOA 1-sigma uncertainties in microseconds.
         system : HierarchicalTripleSystem
             Astrophysical triple system definition.
         phi_inner_0 : float
@@ -47,11 +61,11 @@ class RelationalTimingFitter:
 
         Returns:
         --------
-        dict containing fit parameters, formal uncertainties, post-fit residuals,
-        and goodness-of-fit metrics.
+        dict containing linearized perturbation estimates, parameter uncertainties,
+        and honest descriptive metrics.
         """
         mjd = np.asarray(mjd, dtype=float)
-        res_us = np.asarray(residuals_us, dtype=float)
+        res_us = np.asarray(post_fit_residuals_us, dtype=float)
         unc_us = np.asarray(uncertainties_us, dtype=float)
         N = len(mjd)
 
@@ -63,27 +77,7 @@ class RelationalTimingFitter:
         t_obs_days = mjd - mjd_min
         t_obs_s = t_obs_days * day_s
 
-        # 1. Run Relational Three-Body Numerical Integration across span
-        num_inner_orbits = span_days / system.Pb1_days
-        sim_result = RelationalThreeBodyIntegrator.integrate(
-            system,
-            num_inner_orbits=num_inner_orbits,
-            num_output_points=num_eval_points,
-            rtol=1e-10,
-            atol=1e-10,
-            inner_angles_rad=(0.0, 0.0, phi_inner_0),
-            outer_angles_rad=(0.0, 0.0, phi_outer_0),
-            line_of_sight=(0.0, 0.0, 1.0)
-        )
-
-        t_sim_days = np.linspace(0.0, span_days, num_eval_points)
-        roemer_sim_us = sim_result['roemer_delay_us']
-
-        # Interpolate simulated Roemer delay to observation epochs
-        interp_fn = interp1d(t_sim_days, roemer_sim_us, kind='cubic')
-        roemer_at_toas_us = interp_fn(t_obs_days)
-
-        # 2. Compute Physical Sensitivity Derivatives
+        # 1. Compute Physical Sensitivity Derivatives for T_asc
         m1 = system.m1_msun * M_sun
         m2 = system.m2_msun * M_sun
         m3 = system.m3_msun * M_sun
@@ -104,16 +98,16 @@ class RelationalTimingFitter:
         x_p2_us = ((m3 / M_tot) * (a2 / c) * sin_i1) * 1e6
 
         # Analytical partial derivatives:
-        # d(Delta t) / d(T_asc,2) ~ - x_p2 * n2 * cos(n2 * t + phi_2)
         # d(Delta t) / d(T_asc,1) ~ - x_p1 * n1 * cos(n1 * t + phi_1)
+        # d(Delta t) / d(T_asc,2) ~ - x_p2 * n2 * cos(n2 * t + phi_2)
         d_tasc1 = - x_p1_us * n1 * np.cos(n1 * t_obs_s + phi_inner_0)
         d_tasc2 = - x_p2_us * n2 * np.cos(n2 * t_obs_s + phi_outer_0)
 
-        # 3. Construct Weighted Design Matrix
-        # Col 0: Constant phase offset (us)
-        # Col 1: Linear frequency drift rate (us / yr)
-        # Col 2: Inner ascending node epoch shift Delta T_asc,1 (s)
-        # Col 3: Outer ascending node epoch shift Delta T_asc,2 (s)
+        # 2. Construct Weighted Design Matrix
+        # Col 0: Constant residual offset (us)
+        # Col 1: Linear drift slope (us / yr)
+        # Col 2: Inner node perturbation Delta T_asc,1 (s)
+        # Col 3: Outer node perturbation Delta T_asc,2 (s)
         t_yr = t_obs_days / 365.25
         A = np.column_stack([
             np.ones_like(t_obs_days),
@@ -125,26 +119,27 @@ class RelationalTimingFitter:
         # Weights: inverse variance
         W = 1.0 / (np.maximum(unc_us, 1e-9)**2)
 
-        # 4. Normal Equations Solution: (A^T W A) x = A^T W y
+        # 3. Solve Normal Equations: (A^T W A) x = A^T W y
         AT_W = A.T * W
         cov = np.linalg.pinv(AT_W @ A)
         params = cov @ (AT_W @ res_us)
         param_errors = np.sqrt(np.maximum(0.0, np.diag(cov)))
 
-        # 5. Evaluate Post-Fit Residuals & Metrics
+        # 4. Evaluate Residuals
         fit_model = A @ params
-        post_fit_res = res_us - fit_model
+        residual_after_perturbation = res_us - fit_model
 
-        rms_pre = float(np.sqrt(np.mean(res_us**2)))
-        rms_post = float(np.sqrt(np.mean(post_fit_res**2)))
-        std_post = float(np.std(post_fit_res))
-        mean_post = float(np.mean(post_fit_res))
+        input_rms = float(np.sqrt(np.mean(res_us**2)))
+        output_rms = float(np.sqrt(np.mean(residual_after_perturbation**2)))
+        std_post = float(np.std(residual_after_perturbation))
+        mean_post = float(np.mean(residual_after_perturbation))
 
         dof = N - len(params)
-        chi2 = float(np.sum((post_fit_res / unc_us)**2))
+        chi2 = float(np.sum((residual_after_perturbation / unc_us)**2))
         chi2_dof = float(chi2 / dof) if dof > 0 else 0.0
 
         return {
+            "analysis_type": "linearized_residual_perturbation",
             "num_toas": N,
             "span_days": float(span_days),
             "span_years": float(span_days / 365.25),
@@ -160,15 +155,18 @@ class RelationalTimingFitter:
                 "delta_tasc1_s": float(param_errors[2]),
                 "delta_tasc2_s": float(param_errors[3]),
             },
-            "pre_fit_rms_us": rms_pre,
-            "post_fit_rms_us": rms_post,
-            "post_fit_std_us": std_post,
-            "post_fit_mean_us": mean_post,
+            "input_postfit_rms_us": input_rms,
+            "residual_after_perturbation_rms_us": output_rms,
+            "residual_std_us": std_post,
+            "residual_mean_us": mean_post,
             "chi2": chi2,
             "chi2_dof": chi2_dof,
             "dof": dof,
-            "post_fit_residuals_us": post_fit_res,
-            "sim_wall_time_s": sim_result["wall_time_s"],
-            "sim_energy_err": sim_result["energy_conservation_err"],
-            "sim_com_drift_m": sim_result["com_drift_m"]
+            "residual_after_perturbation_us": residual_after_perturbation,
+            "note": "Linearized nuisance perturbation on upstream post-fit residuals. "
+                    "The ~0.77 us or ~1.54 us scatter is the property of the upstream fit, "
+                    "not an accuracy validation of this package's 3-body integrator."
         }
+
+    # Backward-compatible alias
+    fit = fit_linearized_perturbations
