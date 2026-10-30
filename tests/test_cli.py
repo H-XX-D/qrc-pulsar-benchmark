@@ -62,3 +62,14 @@ def test_cli_zenodo():
     res = run_cli("zenodo", "--path", csv_path)
     assert res.returncode == 0
     assert "Total Radio Observations" in res.stdout
+
+def test_cli_nancay():
+    paths = ["psr_j0337_zenodo_residuals.csv", "../psr_j0337_zenodo_residuals.csv"]
+    csv_path = next((p for p in paths if os.path.exists(p)), None)
+    if not csv_path:
+        pytest.skip("Zenodo dataset (psr_j0337_zenodo_residuals.csv) not found locally")
+
+    res = run_cli("nancay", "--path", csv_path)
+    assert res.returncode == 0
+    assert "REAL NANÇAY RADIO OBSERVATORY" in res.stdout
+    assert "Total Real Nançay Radio Observations" in res.stdout

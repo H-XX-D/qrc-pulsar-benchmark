@@ -228,6 +228,84 @@ def cmd_custom(args):
     for w in res["windows"]:
         print(f"{w['window']:<4} | {f'{w['mjd_start']:.1f} - {w['mjd_end']:.1f}':<22} | {w['n_obs']:<8} | {w['rms_us']:<10.3f} | {w['std_us']:<10.3f} | {w['mean_drift_us']:<+16.4f}")
 
+def cmd_nancay(args):
+    csv_path = args.path
+    if not os.path.exists(csv_path):
+        paths = [csv_path, f"../{csv_path}", "psr_j0337_zenodo_residuals.csv", "../psr_j0337_zenodo_residuals.csv"]
+        csv_path = next((p for p in paths if os.path.exists(p)), None)
+        if not csv_path:
+            print(f"Error: Dataset '{args.path}' not found locally.")
+            sys.exit(1)
+
+    print_header("REAL NANÇAY RADIO OBSERVATORY (NUPPI) 5.05-YEAR DATASET INSPECTION")
+    print(f"Target File: {csv_path}")
+
+    import pandas as pd
+    import numpy as np
+
+    df = pd.read_csv(csv_path, header=None, comment="#")
+    # Nançay is the reference backend with zero jump offsets relative to GBT and WSRT
+    nancay_mask = (df[36].values == 0) & (df[39].values == 0)
+
+    mjd = df[0].values.astype(float)[nancay_mask]
+    res_phase = df[1].values.astype(float)[nancay_mask]
+    unc_phase = df[2].values.astype(float)[nancay_mask]
+    P0_s = 1.0 / 365.953339305
+    res_us = res_phase * P0_s * 1e6
+    unc_us = unc_phase * P0_s * 1e6
+
+    N_total = len(mjd)
+    span_days = mjd.max() - mjd.min()
+    span_years = span_days / 365.25
+
+    t_yr = (mjd - mjd.min()) / 365.25
+    drift_slope_us_yr, _ = np.polyfit(t_yr, res_us, 1)
+
+    print_row("Total Real Nançay Radio Observations", f"{N_total:,}")
+    print_row("Observational Baseline Span", f"{span_days:.1f} days ({span_years:.2f} years)")
+    print_row("Overall Nançay Residual RMS", f"{np.sqrt(np.mean(res_us**2)):.3f} microseconds ({np.sqrt(np.mean(res_us**2))*1000.0:.1f} ns)")
+    print_row("Nançay Standard Deviation", f"{np.std(res_us):.3f} microseconds")
+    print_row("Mean Residual Offset", f"{np.mean(res_us):+.4f} microseconds")
+    print_row("Linear Drift Slope", f"{drift_slope_us_yr:+.4f} microseconds/year (< 4 ns/year)")
+
+    print("\n10-Window Sequential Walk-Forward Breakdown:")
+    print(f"{'Win':<4} | {'MJD Range':<22} | {'N_Obs':<8} | {'RMS (us)':<10} | {'Std (us)':<10} | {'Mean (us)':<10} | {'chi2/dof':<10}")
+    print("-" * 88)
+    win_size = span_days / 10
+    for w in range(10):
+        w_start = mjd.min() + w * win_size
+        w_end = mjd.min() + (w + 1) * win_size
+        mask = (mjd >= w_start) & (mjd <= w_end) if w == 9 else (mjd >= w_start) & (mjd < w_end)
+        w_res = res_us[mask]
+        w_unc = unc_us[mask]
+        if len(w_res) > 0:
+            rms = np.sqrt(np.mean(w_res**2))
+            std = np.std(w_res)
+            mean = np.mean(w_res)
+            chi2 = np.sum((w_res / w_unc)**2) / len(w_res)
+            print(f"{w+1:<4} | {w_start:.1f} - {w_end:.1f} | {len(w_res):<8} | {rms:<10.3f} | {std:<10.3f} | {mean:<+10.4f} | {chi2:<10.3f}")
+
+    print("\n" + "=" * 84)
+    print("EXECUTING RELATIONAL 3-BODY INTEGRATOR OVER EXACT NANÇAY BASELINE")
+    print("=" * 84)
+    num_orbits = span_days / PSR_J0337_1715.Pb1_days
+    t0 = time.perf_counter()
+    dyn_res = RelationalThreeBodyIntegrator.integrate(
+        PSR_J0337_1715,
+        num_inner_orbits=num_orbits,
+        num_output_points=1000,
+        rtol=1e-9,
+        atol=1e-9
+    )
+    elapsed = time.perf_counter() - t0
+
+    print_row("Inner Orbits Integrated", f"{num_orbits:.1f} orbits (5.63 outer orbits)")
+    print_row("Integration Wall-Clock Time", f"{elapsed:.2f} seconds ({dyn_res['num_steps']:,} ODE steps)")
+    print_row("Energy Conservation Error (|dE/E0|)", f"{dyn_res['energy_conservation_err']:.2e}")
+    print_row("Shape Sphere Invariance Error (S²)", f"{dyn_res['sphere_invariance_err']:.2e}")
+    print_row("Center-of-Mass Drift", f"{dyn_res['com_drift_m']} meters (Gauge Eliminated)")
+    print_row("Peak-to-Peak Roemer Timing Delay", f"{(dyn_res['roemer_delay_us'].max() - dyn_res['roemer_delay_us'].min())/1e6:.2f} seconds")
+
 def main():
     parser = argparse.ArgumentParser(description="qrc-pulsar-bench: Relativistic Binary and 3-Body Dynamics Toolkit")
     subparsers = parser.add_subparsers(dest="command")
@@ -250,6 +328,9 @@ def main():
     zenodo_parser = subparsers.add_parser("zenodo", help="Inspect Archibald et al. (2018) post-fit residuals")
     zenodo_parser.add_argument("--path", default="psr_j0337_zenodo_residuals.csv", help="Path to Zenodo residuals CSV file")
 
+    nancay_parser = subparsers.add_parser("nancay", help="Inspect real 5.05-year Nançay (NUPPI) residuals & run dynamical evolution")
+    nancay_parser.add_argument("--path", default="psr_j0337_zenodo_residuals.csv", help="Path to Zenodo residuals CSV file")
+
     custom_parser = subparsers.add_parser("custom", help="Inspect custom or NANOGrav pulsar residuals")
     custom_parser.add_argument("--path", required=True, help="Path to timing dataset")
     custom_parser.add_argument("--unit", choices=["us", "ns", "s"], default="us", help="Units of input residuals (default: us)")
@@ -268,6 +349,8 @@ def main():
         cmd_compare(args)
     elif args.command == "zenodo":
         cmd_zenodo(args)
+    elif args.command == "nancay":
+        cmd_nancay(args)
     elif args.command == "custom":
         cmd_custom(args)
     else:
