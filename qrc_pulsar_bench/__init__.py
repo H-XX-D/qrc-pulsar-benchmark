@@ -52,3 +52,10 @@ from .chaos_metrics import (
     compute_spectral_entropy,
     extract_chaos_fingerprint,
 )
+from .qrc_engine import (
+    QRCBenchmarkResult,
+    JacobiRelationalReservoir,
+    compute_effective_dimension,
+    compute_fading_memory_capacity,
+    benchmark_qrc_reservoir,
+)
