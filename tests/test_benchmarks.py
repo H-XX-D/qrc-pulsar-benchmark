@@ -108,3 +108,13 @@ def test_generic_pulsar_data_evaluator(tmp_path):
     assert abs(res["drift_slope_us_yr"]) < 0.05
     assert len(res["windows"]) == 5
 
+def test_nanograv_real_datasets():
+    # Test real NANOGrav 12.5y observations for PSR J1614-2230
+    path = "data/nanograv/J1614-2230_NANOGrav_12yv4.all.res"
+    if os.path.exists(path):
+        res = GenericPulsarDataEvaluator.evaluate(path, num_windows=10, unit="us")
+        assert res["N_total"] == 12775
+        assert res["overall_rms_us"] < 3.50
+        assert abs(res["drift_slope_us_yr"]) < 0.045
+        assert len(res["windows"]) == 10
+

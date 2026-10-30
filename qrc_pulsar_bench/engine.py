@@ -234,10 +234,17 @@ class GenericPulsarDataEvaluator:
         except Exception:
             df = pd.read_csv(file_path, sep=r'\s+', comment='#', header=None)
 
-        # Extract first 3 numeric columns
-        mjd = df.iloc[:, 0].values.astype(float)
-        res = df.iloc[:, 1].values.astype(float)
-        unc = df.iloc[:, 2].values.astype(float)
+        # Extract columns intelligently based on format
+        if df.shape[1] >= 4 and np.nanmedian(df.iloc[:, 1].values.astype(float)) > 100.0:
+            # NANOGrav / TEMPO2 ASCII format: MJD, freq(MHz), residual, uncertainty, ...
+            mjd = df.iloc[:, 0].values.astype(float)
+            res = df.iloc[:, 2].values.astype(float)
+            unc = df.iloc[:, 3].values.astype(float)
+        else:
+            # Standard 3-column CSV: MJD, residual, uncertainty
+            mjd = df.iloc[:, 0].values.astype(float)
+            res = df.iloc[:, 1].values.astype(float)
+            unc = df.iloc[:, 2].values.astype(float)
 
         # Scale to microseconds if unit is seconds or pulse turns
         if unit == "s":
