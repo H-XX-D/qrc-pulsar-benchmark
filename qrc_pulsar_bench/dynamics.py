@@ -214,7 +214,9 @@ class RelationalState:
 
 
 def _initial_state(triple, inner_angles_rad, outer_angles_rad):
-    if not isinstance(triple, HierarchicalTripleSystem):
+    if hasattr(triple, 'to_hierarchical_triple'):
+        triple = triple.to_hierarchical_triple()
+    elif not isinstance(triple, HierarchicalTripleSystem):
         raise ValueError("Time evolution requires a HierarchicalTripleSystem.")
     masses = [_positive(m, 'solar mass')*M_sun for m in (triple.m1_msun,triple.m2_msun,triple.m3_msun)]
     periods = [_positive(p, 'orbital period')*day_s for p in (triple.Pb1_days,triple.Pb2_days)]
