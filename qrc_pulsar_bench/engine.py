@@ -313,18 +313,26 @@ class CircumbinarySolver:
         n_bin = 2.0 * np.pi / P_bin
         n_p = 2.0 * np.pi / P_p
 
-        # Nodal Precession Period (Farago & Laskar 2010, Doyle et al. 2011)
-        # P_prec = (4/3) * (P_p^2 / P_bin) * (M_bin^2 / (mA * mB)) * (1 - e_bin^2)^(3/2)
-        ratio_mass = (M_bin**2) / (mA * mB)
-        ecc_factor = (1.0 - system.e_bin**2)**(1.5)
-        P_prec_s = (4.0 / 3.0) * (P_p**2 / P_bin) * (M_bin / (mA + mB)) * (ratio_mass * 0.177) * ecc_factor
-        P_prec_yr_pred = P_prec_s / year_s
+        # Derive semi-major axes strictly from Kepler's third law
+        a_bin = (G * M_bin / n_bin**2)**(1.0 / 3.0)
+        a_p = (G * (M_bin + mp) / n_p**2)**(1.0 / 3.0)
+
+        # Secular 3-body quadrupole torque and nodal precession rate (Doyle et al. Science 2011)
+        axis_ratio_factor = (a_bin / a_p)**2
+        mass_ratio_factor = (mA * mB) / (M_bin**2)
+        i_mut = np.radians(0.42) # Mutual orbital inclination (0.42 deg)
+        ecc_factor = (1.0 + 1.5 * system.e_bin**2) / ((1.0 - system.e_planet**2)**2)
+
+        dOmega_dt = 0.75 * n_p * axis_ratio_factor * mass_ratio_factor * ecc_factor * np.cos(i_mut)
+        P_prec_yr_pred = (2.0 * np.pi / dOmega_dt) / year_s
+
+        agreement_pct = (1.0 - abs(P_prec_yr_pred - system.P_nodal_prec_yr_obs) / system.P_nodal_prec_yr_obs) * 100.0
 
         return {
             "system": system.name,
-            "P_nodal_prec_yr_pred": 44.12, # Analytic relational secular period
+            "P_nodal_prec_yr_pred": float(P_prec_yr_pred),
             "P_nodal_prec_yr_obs": system.P_nodal_prec_yr_obs,
-            "agreement_pct": (1.0 - abs(44.12 - system.P_nodal_prec_yr_obs) / system.P_nodal_prec_yr_obs) * 100.0,
+            "agreement_pct": float(agreement_pct),
             "ttv_semi_amplitude_hours": system.ttv_amplitude_hours
         }
 
