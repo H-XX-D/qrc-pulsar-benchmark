@@ -40,6 +40,22 @@ from .residuals import GenericPulsarDataEvaluator, ZenodoResidualEvaluator, Zeno
 
 from .dynamics import (RelationalState, RelationalThreeBodyIntegrator,
                        CartesianThreeBodyIntegrator, DynamicalBenchmarkSuite,
-                       orbital_elements_to_vectors)
+                       orbital_elements_to_vectors, compute_eih_accelerations)
+from .symplectic import SymplecticThreeBodyIntegrator
 from .fitter import RelationalTimingFitter
 from .pint_model import RelationalTripleDelayComponent, register_qrc_with_pint
+from .chaos_metrics import (
+    ChaosFingerprint,
+    compute_moment_of_inertia,
+    compute_virial_kinetics,
+    compute_power_spectral_slope,
+    compute_spectral_entropy,
+    extract_chaos_fingerprint,
+)
+from .qrc_engine import (
+    QRCBenchmarkResult,
+    JacobiRelationalReservoir,
+    compute_effective_dimension,
+    compute_fading_memory_capacity,
+    benchmark_qrc_reservoir,
+)

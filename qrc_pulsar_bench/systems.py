@@ -8,6 +8,7 @@ comparison targets; freezing values does not make them independent evidence.
 """
 
 from dataclasses import dataclass
+import math
 from typing import Optional
 
 @dataclass(frozen=True)
@@ -83,6 +84,24 @@ class CircumbinaryExoplanetSystem:
     # Transit Timing Variation semi-amplitude (hours)
     ttv_amplitude_hours: float
     mutual_inclination_deg: float = 0.0  # Coplanar default; supply the system's value.
+
+    def to_hierarchical_triple(self) -> 'HierarchicalTripleSystem':
+        """Convert circumbinary exoplanet configuration to HierarchicalTripleSystem."""
+        return HierarchicalTripleSystem(
+            name=self.name,
+            description=self.description,
+            literature_ref=self.literature_ref,
+            m1_msun=self.m_starA_msun,
+            m2_msun=self.m_starB_msun,
+            m3_msun=self.m_planet_msun,
+            Pb1_days=self.P_bin_days,
+            Pb2_days=self.P_planet_days,
+            e1=self.e_bin,
+            e2=self.e_planet,
+            cos_i1=1.0,
+            cos_i2=float(math.cos(math.radians(self.mutual_inclination_deg))),
+            f0_hz=1.0,
+        )
 
 # 1. PSR J0337+1715: Hierarchical Stellar Triple Pulsar
 PSR_J0337_1715 = HierarchicalTripleSystem(

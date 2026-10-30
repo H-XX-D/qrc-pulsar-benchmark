@@ -61,11 +61,13 @@ def _true_anomaly_at(t_mjd, tasc_mjd, pb_days, e, omega_rad):
 class RelationalTripleDelayComponent(_BaseComponent):
     """
     PINT DelayComponent wrapping the gauge-eliminated Jacobi three-body equations of motion.
+    Supports Newtonian point-mass or 1PN Einstein-Infeld-Hoffmann (EIH) general relativistic dynamics.
     """
     register = True
     category = "relational_triple"
 
-    def __init__(self, system: HierarchicalTripleSystem = PSR_J0337_1715):
+    def __init__(self, system: HierarchicalTripleSystem = PSR_J0337_1715, enable_1pn: bool = False):
+        self.enable_1pn = bool(enable_1pn)
         if _HAS_PINT and isinstance(self, tm.DelayComponent):
             super().__init__()
             self._init_pint_params(system)
@@ -189,12 +191,14 @@ class RelationalTripleDelayComponent(_BaseComponent):
         F3 = state.m3 / state.M_tot
         roemer_delays_s = np.zeros(len(mjd), dtype=float)
 
+        enable_1pn = getattr(self, "enable_1pn", False)
+
         # Forward integration for epochs t >= 0
         forward_mask = t_eval_s >= 0.0
         if np.any(forward_mask):
             t_fwd_max = max(1.0, t_max_s)
             sol_fwd = solve_ivp(
-                lambda t, y: RelationalThreeBodyIntegrator._jacobi_derivatives(t, y, *masses),
+                lambda t, y: RelationalThreeBodyIntegrator._jacobi_derivatives(t, y, *masses, enable_1pn=enable_1pn),
                 (0.0, t_fwd_max),
                 y0,
                 method='DOP853',
@@ -210,7 +214,7 @@ class RelationalTripleDelayComponent(_BaseComponent):
         if np.any(backward_mask):
             t_bwd_min = min(-1.0, t_min_s)
             sol_bwd = solve_ivp(
-                lambda t, y: RelationalThreeBodyIntegrator._jacobi_derivatives(t, y, *masses),
+                lambda t, y: RelationalThreeBodyIntegrator._jacobi_derivatives(t, y, *masses, enable_1pn=enable_1pn),
                 (0.0, t_bwd_min),
                 y0,
                 method='DOP853',

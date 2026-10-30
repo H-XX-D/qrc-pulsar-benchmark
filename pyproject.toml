@@ -26,6 +26,8 @@ dependencies = [
 
 [project.optional-dependencies]
 test = ["pytest>=7", "pint-pulsar>=1.1"]
+timing = ["pint-pulsar>=1.1", "astropy>=5"]
+acceleration = ["numba>=0.57", "numpy<2.4"]
 
 [project.scripts]
 qrc-bench = "qrc_pulsar_bench.cli:main"

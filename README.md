@@ -11,10 +11,11 @@ and orbital elements. The triple calculator estimates perturbation scales for
 near-circular, tightly hierarchical systems. The geometric shape map describes
 unweighted triangles independently of those calculations.
 
-The separate dynamics module evolves Newtonian point-mass trajectories and computes
-geometric Roemer delays. It does not implement relativistic three-body forces or a
-complete pulse arrival-time model. It has no certified global truncation error,
-nonlinear timing fit, correlated noise model, or held-out forecasting evaluation. Published post-fit residuals
+The original `dynamics` module evolves Newtonian point-mass trajectories and computes
+geometric Roemer delays. Additional experimental modules implement first-PN forces,
+an observed-arrival calibration adapter, and direct shape-coordinate evolution;
+see [the observed timing and shape guide](docs/observed-timing-and-shape.md).
+These have no certified global truncation error or complete stochastic timing-noise model. Published post-fit residuals
 describe the upstream researchers' fits; their scatter does not validate this
 package's formula estimates. Frozen literature parameters can themselves depend
 on the fitted theory and comparison observables.
