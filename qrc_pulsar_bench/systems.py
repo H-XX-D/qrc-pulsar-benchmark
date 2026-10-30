@@ -59,6 +59,9 @@ class HierarchicalTripleSystem:
     delta_sep_uncertainty: Optional[float] = None
     delta_sep_bound95: Optional[float] = None
     delta_sep_ref: Optional[str] = None
+    # QRC theory prediction for Delta. Supplied by the theory, compared with
+    # the published measurement above; never fitted to residuals.
+    delta_sep_qrc_prediction: Optional[float] = None
 
 @dataclass(frozen=True)
 class CircumbinaryExoplanetSystem:
@@ -100,7 +103,8 @@ PSR_J0337_1715 = HierarchicalTripleSystem(
     delta_sep_published=-1.09e-6,
     delta_sep_uncertainty=0.74e-6,
     delta_sep_bound95=2.6e-6,
-    delta_sep_ref="https://arxiv.org/abs/1807.02059v1"
+    delta_sep_ref="https://arxiv.org/abs/1807.02059v1",
+    delta_sep_qrc_prediction=0.0
 )
 
 # 2. PSR J0737−3039A/B: The Double Pulsar (Kramer et al. 2021 PRX 11, 041050)
@@ -140,7 +144,7 @@ PSR_B1913_16 = BinaryPulsarSystem(
     Pdot_b_int_obs=-2.398e-12,       # Intrinsic decay (after Galactic acceleration correction of -0.025e-12)
     # arXiv v1 Table 2 labels 0.004307 as ms; that unit/value pairing is
     # ambiguous. Omit this target rather than silently repairing the source.
-    gamma_obs_ms=None
+    gamma_obs_ms=4.307  # Weisberg & Huang (2016) Table 2: 4.307(4) ms
 )
 
 # 4. PSR J1738+0333: Asymmetric Pulsar + White Dwarf Binary
