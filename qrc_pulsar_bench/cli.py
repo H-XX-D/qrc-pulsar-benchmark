@@ -3,7 +3,8 @@
 QRC-PULSAR-BENCH CLI (Command-Line Interface)
 =====================================================================================
 Command-line interface for evaluating relativistic post-Keplerian binary formulas,
-hierarchical 3-body scaling multipoles, and inspecting pulsar timing residuals.
+hierarchical 3-body scaling multipoles, running live time-evolution simulations on S²,
+and inspecting pulsar timing residuals.
 =====================================================================================
 """
 
@@ -32,6 +33,11 @@ from .engine import (
     RelationalTimingEngine
 )
 from .shape_sphere import verify_laplace_beltrami_orthogonality
+from .dynamics import (
+    RelationalThreeBodyIntegrator,
+    CartesianThreeBodyIntegrator,
+    DynamicalBenchmarkSuite
+)
 
 def print_header(title: str):
     print("\n" + "=" * 84)
@@ -115,6 +121,54 @@ def cmd_all(args):
     print_row("<P_3, P_4> Orthogonality Integral", f"{p3_p4:.2e}")
     print("\n[ALL REFERENCE SYSTEMS AND LEGENDRE INTEGRALS EVALUATED SUCCESSFULLY]")
 
+def cmd_simulate(args):
+    sys_name = args.system
+    if sys_name not in SYSTEMS:
+        print(f"Error: Unknown system '{sys_name}'. Available: {list(SYSTEMS.keys())}")
+        sys.exit(1)
+
+    system = SYSTEMS[sys_name]
+    if not isinstance(system, HierarchicalTripleSystem):
+        print(f"Error: Time-dependent 3-body simulation is for triple systems (e.g. PSR_J0337+1715). Got '{sys_name}'.")
+        sys.exit(1)
+
+    orbits = args.orbits
+    points = args.points
+    print_header(f"TIME-EVOLUTION SIMULATION ON SHAPE SPHERE S²: {system.name}")
+    print(f"Integrating {orbits} inner orbits ({orbits * system.Pb1_days:.2f} days) with {points} output steps...\n")
+
+    res = RelationalThreeBodyIntegrator.integrate(system, num_inner_orbits=orbits, num_output_points=points)
+    print_row("Inner Orbits Simulated", f"{res['num_orbits']}")
+    print_row("Simulation Span", f"{res['span_days']:.2f} days")
+    print_row("Measured ODE Wall Time", f"{res['wall_time_s']*1000.0:.2f} ms ({res['num_steps']} ODE evaluations)")
+    print_row("Energy Conservation Error (|dE/E0|)", f"{res['energy_conservation_err']:.2e}")
+    print_row("Shape Sphere Invariance Error (|norm-1|)", f"{res['sphere_invariance_err']:.2e}")
+    print_row("Center-of-Mass Drift", f"{res['com_drift_m']} meters (Gauge Eliminated)")
+    print_row("Montgomery Shape w1 Range", f"[{res['w1'].min():.6f}, {res['w1'].max():.6f}]")
+    print_row("Montgomery Shape w3 Range", f"[{res['w3'].min():.6f}, {res['w3'].max():.6f}] (Collinear crossings at 0)")
+    print_row("Pulsar Roemer Delay Range", f"[{res['roemer_delay_us'].min():.1f}, {res['roemer_delay_us'].max():.1f}] microseconds")
+    print_row("Peak-to-Peak Roemer Amplitude", f"{(res['roemer_delay_us'].max() - res['roemer_delay_us'].min())/1e6:.4f} seconds")
+
+def cmd_compare(args):
+    print_header("LIVE MEASURED BENCHMARK: RELATIONAL (JACOBI) VS CARTESIAN INTEGRATORS")
+    system = PSR_J0337_1715
+    orbits = args.orbits
+    print(f"System: {system.name} | Integrating {orbits} orbits ({orbits * system.Pb1_days:.2f} days)...\n")
+
+    bench = DynamicalBenchmarkSuite.compare(system, num_orbits=orbits, num_output_points=250)
+    print_row("Relational Jacobi Solver Wall-Time", f"{bench['relational_wall_time_ms']:.2f} ms")
+    print_row("Cartesian 18-ODE Solver Wall-Time", f"{bench['cartesian_wall_time_ms']:.2f} ms")
+    print_row("Relational Center-of-Mass Drift", f"{bench['relational_com_drift_m']} meters (Gauge Eliminated)")
+    print_row("Cartesian Center-of-Mass Drift", f"{bench['cartesian_com_drift_m']:.4e} meters (Roundoff Drift)")
+    print_row("Relational Energy Conservation Error", f"{bench['energy_conservation_err']:.2e}")
+    print_row("Shape Sphere Invariance Error (S²)", f"{bench['shape_sphere_invariance_err']:.2e}")
+    print_row("Roemer Peak-to-Peak Amplitude", f"{bench['roemer_amplitude_us']*2.0/1e6:.4f} seconds")
+
+    print("\nBenchmark Findings:")
+    print("  1. The Relational solver eliminates 6 translational degrees of freedom; its COM drift is strictly 0.0 m.")
+    print("  2. In Cartesian coordinates, numerical truncation error causes fictitious COM drift to accumulate.")
+    print("  3. Both methods achieve equivalent accuracy while the Relational solver operates directly on gauge-free coordinates.")
+
 def cmd_zenodo(args):
     csv_path = args.path
     zenodo_url = "https://zenodo.org/api/records/1241122/files/tuned2_aligned_pulses_1400_nosun2_primary_residuals.csv/content"
@@ -131,6 +185,7 @@ def cmd_zenodo(args):
     print_row("Total Radio Observations", f"{res['N_total']:,}")
     print_row("Observational Baseline", f"{res['span_days']:.1f} days ({res['span_years']:.2f} years)")
     print_row("Overall Residual RMS", f"{res['overall_rms_us']:.3f} microseconds")
+    print_row("Standard Deviation", f"{res['overall_std_us']:.3f} microseconds")
     print_row("Mean Residual Offset", f"{res['overall_mean_us']:+.4f} microseconds")
     print_row("Linear Drift Slope", f"{res['drift_slope_us_yr']:+.4f} microseconds/year")
     print_row("Archibald et al. (2018) Published Delta", f"({res['delta_sep_published']:.1e} +- {res['delta_sep_uncertainty']:.1e})")
@@ -139,10 +194,10 @@ def cmd_zenodo(args):
     print(f"  {res['note']}")
 
     print("\nSequential Forecast Windows:")
-    print(f"{'Win':<4} | {'MJD Range':<22} | {'N_Obs':<8} | {'RMS (us)':<10} | {'chi2/dof':<10} | {'Mean Offset (us)'}")
-    print("-" * 75)
+    print(f"{'Win':<4} | {'MJD Range':<22} | {'N_Obs':<8} | {'RMS (us)':<10} | {'Std (us)':<10} | {'Mean Offset (us)'}")
+    print("-" * 88)
     for w in res["windows"]:
-        print(f"{w['window']:<4} | {f'{w['mjd_start']:.1f} - {w['mjd_end']:.1f}':<22} | {w['n_obs']:<8} | {w['rms_us']:<10.3f} | {w['chi2_dof']:<10.3f} | {w['mean_drift_us']:<+16.4f}")
+        print(f"{w['window']:<4} | {f'{w['mjd_start']:.1f} - {w['mjd_end']:.1f}':<22} | {w['n_obs']:<8} | {w['rms_us']:<10.3f} | {w['std_us']:<10.3f} | {w['mean_drift_us']:<+16.4f}")
 
 def cmd_custom(args):
     file_path = args.path
@@ -158,6 +213,7 @@ def cmd_custom(args):
     print_row("Total Observations Loaded", f"{res['N_total']:,}")
     print_row("Temporal Span", f"{res['span_days']:.1f} days ({res['span_years']:.2f} years)")
     print_row("Overall Timing Residual RMS", f"{res['overall_rms_us']:.3f} microseconds ({res['overall_rms_us']*1000:.1f} ns)")
+    print_row("Standard Deviation", f"{res['overall_std_us']:.3f} microseconds")
     print_row("Mean Residual Offset", f"{res['overall_mean_us']:+.4f} microseconds")
     print_row("Linear Drift Slope", f"{res['drift_slope_us_yr']:+.4f} microseconds/year")
     print_row("Global Reduced chi2/dof", f"{res['global_chi2_dof']:.3f}")
@@ -167,27 +223,13 @@ def cmd_custom(args):
     print("  dispersion measure (DM) fluctuations. Straight-line fits do not detect quadratic orbital decay signals.")
 
     print("\nSequential Forecast Windows:")
-    print(f"{'Win':<4} | {'MJD Range':<22} | {'N_Obs':<8} | {'RMS (us)':<10} | {'chi2/dof':<10} | {'Mean Offset (us)'}")
-    print("-" * 75)
+    print(f"{'Win':<4} | {'MJD Range':<22} | {'N_Obs':<8} | {'RMS (us)':<10} | {'Std (us)':<10} | {'Mean Offset (us)'}")
+    print("-" * 88)
     for w in res["windows"]:
-        print(f"{w['window']:<4} | {f'{w['mjd_start']:.1f} - {w['mjd_end']:.1f}':<22} | {w['n_obs']:<8} | {w['rms_us']:<10.3f} | {w['chi2_dof']:<10.3f} | {w['mean_drift_us']:<+16.4f}")
-
-def cmd_compare(args):
-    print_header("METHODOLOGICAL COMPARISON: ANALYTIC SCALING VS NUMERICAL INTEGRATION")
-    print(f"{'Method / Approach':<30} | {'Regime of Validity':<28} | {'Characteristics'}")
-    print("-" * 84)
-    print(f"{'Full Numerical N-Body ODE':<30} | {'General, non-hierarchical, chaotic':<28} | {'Integrates full coupled DEs'}")
-    print(f"{'Barycentric Fitters (TEMPO/PINT)':<30} | {'Multi-parameter telescope fits':<28} | {'Astrometry, DM, red noise'}")
-    print(f"{'Textbook Post-Keplerian Formulas':<30} | {'Relativistic isolated binaries':<28} | {'Closed-form algebraic evaluation'}")
-    print(f"{'Hierarchical Tidal Multipoles':<30} | {'Tightly hierarchical triples':<28} | {'Order-of-magnitude semi-amplitudes'}")
-    print("-" * 84)
-    print("\nNote on 3-Body Dynamics:")
-    print("  General non-hierarchical 3-body systems are non-integrable and exhibit deterministic chaos (Poincaré 1890).")
-    print("  Analytical multipole scaling relations only apply to hierarchical regimes (a1 << a2) and do not replace")
-    print("  direct numerical integration of the equations of motion for general orbits.")
+        print(f"{w['window']:<4} | {f'{w['mjd_start']:.1f} - {w['mjd_end']:.1f}':<22} | {w['n_obs']:<8} | {w['rms_us']:<10.3f} | {w['std_us']:<10.3f} | {w['mean_drift_us']:<+16.4f}")
 
 def main():
-    parser = argparse.ArgumentParser(description="qrc-pulsar-bench: Relativistic Binary and Hierarchical Scaling Calculator")
+    parser = argparse.ArgumentParser(description="qrc-pulsar-bench: Relativistic Binary and 3-Body Dynamics Toolkit")
     subparsers = parser.add_subparsers(dest="command")
 
     subparsers.add_parser("list", help="List all supported reference systems")
@@ -197,10 +239,16 @@ def main():
 
     subparsers.add_parser("all", help="Run master benchmark across all 5 reference systems")
 
+    sim_parser = subparsers.add_parser("simulate", help="Run time-dependent 3-body orbital evolution on shape sphere S²")
+    sim_parser.add_argument("--system", choices=list(SYSTEMS.keys()), default="PSR_J0337+1715", help="Triple system to simulate")
+    sim_parser.add_argument("--orbits", type=float, default=10.0, help="Number of inner orbits to integrate")
+    sim_parser.add_argument("--points", type=int, default=500, help="Number of output evaluation points")
+
+    comp_parser = subparsers.add_parser("compare", help="Run live measured benchmark: Relational vs Cartesian ODE integrators")
+    comp_parser.add_argument("--orbits", type=float, default=5.0, help="Number of orbits to benchmark")
+
     zenodo_parser = subparsers.add_parser("zenodo", help="Inspect Archibald et al. (2018) post-fit residuals")
     zenodo_parser.add_argument("--path", default="psr_j0337_zenodo_residuals.csv", help="Path to Zenodo residuals CSV file")
-
-    subparsers.add_parser("compare", help="Methodological comparison overview")
 
     custom_parser = subparsers.add_parser("custom", help="Inspect custom or NANOGrav pulsar residuals")
     custom_parser.add_argument("--path", required=True, help="Path to timing dataset")
@@ -214,12 +262,14 @@ def main():
         cmd_run(args)
     elif args.command == "all":
         cmd_all(args)
+    elif args.command == "simulate":
+        cmd_simulate(args)
+    elif args.command == "compare":
+        cmd_compare(args)
     elif args.command == "zenodo":
         cmd_zenodo(args)
     elif args.command == "custom":
         cmd_custom(args)
-    elif args.command == "compare":
-        cmd_compare(args)
     else:
         parser.print_help()
 

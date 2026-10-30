@@ -31,10 +31,19 @@ def test_cli_all():
     assert res.returncode == 0
     assert "MASTER BENCHMARK ACROSS ALL 5 REFERENCE SYSTEMS" in res.stdout
 
-def test_cli_compare():
-    res = run_cli("compare")
+def test_cli_simulate():
+    res = run_cli("simulate", "--system", "PSR_J0337+1715", "--orbits", "2", "--points", "100")
     assert res.returncode == 0
-    assert "METHODOLOGICAL COMPARISON" in res.stdout
+    assert "TIME-EVOLUTION SIMULATION ON SHAPE SPHERE S²" in res.stdout
+    assert "Energy Conservation Error" in res.stdout
+    assert "Shape Sphere Invariance Error" in res.stdout
+
+def test_cli_compare():
+    res = run_cli("compare", "--orbits", "2")
+    assert res.returncode == 0
+    assert "LIVE MEASURED BENCHMARK" in res.stdout
+    assert "Relational Jacobi Solver Wall-Time" in res.stdout
+    assert "Cartesian 18-ODE Solver Wall-Time" in res.stdout
 
 def test_cli_custom(tmp_path):
     sample_file = tmp_path / "test.csv"
