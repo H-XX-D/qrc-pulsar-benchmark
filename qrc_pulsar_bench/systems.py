@@ -2,9 +2,8 @@
 =====================================================================================
 Precision Astrophysical Reference Systems (Explicitly Hardcoded & Locked)
 =====================================================================================
-Contains the gold-standard precision relativistic systems in astrophysics.
-All parameters are locked strictly from published observational literature.
-No floating-point tuners or fitted free parameters are permitted.
+Contains gold-standard precision relativistic systems in astrophysics.
+All parameters are sourced directly from published observational literature.
 =====================================================================================
 """
 
@@ -29,11 +28,12 @@ class BinaryPulsarSystem:
     # Orbital inclination parameter sin(i)
     sin_i: float
     # Published Empirical Post-Keplerian Parameters (Targets)
-    om_dot_obs_deg_yr: Optional[float] = None # Periastron advance (deg/yr)
-    Pdot_b_obs: Optional[float] = None        # GW orbital decay (s/s)
-    gamma_obs_ms: Optional[float] = None      # Einstein delay (ms)
-    r_obs_us: Optional[float] = None          # Shapiro delay range (us)
-    s_obs: Optional[float] = None             # Shapiro delay shape sin(i)
+    om_dot_obs_deg_yr: Optional[float] = None     # Periastron advance (deg/yr)
+    Pdot_b_obs: Optional[float] = None            # Observed GW orbital decay (s/s)
+    Pdot_b_int_obs: Optional[float] = None        # Intrinsic GW decay after Galactic acceleration correction (s/s)
+    gamma_obs_ms: Optional[float] = None          # Einstein delay (ms)
+    r_obs_us: Optional[float] = None              # Shapiro delay range (us)
+    s_obs: Optional[float] = None                 # Shapiro delay shape sin(i)
 
 @dataclass(frozen=True)
 class HierarchicalTripleSystem:
@@ -55,8 +55,9 @@ class HierarchicalTripleSystem:
     cos_i2: float
     # Pulsar spin frequency (Hz)
     f0_hz: float
-    # Strong Equivalence Principle Invariant
-    delta_sep_qrc: float = 0.00000000
+    # Published Strong Equivalence Principle bound from Archibald et al. (Nature 2018)
+    delta_sep_published: float = -0.6e-6
+    delta_sep_uncertainty: float = 4.9e-6
 
 @dataclass(frozen=True)
 class CircumbinaryExoplanetSystem:
@@ -93,10 +94,11 @@ PSR_J0337_1715 = HierarchicalTripleSystem(
     cos_i1=0.7694,
     cos_i2=0.7696,
     f0_hz=365.953339305,
-    delta_sep_qrc=0.00000000
+    delta_sep_published=-0.6e-6,
+    delta_sep_uncertainty=4.9e-6
 )
 
-# 2. PSR J0737−3039A/B: The Double Pulsar
+# 2. PSR J0737−3039A/B: The Double Pulsar (Kramer et al. 2021 PRX 11, 041050)
 PSR_J0737_3039 = BinaryPulsarSystem(
     name="PSR J0737-3039A/B",
     description="The only known double pulsar system. Most relativistic binary known; 16 years of continuous timing validates 7 independent post-Keplerian parameters.",
@@ -106,19 +108,20 @@ PSR_J0737_3039 = BinaryPulsarSystem(
     Pb_days=0.10225156248,
     eccentricity=0.0877775,
     x_p_s=1.415032,
-    sin_i=0.99987,
-    om_dot_obs_deg_yr=16.89947,
-    Pdot_b_obs=-1.2524e-12,
-    gamma_obs_ms=0.3856,
-    r_obs_us=6.153,
-    s_obs=0.99987
+    sin_i=0.99986,
+    om_dot_obs_deg_yr=16.89932,
+    Pdot_b_obs=-1.24792e-12,
+    Pdot_b_int_obs=-1.24792e-12,
+    gamma_obs_ms=0.38405,
+    r_obs_us=6.151,
+    s_obs=0.99986
 )
 
-# 3. PSR B1913+16: The Hulse-Taylor Binary Pulsar
+# 3. PSR B1913+16: The Hulse-Taylor Binary Pulsar (Weisberg & Huang 2016 ApJ 829:55)
 PSR_B1913_16 = BinaryPulsarSystem(
     name="PSR B1913+16",
     description="First binary pulsar discovered (1974 Nobel Prize 1993). Provided first empirical evidence for gravitational wave emission.",
-    literature_ref="Weisberg & Huang, Astrophys. J. 829:55 (2016)",
+    literature_ref="Weisberg & Huang, Astrophys. J. 829:55 (2016); Damour & Taylor, ApJ 366:501 (1991)",
     m1_msun=1.4398,
     m2_msun=1.3886,
     Pb_days=0.322997448911,
@@ -126,7 +129,8 @@ PSR_B1913_16 = BinaryPulsarSystem(
     x_p_s=2.341776,
     sin_i=0.734,
     om_dot_obs_deg_yr=4.226598,
-    Pdot_b_obs=-2.423e-12,
+    Pdot_b_obs=-2.423e-12,           # Observed decay (includes Galactic acceleration)
+    Pdot_b_int_obs=-2.398e-12,       # Intrinsic decay (after Galactic acceleration correction of -0.025e-12)
     gamma_obs_ms=4.295
 )
 
@@ -141,7 +145,8 @@ PSR_J1738_0333 = BinaryPulsarSystem(
     eccentricity=0.00000035,
     x_p_s=0.3434,
     sin_i=0.54,
-    Pdot_b_obs=-2.59e-14
+    Pdot_b_obs=-2.59e-14,
+    Pdot_b_int_obs=-2.59e-14
 )
 
 # 5. Kepler-16b: Circumbinary Exoplanet Benchmark
