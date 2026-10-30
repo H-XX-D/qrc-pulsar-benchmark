@@ -143,13 +143,18 @@ def _init_kepler16():
     ]
 
 
-def integrate_system(preset_key, n_frames=None):
+def integrate_system(preset_key, n_frames=None, enable_1pn=False):
     cfg = SYSTEMS[preset_key]
     m = cfg["masses"]
     init_state = np.array(cfg["init"]()).flatten()
     t_span = cfg["t_span"]
     frames = n_frames or cfg["n_frames"]
     t_eval = np.linspace(t_span[0], t_span[1], frames)
+
+    # In geometric units G = 1, choose c_speed = 25.0 so 1PN relativistic parameter
+    # (v/c)^2 ~ (1/25)^2 ~ 0.0016 exhibits genuine relativistic periastron precession
+    # without blowing up the perturbation hierarchy.
+    c_speed = 25.0
 
     def ode_derivs(t, y):
         r1, v1 = y[0:3], y[3:6]
@@ -163,10 +168,44 @@ def integrate_system(preset_key, n_frames=None):
         r23 = r3 - r2
         d23 = np.linalg.norm(r23) ** 3 + 1e-12
 
-        a1 = m[1] * r12 / d12 + m[2] * r13 / d13
-        a2 = -m[0] * r12 / d12 + m[2] * r23 / d23
-        a3 = -m[0] * r13 / d13 - m[1] * r23 / d23
+        a1_N = m[1] * r12 / d12 + m[2] * r13 / d13
+        a2_N = -m[0] * r12 / d12 + m[2] * r23 / d23
+        a3_N = -m[0] * r13 / d13 - m[1] * r23 / d23
 
+        if not enable_1pn:
+            return np.concatenate([v1, a1_N, v2, a2_N, v3, a3_N])
+
+        pos = [r1, r2, r3]
+        vel = [v1, v2, v3]
+        a_N = [a1_N, a2_N, a3_N]
+        a_1pn = [np.zeros(3), np.zeros(3), np.zeros(3)]
+        inv_c2 = 1.0 / (c_speed**2)
+
+        for A in range(3):
+            for B in range(3):
+                if A == B: continue
+                r_BA = pos[A] - pos[B]
+                r_AB = max(1e-6, np.linalg.norm(r_BA))
+                n_AB = r_BA / r_AB
+                n_BA = -n_AB
+                v_A = vel[A]; v_B = vel[B]
+                v_A_sq = np.dot(v_A, v_A); v_B_sq = np.dot(v_B, v_B)
+                v_A_dot_v_B = np.dot(v_A, v_B); n_AB_dot_v_B = np.dot(n_AB, v_B)
+
+                phi_A = sum(m[C] / max(1e-6, np.linalg.norm(pos[A] - pos[C])) for C in range(3) if C != A)
+                phi_B = sum(m[C] / max(1e-6, np.linalg.norm(pos[B] - pos[C])) for C in range(3) if C != B)
+                x_dot_a_B = np.dot(pos[B] - pos[A], a_N[B])
+
+                scalar = (v_A_sq + 2.0*v_B_sq - 4.0*v_A_dot_v_B - 1.5*(n_AB_dot_v_B**2)
+                          - 4.0*phi_A - phi_B + 0.5*x_dot_a_B)
+                term1 = (m[B] / (r_AB**2)) * n_BA * scalar
+                term2 = (m[B] / (r_AB**2)) * np.dot(n_AB, 4.0*v_A - 3.0*v_B) * (v_A - v_B)
+                term3 = 3.5 * (m[B] / r_AB) * a_N[B]
+                a_1pn[A] += term1 + term2 + term3
+
+        a1 = a1_N + inv_c2 * a_1pn[0]
+        a2 = a2_N + inv_c2 * a_1pn[1]
+        a3 = a3_N + inv_c2 * a_1pn[2]
         return np.concatenate([v1, a1, v2, a2, v3, a3])
 
     sol = solve_ivp(
@@ -370,16 +409,22 @@ def main():
         default=30,
         help="Frames per second for output animation (default: 30)",
     )
+    parser.add_argument(
+        "--enable-1pn",
+        action="store_true",
+        help="Enable 1PN Einstein-Infeld-Hoffmann general relativistic cross-accelerations",
+    )
 
     args = parser.parse_args()
 
     systems_to_run = list(SYSTEMS.keys()) if args.system == "all" else [args.system]
 
     for sys_key in systems_to_run:
+        mode_str = "1PN Einstein-Infeld-Hoffmann (GR)" if args.enable_1pn else "Newtonian Gravitation"
         print(f"\n=================================================================")
-        print(f" Simulating: {SYSTEMS[sys_key]['name']}")
+        print(f" Simulating: {SYSTEMS[sys_key]['name']} [{mode_str}]")
         print(f"=================================================================")
-        sim_data = integrate_system(sys_key, n_frames=args.frames)
+        sim_data = integrate_system(sys_key, n_frames=args.frames, enable_1pn=args.enable_1pn)
         print(f" Integration complete. Time steps: {len(sim_data['t'])}")
         print(f" Montgomery-Dragt Invariant Error: {sim_data['sphere_res']:.2e}")
 

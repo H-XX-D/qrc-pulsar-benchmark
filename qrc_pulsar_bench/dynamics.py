@@ -48,6 +48,88 @@ def _distance(vector):
     return distance
 
 
+def compute_eih_accelerations(positions: np.ndarray, velocities: np.ndarray, masses: list) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+    """Compute 1PN Einstein-Infeld-Hoffmann (EIH) accelerations for an N-body system.
+
+    Evaluates the first post-Newtonian (1PN, O(1/c²)) equations of motion in standard
+    harmonic barycentric coordinates following Einstein, Infeld, & Hoffmann (1938)
+    and Poisson & Will (2014) Eq. (9.124).
+
+    Parameters
+    ----------
+    positions : np.ndarray
+        Array of shape (N, 3) containing barycentric Cartesian positions in metres.
+    velocities : np.ndarray
+        Array of shape (N, 3) containing barycentric Cartesian velocities in metres/second.
+    masses : list or np.ndarray
+        List of length N containing masses in kilograms.
+
+    Returns
+    -------
+    a_total : np.ndarray of shape (N, 3)
+        Total physical acceleration = a_Newtonian + (1/c²) * a_1PN.
+    a_N : np.ndarray of shape (N, 3)
+        Leading Newtonian gravitational acceleration.
+    a_1pn_over_c2 : np.ndarray of shape (N, 3)
+        1PN relativistic acceleration correction (divided by c²).
+    """
+    positions = np.asarray(positions, dtype=float)
+    velocities = np.asarray(velocities, dtype=float)
+    masses = [float(m) for m in masses]
+    N = len(masses)
+    if positions.shape != (N, 3) or velocities.shape != (N, 3):
+        raise ValueError(f"positions and velocities must have shape ({N}, 3).")
+
+    a_N = np.zeros((N, 3), dtype=float)
+    for A in range(N):
+        for B in range(N):
+            if A == B:
+                continue
+            r_vec = positions[B] - positions[A]
+            r = _distance(r_vec)
+            a_N[A] += (G * masses[B] / (r**2)) * (r_vec / r)
+
+    a_1pn = np.zeros((N, 3), dtype=float)
+    inv_c2 = 1.0 / (c**2)
+
+    for A in range(N):
+        for B in range(N):
+            if A == B:
+                continue
+            r_BA = positions[A] - positions[B]
+            r_AB = _distance(r_BA)
+            n_AB = r_BA / r_AB
+            n_BA = -n_AB
+
+            v_A = velocities[A]
+            v_B = velocities[B]
+            v_A_sq = float(np.dot(v_A, v_A))
+            v_B_sq = float(np.dot(v_B, v_B))
+            v_A_dot_v_B = float(np.dot(v_A, v_B))
+            n_AB_dot_v_B = float(np.dot(n_AB, v_B))
+
+            phi_A = sum(G * masses[C] / _distance(positions[A] - positions[C]) for C in range(N) if C != A)
+            phi_B = sum(G * masses[C] / _distance(positions[B] - positions[C]) for C in range(N) if C != B)
+
+            x_diff = positions[B] - positions[A]
+            x_dot_a_B = float(np.dot(x_diff, a_N[B]))
+
+            scalar_term = (
+                v_A_sq + 2.0 * v_B_sq - 4.0 * v_A_dot_v_B - 1.5 * (n_AB_dot_v_B**2)
+                - 4.0 * phi_A - phi_B + 0.5 * x_dot_a_B
+            )
+
+            term1 = (G * masses[B] / (r_AB**2)) * n_BA * scalar_term
+            term2_dot = float(np.dot(n_AB, 4.0 * v_A - 3.0 * v_B))
+            term2 = (G * masses[B] / (r_AB**2)) * term2_dot * (v_A - v_B)
+            term3 = 3.5 * (G * masses[B] / r_AB) * a_N[B]
+
+            a_1pn[A] += term1 + term2 + term3
+
+    a_1pn_over_c2 = inv_c2 * a_1pn
+    return a_N + a_1pn_over_c2, a_N, a_1pn_over_c2
+
+
 def orbital_elements_to_vectors(a, e, inc_rad, Omega_rad, omega_rad, f_rad, GM):
     """Bound Kepler orbit in SI units; inclination is measured from the xy plane.
 
@@ -154,7 +236,7 @@ def _initial_state(triple, inner_angles_rad, outer_angles_rad):
     return state, periods[0], inputs
 
 
-def _integrate(rhs, y0, masses, period, orbits, points, rtol, atol):
+def _integrate(rhs, y0, masses, period, orbits, points, rtol, atol, enable_1pn=False):
     duration = _positive(orbits, 'num_inner_orbits')*period
     if not np.isfinite(duration):
         raise ValueError("Integration duration must be finite.")
@@ -163,7 +245,7 @@ def _integrate(rhs, y0, masses, period, orbits, points, rtol, atol):
     rtol, atol = _positive(rtol, 'rtol'), _positive(atol, 'atol')
     times = np.linspace(0., duration, points)
     start = time.perf_counter()
-    sol = solve_ivp(lambda t,y: rhs(t,y,*masses), (0.,duration), y0, t_eval=times,
+    sol = solve_ivp(lambda t,y: rhs(t,y,*masses,enable_1pn=enable_1pn), (0.,duration), y0, t_eval=times,
                     method='DOP853', rtol=rtol, atol=atol)
     wall_time = time.perf_counter()-start
     if not sol.success:
@@ -202,77 +284,103 @@ def _observables(jacobi, cartesian, masses, los):
 
 
 class RelationalThreeBodyIntegrator:
-    """Newtonian integration of 12 Jacobi components, followed by shape diagnostics."""
+    """Newtonian or 1PN Einstein-Infeld-Hoffmann integration of 12 Jacobi components."""
 
     @staticmethod
-    def _jacobi_derivatives(t,y,m1,m2,m3):
-        r1,v1,r2,v2 = y[:3],y[3:6],y[6:9],y[9:12]
-        m12, mt = m1+m2,m1+m2+m3
-        x13, x23 = r2+m2/m12*r1, r2-m1/m12*r1
-        u12, u13, u23 = r1/_distance(r1)**3, x13/_distance(x13)**3, x23/_distance(x23)**3
-        # Algebraic Jacobi transformation of pairwise Newtonian accelerations.
-        a_r1 = -G*m12*u12 + G*m3*(u23-u13)
-        a_r2 = -G*mt*(m1/m12*u13+m2/m12*u23)
-        return np.concatenate([v1,a_r1,v2,a_r2])
+    def _jacobi_derivatives(t, y, m1, m2, m3, enable_1pn=False):
+        r1, v1, r2, v2 = y[:3], y[3:6], y[6:9], y[9:12]
+        m12, mt = m1 + m2, m1 + m2 + m3
+        if not enable_1pn:
+            x13, x23 = r2 + m2/m12*r1, r2 - m1/m12*r1
+            u12, u13, u23 = r1/_distance(r1)**3, x13/_distance(x13)**3, x23/_distance(x23)**3
+            # Algebraic Jacobi transformation of pairwise Newtonian accelerations.
+            a_r1 = -G*m12*u12 + G*m3*(u23 - u13)
+            a_r2 = -G*mt*(m1/m12*u13 + m2/m12*u23)
+            return np.concatenate([v1, a_r1, v2, a_r2])
+
+        f1, f2 = m1 / m12, m2 / m12
+        F3, F12 = m3 / mt, m12 / mt
+        x1 = -F3 * r2 - f2 * r1
+        v1_c = -F3 * v2 - f2 * v1
+        x2 = -F3 * r2 + f1 * r1
+        v2_c = -F3 * v2 + f1 * v1
+        x3 = F12 * r2
+        v3_c = F12 * v2
+
+        pos = np.array([x1, x2, x3])
+        vel = np.array([v1_c, v2_c, v3_c])
+        a_tot, _, _ = compute_eih_accelerations(pos, vel, [m1, m2, m3])
+
+        a_r1 = a_tot[1] - a_tot[0]
+        a_r2 = a_tot[2] - (f1 * a_tot[0] + f2 * a_tot[1])
+        return np.concatenate([v1, a_r1, v2, a_r2])
 
     @classmethod
-    def integrate(cls,triple,num_inner_orbits=10.,num_output_points=500,rtol=1e-10,atol=1e-10,
-                  *,inner_angles_rad=(0.,0.,0.),outer_angles_rad=(0.,0.,0.),line_of_sight=(0.,0.,1.)):
+    def integrate(cls, triple, num_inner_orbits=10., num_output_points=500, rtol=1e-10, atol=1e-10,
+                  *, inner_angles_rad=(0.,0.,0.), outer_angles_rad=(0.,0.,0.), line_of_sight=(0.,0.,1.),
+                  enable_1pn=False):
         """Integrate illustrative initial elements; angles are (node, periapsis, f).
 
         Times are seconds since an arbitrary t=0. atol applies separately to SI
         position and velocity components; equal tolerances across coordinate
         systems do not guarantee equal trajectory error. Extrema use output samples.
         """
-        state, period, inputs = _initial_state(triple,inner_angles_rad,outer_angles_rad)
+        state, period, inputs = _initial_state(triple, inner_angles_rad, outer_angles_rad)
         los = _unit_los(line_of_sight)
-        masses = [state.m1,state.m2,state.m3]
-        sol, wall = _integrate(cls._jacobi_derivatives,np.concatenate([state.r1,state.v1,state.r2,state.v2]),
-                               masses,period,num_inner_orbits,num_output_points,rtol,atol)
-        f1,f2,F3,F12 = state.m1/state.M12,state.m2/state.M12,state.m3/state.M_tot,state.M12/state.M_tot
-        cart = np.vstack([-F3*sol.y[6:9]-f2*sol.y[:3],-F3*sol.y[9:12]-f2*sol.y[3:6],
-                          -F3*sol.y[6:9]+f1*sol.y[:3],-F3*sol.y[9:12]+f1*sol.y[3:6],
-                          F12*sol.y[6:9],F12*sol.y[9:12]])
-        return dict(system=triple.name,num_orbits=num_inner_orbits,span_days=sol.t[-1]/day_s,
-                    wall_time_s=wall,nfev=sol.nfev,num_steps=sol.nfev,t_eval_s=sol.t,
-                    sol_y=sol.y,cartesian_y=cart,r1_m=sol.y[:3],r2_m=sol.y[6:9],
-                    initial_conditions=inputs,line_of_sight=los.tolist(),
-                    **_observables(sol.y,cart,masses,los))
+        masses = [state.m1, state.m2, state.m3]
+        sol, wall = _integrate(cls._jacobi_derivatives, np.concatenate([state.r1, state.v1, state.r2, state.v2]),
+                               masses, period, num_inner_orbits, num_output_points, rtol, atol, enable_1pn=enable_1pn)
+        f1, f2, F3, F12 = state.m1/state.M12, state.m2/state.M12, state.m3/state.M_tot, state.M12/state.M_tot
+        cart = np.vstack([-F3*sol.y[6:9]-f2*sol.y[:3], -F3*sol.y[9:12]-f2*sol.y[3:6],
+                          -F3*sol.y[6:9]+f1*sol.y[:3], -F3*sol.y[9:12]+f1*sol.y[3:6],
+                          F12*sol.y[6:9], F12*sol.y[9:12]])
+        return dict(system=triple.name, num_orbits=num_inner_orbits, span_days=sol.t[-1]/day_s,
+                    wall_time_s=wall, nfev=sol.nfev, num_steps=sol.nfev, t_eval_s=sol.t,
+                    sol_y=sol.y, cartesian_y=cart, r1_m=sol.y[:3], r2_m=sol.y[6:9],
+                    initial_conditions=inputs, line_of_sight=los.tolist(), enable_1pn=enable_1pn,
+                    **_observables(sol.y, cart, masses, los))
 
 
 class CartesianThreeBodyIntegrator:
-    """18-component Newtonian reference using the same DOP853 numerical method."""
+    """18-component Newtonian or 1PN Einstein-Infeld-Hoffmann reference using DOP853."""
 
     @staticmethod
-    def _cartesian_derivatives(t,y,m1,m2,m3):
-        x1,v1,x2,v2,x3,v3 = y[:3],y[3:6],y[6:9],y[9:12],y[12:15],y[15:18]
-        u12,u13,u23 = x2-x1,x3-x1,x3-x2
-        u12,u13,u23 = u12/_distance(u12)**3,u13/_distance(u13)**3,u23/_distance(u23)**3
-        return np.concatenate([v1,G*(m2*u12+m3*u13),v2,G*(-m1*u12+m3*u23),v3,-G*(m1*u13+m2*u23)])
+    def _cartesian_derivatives(t, y, m1, m2, m3, enable_1pn=False):
+        x1, v1, x2, v2, x3, v3 = y[:3], y[3:6], y[6:9], y[9:12], y[12:15], y[15:18]
+        if not enable_1pn:
+            u12, u13, u23 = x2-x1, x3-x1, x3-x2
+            u12, u13, u23 = u12/_distance(u12)**3, u13/_distance(u13)**3, u23/_distance(u23)**3
+            return np.concatenate([v1, G*(m2*u12+m3*u13), v2, G*(-m1*u12+m3*u23), v3, -G*(m1*u13+m2*u23)])
+
+        pos = np.array([x1, x2, x3])
+        vel = np.array([v1, v2, v3])
+        a_tot, _, _ = compute_eih_accelerations(pos, vel, [m1, m2, m3])
+        return np.concatenate([v1, a_tot[0], v2, a_tot[1], v3, a_tot[2]])
 
     @classmethod
-    def integrate(cls,triple,num_inner_orbits=10.,num_output_points=500,rtol=1e-10,atol=1e-10,
-                  *,inner_angles_rad=(0.,0.,0.),outer_angles_rad=(0.,0.,0.),line_of_sight=(0.,0.,1.)):
-        state,period,inputs = _initial_state(triple,inner_angles_rad,outer_angles_rad)
-        masses,los = [state.m1,state.m2,state.m3],_unit_los(line_of_sight)
-        sol,wall = _integrate(cls._cartesian_derivatives,np.concatenate(state.to_barycentric_cartesian()),
-                              masses,period,num_inner_orbits,num_output_points,rtol,atol)
-        f1,f2 = state.m1/state.M12,state.m2/state.M12
-        jacobi = np.vstack([sol.y[6:9]-sol.y[:3],sol.y[9:12]-sol.y[3:6],
-                            sol.y[12:15]-f1*sol.y[:3]-f2*sol.y[6:9],sol.y[15:18]-f1*sol.y[3:6]-f2*sol.y[9:12]])
-        observables = _observables(jacobi,sol.y,masses,los)
-        return dict(system=triple.name,wall_time_s=wall,nfev=sol.nfev,num_steps=sol.nfev,
-                    t_eval_s=sol.t,sol_y=sol.y,jacobi_y=jacobi,initial_conditions=inputs,
-                    line_of_sight=los.tolist(),max_com_drift_m=observables['com_drift_m'],**observables)
+    def integrate(cls, triple, num_inner_orbits=10., num_output_points=500, rtol=1e-10, atol=1e-10,
+                  *, inner_angles_rad=(0.,0.,0.), outer_angles_rad=(0.,0.,0.), line_of_sight=(0.,0.,1.),
+                  enable_1pn=False):
+        state, period, inputs = _initial_state(triple, inner_angles_rad, outer_angles_rad)
+        masses, los = [state.m1, state.m2, state.m3], _unit_los(line_of_sight)
+        sol, wall = _integrate(cls._cartesian_derivatives, np.concatenate(state.to_barycentric_cartesian()),
+                               masses, period, num_inner_orbits, num_output_points, rtol, atol, enable_1pn=enable_1pn)
+        f1, f2 = state.m1/state.M12, state.m2/state.M12
+        jacobi = np.vstack([sol.y[6:9]-sol.y[:3], sol.y[9:12]-sol.y[3:6],
+                            sol.y[12:15]-f1*sol.y[:3]-f2*sol.y[6:9], sol.y[15:18]-f1*sol.y[3:6]-f2*sol.y[9:12]])
+        observables = _observables(jacobi, sol.y, masses, los)
+        return dict(system=triple.name, wall_time_s=wall, nfev=sol.nfev, num_steps=sol.nfev,
+                    t_eval_s=sol.t, sol_y=sol.y, jacobi_y=jacobi, initial_conditions=inputs,
+                    line_of_sight=los.tolist(), max_com_drift_m=observables['com_drift_m'], enable_1pn=enable_1pn, **observables)
 
 
 class DynamicalBenchmarkSuite:
     """Measure both solvers and compare complete vector trajectories on one grid."""
 
     @classmethod
-    def compare(cls,triple,num_orbits=10.,num_output_points=500,tolerance=1e-10,**initial_options):
+    def compare(cls,triple,num_orbits=10.,num_output_points=500,tolerance=1e-10,enable_1pn=False,**initial_options):
         options = dict(num_inner_orbits=num_orbits,num_output_points=num_output_points,
-                       rtol=tolerance,atol=tolerance,**initial_options)
+                       rtol=tolerance,atol=tolerance,enable_1pn=enable_1pn,**initial_options)
         rel = RelationalThreeBodyIntegrator.integrate(triple,**options)
         cart = CartesianThreeBodyIntegrator.integrate(triple,**options)
         if not np.array_equal(rel['t_eval_s'],cart['t_eval_s']):

@@ -40,6 +40,6 @@ from .residuals import GenericPulsarDataEvaluator, ZenodoResidualEvaluator, Zeno
 
 from .dynamics import (RelationalState, RelationalThreeBodyIntegrator,
                        CartesianThreeBodyIntegrator, DynamicalBenchmarkSuite,
-                       orbital_elements_to_vectors)
+                       orbital_elements_to_vectors, compute_eih_accelerations)
 from .fitter import RelationalTimingFitter
 from .pint_model import RelationalTripleDelayComponent, register_qrc_with_pint

@@ -251,3 +251,99 @@ def test_collision_rejected_instead_of_dividing_by_zero():
     st=RelationalState(1.,1.,1.,[0.,0.,0.],[0.,0.,0.],[1.,0.,0.],[0.,0.,0.])
     with pytest.raises(ValueError,match='collision'):
         st.total_energy()
+
+
+def test_eih_double_pulsar_periastron_advance():
+    """Verify that 1PN EIH equations of motion reproduce the analytical periastron advance.
+
+    Tests against PSR J0737-3039 (Double Pulsar) analytical 1PN PK formula (16.899 deg/yr)
+    to within 0.1% across 10 full orbits.
+    """
+    from scipy.integrate import solve_ivp
+    from qrc_pulsar_bench.constants import c, year_s
+    from qrc_pulsar_bench.dynamics import compute_eih_accelerations
+
+    m1 = 1.3381 * M_sun
+    m2 = 1.2489 * M_sun
+    M = m1 + m2
+    Pb = 0.10225156 * day_s
+    e = 0.0877775
+    n = 2 * np.pi / Pb
+    a = (G * M / n**2)**(1/3)
+
+    om_dot_analytical = 3 * (G * M)**(2/3) * n**(5/3) / (c**2 * (1 - e**2))
+    om_dot_deg_yr_analytical = float(np.degrees(om_dot_analytical) * 365.25 * day_s)
+
+    r_peri = a * (1 - e)
+    v_peri = np.sqrt(G * M * (1 + e) / (a * (1 - e)))
+    x1, y1 = - (m2 / M) * r_peri, 0.0
+    vx1, vy1 = 0.0, - (m2 / M) * v_peri
+    x2, y2 = (m1 / M) * r_peri, 0.0
+    vx2, vy2 = 0.0, (m1 / M) * v_peri
+
+    y0 = np.array([x1, y1, 0.0, vx1, vy1, 0.0, x2, y2, 0.0, vx2, vy2, 0.0])
+
+    def rhs(t, y):
+        pos = np.array([y[0:3], y[6:9]])
+        vel = np.array([y[3:6], y[9:12]])
+        a_tot, _, _ = compute_eih_accelerations(pos, vel, [m1, m2])
+        return np.concatenate([vel[0], a_tot[0], vel[1], a_tot[1]])
+
+    t_span = (0.0, 10 * Pb)
+    sol = solve_ivp(rhs, t_span, y0, method='DOP853', rtol=1e-12, atol=1e-12)
+
+    # Measure Laplace-Runge-Lenz periastron vector: A = (v x h)/(GM) - r/|r|
+    r_rel = sol.y[6:9] - sol.y[0:3]
+    v_rel = sol.y[9:12] - sol.y[3:6]
+    h = np.cross(r_rel.T, v_rel.T)
+    A_vec = np.cross(v_rel.T, h) / (G * M) - (r_rel / np.linalg.norm(r_rel, axis=0)).T
+    peri_angle = np.arctan2(A_vec[:, 1], A_vec[:, 0])
+
+    delta_om = peri_angle[-1] - peri_angle[0]
+    rate_measured = float(np.degrees(delta_om / (10 * Pb)) * 365.25 * day_s)
+
+    # Agreement must be within 0.1%
+    rel_diff = abs(rate_measured - om_dot_deg_yr_analytical) / om_dot_deg_yr_analytical
+    assert rel_diff < 0.001
+
+
+def test_eih_jacobi_cartesian_equivalence():
+    """Verify that RelationalThreeBodyIntegrator and CartesianThreeBodyIntegrator agree at 1PN EIH."""
+    bench = DynamicalBenchmarkSuite.compare(
+        PSR_J0337_1715, num_orbits=3.0, num_output_points=150, tolerance=1e-10, enable_1pn=True
+    )
+    # The inner vector relative difference must be at ODE tolerance (< 1e-8)
+    assert bench["max_inner_relative_difference"] < 1e-8
+    assert bench["max_outer_relative_difference"] < 1e-8
+    assert bench["max_roemer_difference_us"] < 0.5
+
+
+def test_eih_j0337_observable_shift():
+    """Verify that 1PN EIH equations produce the expected ~200 us relativistic Roemer delay shift."""
+    newt = RelationalThreeBodyIntegrator.integrate(
+        PSR_J0337_1715, num_inner_orbits=10.0, num_output_points=300, rtol=1e-10, atol=1e-10, enable_1pn=False
+    )
+    eih = RelationalThreeBodyIntegrator.integrate(
+        PSR_J0337_1715, num_inner_orbits=10.0, num_output_points=300, rtol=1e-10, atol=1e-10, enable_1pn=True
+    )
+    delay_diff_us = np.abs(eih["roemer_delay_us"] - newt["roemer_delay_us"])
+    max_diff_us = float(np.max(delay_diff_us))
+
+    # The 1PN EIH inner periastron precession produces > 100 us delay deviation over 16 days
+    assert 100.0 < max_diff_us < 500.0
+
+
+def test_pint_model_enable_1pn_toggle():
+    """Verify that RelationalTripleDelayComponent respects enable_1pn toggle."""
+    from qrc_pulsar_bench.pint_model import RelationalTripleDelayComponent
+
+    comp_newt = RelationalTripleDelayComponent(PSR_J0337_1715, enable_1pn=False)
+    comp_1pn = RelationalTripleDelayComponent(PSR_J0337_1715, enable_1pn=True)
+
+    mjds = np.linspace(55920.0, 55936.3, 50)  # 10 inner orbits
+    delays_newt = comp_newt._integrate_delay_array(mjds)
+    delays_1pn = comp_1pn._integrate_delay_array(mjds)
+
+    diff_us = np.max(np.abs(delays_1pn - delays_newt)) * 1e6
+    assert 100.0 < diff_us < 500.0
+

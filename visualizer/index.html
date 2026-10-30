@@ -267,6 +267,7 @@
       <button id="btnPlayPause" class="primary">Pause</button>
       <button id="btnStep">Step</button>
       <button id="btnReset">Reset</button>
+      <button id="btn1PN" style="border-color: rgba(191, 85, 236, 0.4); color: var(--purple);">1PN EIH: OFF</button>
 
       <div class="slider-group">
         <span>Speed</span>
@@ -493,6 +494,8 @@
       document.getElementById("boxRoemer").style.display = sys.isAstrophysical ? "flex" : "none";
     }
 
+    let enable1PN = false;
+
     function computeAccelerations(st) {
       const sys = SYSTEMS[currentSysKey];
       const m = sys.masses;
@@ -520,6 +523,57 @@
           acc[j].az -= force * m[i] * dz;
         }
       }
+
+      if (!enable1PN) return acc;
+
+      // 1PN Einstein-Infeld-Hoffmann (EIH) general relativistic cross-accelerations
+      const c_speed = 25.0; // Geometric speed of light parameter for real-time visualization
+      const inv_c2 = 1.0 / (c_speed * c_speed);
+
+      for (let A = 0; A < 3; A++) {
+        for (let B = 0; B < 3; B++) {
+          if (A === B) continue;
+          const rBA_x = st[A].x - st[B].x;
+          const rBA_y = st[A].y - st[B].y;
+          const rBA_z = st[A].z - st[B].z;
+          const rAB = Math.max(1e-6, Math.hypot(rBA_x, rBA_y, rBA_z));
+          const rAB2 = rAB * rAB;
+
+          const nAB_x = rBA_x / rAB, nAB_y = rBA_y / rAB, nAB_z = rBA_z / rAB;
+          const nBA_x = -nAB_x, nBA_y = -nAB_y, nBA_z = -nAB_z;
+
+          const vA_sq = st[A].vx**2 + st[A].vy**2 + st[A].vz**2;
+          const vB_sq = st[B].vx**2 + st[B].vy**2 + st[B].vz**2;
+          const vA_dot_vB = st[A].vx*st[B].vx + st[A].vy*st[B].vy + st[A].vz*st[B].vz;
+          const nAB_dot_vB = nAB_x*st[B].vx + nAB_y*st[B].vy + nAB_z*st[B].vz;
+
+          let phi_A = 0, phi_B = 0;
+          for (let C = 0; C < 3; C++) {
+            if (C !== A) phi_A += (G_GRAV * m[C]) / Math.max(1e-6, Math.hypot(st[A].x - st[C].x, st[A].y - st[C].y, st[A].z - st[C].z));
+            if (C !== B) phi_B += (G_GRAV * m[C]) / Math.max(1e-6, Math.hypot(st[B].x - st[C].x, st[B].y - st[C].y, st[B].z - st[C].z));
+          }
+
+          const x_diff_x = st[B].x - st[A].x;
+          const x_diff_y = st[B].y - st[A].y;
+          const x_diff_z = st[B].z - st[A].z;
+          const x_dot_a_B = x_diff_x * acc[B].ax + x_diff_y * acc[B].ay + x_diff_z * acc[B].az;
+
+          const scalar_term = (
+            vA_sq + 2.0 * vB_sq - 4.0 * vA_dot_vB - 1.5 * (nAB_dot_vB * nAB_dot_vB)
+            - 4.0 * phi_A - phi_B + 0.5 * x_dot_a_B
+          );
+
+          const term1_coeff = (G_GRAV * m[B] / rAB2) * scalar_term;
+          const term2_dot = nAB_x * (4*st[A].vx - 3*st[B].vx) + nAB_y * (4*st[A].vy - 3*st[B].vy) + nAB_z * (4*st[A].vz - 3*st[B].vz);
+          const term2_coeff = (G_GRAV * m[B] / rAB2) * term2_dot;
+          const term3_coeff = 3.5 * (G_GRAV * m[B] / rAB);
+
+          acc[A].ax += inv_c2 * (term1_coeff * nBA_x + term2_coeff * (st[A].vx - st[B].vx) + term3_coeff * acc[B].ax);
+          acc[A].ay += inv_c2 * (term1_coeff * nBA_y + term2_coeff * (st[A].vy - st[B].vy) + term3_coeff * acc[B].ay);
+          acc[A].az += inv_c2 * (term1_coeff * nBA_z + term2_coeff * (st[A].vz - st[B].vz) + term3_coeff * acc[B].az);
+        }
+      }
+
       return acc;
     }
 
@@ -1010,6 +1064,15 @@
 
     document.getElementById("btnReset").addEventListener("click", () => {
       resetSimulation(currentSysKey);
+    });
+
+    const btn1PN = document.getElementById("btn1PN");
+    btn1PN.addEventListener("click", () => {
+      enable1PN = !enable1PN;
+      btn1PN.innerText = enable1PN ? "1PN EIH: ON" : "1PN EIH: OFF";
+      btn1PN.style.borderColor = enable1PN ? "var(--purple)" : "rgba(191, 85, 236, 0.4)";
+      btn1PN.style.background = enable1PN ? "rgba(191, 85, 236, 0.25)" : "#161c2d";
+      btn1PN.style.boxShadow = enable1PN ? "0 0 10px rgba(191, 85, 236, 0.4)" : "none";
     });
 
     const speedSlider = document.getElementById("speedSlider");
