@@ -1,15 +1,14 @@
 """
 =====================================================================================
-Precision Astrophysical Reference Systems (Explicitly Hardcoded & Locked)
+Astrophysical Example Systems and Comparison References
 =====================================================================================
-Contains gold-standard precision relativistic systems in astrophysics.
-All parameters are sourced directly from published observational literature.
+Frozen example inputs. Published timing masses may depend on the same fits as
+comparison targets; freezing values does not make them independent evidence.
 =====================================================================================
 """
 
 from dataclasses import dataclass
 from typing import Optional
-from .constants import M_sun, day_s, year_s
 
 @dataclass(frozen=True)
 class BinaryPulsarSystem:
@@ -55,9 +54,11 @@ class HierarchicalTripleSystem:
     cos_i2: float
     # Pulsar spin frequency (Hz)
     f0_hz: float
-    # Published Strong Equivalence Principle bound from Archibald et al. (Nature 2018)
-    delta_sep_published: float = -0.6e-6
-    delta_sep_uncertainty: float = 4.9e-6
+    # Optional reference metadata, not a computed prediction or a default for all triples.
+    delta_sep_published: Optional[float] = None
+    delta_sep_uncertainty: Optional[float] = None
+    delta_sep_bound95: Optional[float] = None
+    delta_sep_ref: Optional[str] = None
 
 @dataclass(frozen=True)
 class CircumbinaryExoplanetSystem:
@@ -78,6 +79,7 @@ class CircumbinaryExoplanetSystem:
     P_nodal_prec_yr_obs: float
     # Transit Timing Variation semi-amplitude (hours)
     ttv_amplitude_hours: float
+    mutual_inclination_deg: float = 0.0  # Coplanar default; supply the system's value.
 
 # 1. PSR J0337+1715: Hierarchical Stellar Triple Pulsar
 PSR_J0337_1715 = HierarchicalTripleSystem(
@@ -94,8 +96,11 @@ PSR_J0337_1715 = HierarchicalTripleSystem(
     cos_i1=0.7694,
     cos_i2=0.7696,
     f0_hz=365.953339305,
-    delta_sep_published=-0.6e-6,
-    delta_sep_uncertainty=4.9e-6
+    # Archibald 2018 arXiv v1, main text: -1.09 +/- 0.74 (1 sigma), in 10^-6.
+    delta_sep_published=-1.09e-6,
+    delta_sep_uncertainty=0.74e-6,
+    delta_sep_bound95=2.6e-6,
+    delta_sep_ref="https://arxiv.org/abs/1807.02059v1"
 )
 
 # 2. PSR J0737−3039A/B: The Double Pulsar (Kramer et al. 2021 PRX 11, 041050)
@@ -105,16 +110,17 @@ PSR_J0737_3039 = BinaryPulsarSystem(
     literature_ref="Kramer et al., Phys. Rev. X 11, 041050 (2021)",
     m1_msun=1.338185,
     m2_msun=1.248868,
-    Pb_days=0.10225156248,
-    eccentricity=0.0877775,
-    x_p_s=1.415032,
-    sin_i=0.99986,
-    om_dot_obs_deg_yr=16.89932,
+    # Kramer 2021 Table IV; intrinsic decay from Eq. (42).
+    Pb_days=0.1022515592973,
+    eccentricity=0.087777023,
+    x_p_s=1.415028603,
+    sin_i=0.999936,
+    om_dot_obs_deg_yr=16.899323,
     Pdot_b_obs=-1.24792e-12,
-    Pdot_b_int_obs=-1.24792e-12,
-    gamma_obs_ms=0.38405,
-    r_obs_us=6.151,
-    s_obs=0.99986
+    Pdot_b_int_obs=-1.247752e-12,
+    gamma_obs_ms=0.384045,
+    r_obs_us=6.162,
+    s_obs=0.999936
 )
 
 # 3. PSR B1913+16: The Hulse-Taylor Binary Pulsar (Weisberg & Huang 2016 ApJ 829:55)
@@ -122,30 +128,33 @@ PSR_B1913_16 = BinaryPulsarSystem(
     name="PSR B1913+16",
     description="First binary pulsar discovered (1974 Nobel Prize 1993). Provided first empirical evidence for gravitational wave emission.",
     literature_ref="Weisberg & Huang, Astrophys. J. 829:55 (2016); Damour & Taylor, ApJ 366:501 (1991)",
-    m1_msun=1.4398,
-    m2_msun=1.3886,
-    Pb_days=0.322997448911,
-    eccentricity=0.6171334,
+    # Weisberg & Huang 2016, abstract and Table 2 (rounded published masses).
+    m1_msun=1.438,
+    m2_msun=1.390,
+    Pb_days=0.322997448918,
+    eccentricity=0.6171340,
     x_p_s=2.341776,
     sin_i=0.734,
-    om_dot_obs_deg_yr=4.226598,
+    om_dot_obs_deg_yr=4.226585,
     Pdot_b_obs=-2.423e-12,           # Observed decay (includes Galactic acceleration)
     Pdot_b_int_obs=-2.398e-12,       # Intrinsic decay (after Galactic acceleration correction of -0.025e-12)
-    gamma_obs_ms=4.295
+    # arXiv v1 Table 2 labels 0.004307 as ms; that unit/value pairing is
+    # ambiguous. Omit this target rather than silently repairing the source.
+    gamma_obs_ms=None
 )
 
 # 4. PSR J1738+0333: Asymmetric Pulsar + White Dwarf Binary
 PSR_J1738_0333 = BinaryPulsarSystem(
     name="PSR J1738+0333",
     description="Relativistic asymmetric binary (pulsar + low-mass helium white dwarf) in circular orbit. Decisively constrains scalar-dipole gravitational radiation.",
-    literature_ref="Freire et al., Mon. Not. R. Astron. Soc. 423, 3301–3311 (2012)",
+    literature_ref="Freire et al., MNRAS 423, 3328–3343 (2012), https://arxiv.org/abs/1205.1450",
     m1_msun=1.46,
     m2_msun=0.181,
     Pb_days=0.35479073987,
     eccentricity=0.00000035,
     x_p_s=0.3434,
     sin_i=0.54,
-    Pdot_b_obs=-2.59e-14,
+    Pdot_b_obs=-1.70e-14,
     Pdot_b_int_obs=-2.59e-14
 )
 
@@ -162,7 +171,9 @@ KEPLER_16B = CircumbinaryExoplanetSystem(
     e_bin=0.15944,
     e_planet=0.0069,
     P_nodal_prec_yr_obs=44.1,
-    ttv_amplitude_hours=1.52
+    # Legacy example comparison values; these are not computed predictions.
+    ttv_amplitude_hours=1.52,
+    mutual_inclination_deg=0.42
 )
 
 SYSTEMS = {

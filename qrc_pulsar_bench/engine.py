@@ -1,354 +1,196 @@
-"""
-=====================================================================================
-Relational Timing & Post-Keplerian Benchmarking Engine
-=====================================================================================
-Computational algorithms:
-1. PostKeplerianSolver: Standard textbook relativistic post-Keplerian binary formulas
-   (1PN to 2.5PN: periastron advance, Peters-Mathews GW orbital decay, Einstein delay,
-   Shapiro delay).
-2. RelationalTripleEngine: Standard hierarchical 3-body tidal multipole expansion
-   (Harrington 1968, Ford et al. 2000, Archibald et al. 2018) providing analytical
-   scaling estimates for quadrupole, octupole, and hexadecapole tidal terms.
-3. ZenodoWalkForwardEvaluator: Evaluates 27,110 published post-fit radio residuals
-   from Archibald et al. (Nature 2018) for PSR J0337+1715.
-4. GenericPulsarDataEvaluator: Residual inspection tool across sequential time windows
-   for user-supplied or public pulsar data (e.g., NANOGrav data releases).
-5. CircumbinarySolver: 3-body secular nodal precession period from Keplerian torque.
-=====================================================================================
+"""Post-Keplerian formulas and hierarchical perturbation scale estimates.
+
+These routines do not generate trajectories or a pulsar timing model. Reference
+comparisons are numerical differences, not independent tests of gravity.
 """
 
-import os
+from typing import Optional
+
 import numpy as np
-import pandas as pd
-from typing import Dict, Any, Optional
-from .constants import G, c, M_sun, AU, day_s, year_s
+
+from .constants import GM_sun, T_sun, c, day_s, year_s
 from .systems import BinaryPulsarSystem, HierarchicalTripleSystem, CircumbinaryExoplanetSystem
+from .residuals import (
+    GenericPulsarDataEvaluator, ZenodoResidualEvaluator, ZenodoWalkForwardEvaluator,
+)
+
+
+def _positive(**values):
+    for name, value in values.items():
+        if not np.isfinite(value) or value <= 0:
+            raise ValueError(f"{name} must be finite and positive.")
+
+
+def _interval(name, value, lower, upper, *, include_upper=True):
+    if not np.isfinite(value) or value < lower or (value > upper if include_upper else value >= upper):
+        raise ValueError(f"{name} must be in [{lower}, {upper}{']' if include_upper else ')'}.")
+
+
+def _eccentricity_factor(e):
+    return (1 + 73/24 * e**2 + 37/96 * e**4) / (1 - e**2)**3.5
+
+
+def _percent_difference(prediction, reference):
+    if reference is None:
+        return None
+    if not np.isfinite(reference):
+        raise ValueError("Reference values must be finite.")
+    return float(100 * abs(prediction - reference) / abs(reference)) if reference != 0 else None
+
 
 class PostKeplerianSolver:
-    """Standard Post-Keplerian relativistic binary solver."""
+    """Leading-order GR binary relations; higher-order effects are omitted."""
 
     @staticmethod
-    def solve(system: BinaryPulsarSystem) -> Dict[str, Any]:
-        m1 = system.m1_msun * M_sun
-        m2 = system.m2_msun * M_sun
-        M = m1 + m2
-        Pb = system.Pb_days * day_s
-        n = 2.0 * np.pi / Pb
+    def solve(system: BinaryPulsarSystem):
+        m1, m2 = system.m1_msun, system.m2_msun
+        _positive(m1_msun=m1, m2_msun=m2, Pb_days=system.Pb_days)
+        _interval("eccentricity", system.eccentricity, 0, 1, include_upper=False)
+        _interval("sin_i", system.sin_i, 0, 1)
+        _interval("x_p_s", system.x_p_s, 0, np.inf)
+        total = m1 + m2
+        period = system.Pb_days * day_s
+        n = 2 * np.pi / period
         e = system.eccentricity
-
-        # 1. 1PN Relativistic Periastron Advance (Robertson 1938, Damour-Deruelle 1986)
-        om_dot_rad_s = 3.0 * (n**(5.0 / 3.0)) * ((G * M / c**3)**(2.0 / 3.0)) / (1.0 - e**2)
-        om_dot_deg_yr = om_dot_rad_s * (180.0 / np.pi) * year_s
-
-        # 2. 2.5PN Gravitational Radiation Reaction (Peters & Mathews 1963)
-        fe = (1.0 + (73.0 / 24.0) * e**2 + (37.0 / 96.0) * e**4) / ((1.0 - e**2)**(7.0 / 2.0))
-        eta = (m1 * m2) / (M**2)
-        Pdot_b = - (192.0 * np.pi / 5.0) * ((n * G * M / c**3)**(5.0 / 3.0)) * eta * fe
-
-        # 3. Einstein Delay Gamma (Gravitational Redshift + Transverse Doppler)
-        gamma_s = e * ((Pb / (2.0 * np.pi))**(1.0 / 3.0)) * ((G / c**3)**(2.0 / 3.0)) * (m2 * (m1 + 2.0 * m2) / (M**(4.0 / 3.0)))
-
-        # 4. Shapiro Delay Range (r) and Shape (s)
-        r_s = G * m2 / c**3
-        s = system.sin_i
-
-        # 5. Geodetic Spin-Orbit Precession (Barker & O'Connell 1975)
-        omega_geod_rad_s = ((n * G * M / c**3)**(2.0 / 3.0)) * n * (m2 * (4.0 * m1 + 3.0 * m2) / (2.0 * M**2)) / (1.0 - e**2)
-        omega_geod_deg_yr = omega_geod_rad_s * (180.0 / np.pi) * year_s
-
+        eta = m1 * m2 / total**2
+        advance = 3 * n**(5/3) * (T_sun * total)**(2/3) / (1 - e**2)
+        pdot = -(192 * np.pi / 5) * (n * T_sun * total)**(5/3) * eta * _eccentricity_factor(e)
+        gamma = e * n**(-1/3) * T_sun**(2/3) * m2 * (m1 + 2*m2) / total**(4/3)
+        geodetic = (n*T_sun*total)**(2/3) * n * m2*(4*m1+3*m2)/(2*total**2)/(1-e**2)
         result = {
             "system": system.name,
-            "om_dot_pred_deg_yr": om_dot_deg_yr,
-            "Pdot_b_pred": Pdot_b,
-            "gamma_pred_ms": gamma_s * 1e3,
-            "r_pred_us": r_s * 1e6,
-            "s_pred": s,
-            "omega_geod_deg_yr": omega_geod_deg_yr,
+            "om_dot_pred_deg_yr": float(advance * 180/np.pi * year_s),
+            "Pdot_b_pred": float(pdot), "gamma_pred_ms": float(gamma * 1e3),
+            "r_pred_us": float(T_sun * m2 * 1e6),
+            "s_input": system.sin_i,
+            "omega_geod_deg_yr": float(geodetic * 180/np.pi * year_s),
             "targets": {
                 "om_dot_obs_deg_yr": system.om_dot_obs_deg_yr,
-                "Pdot_b_obs": system.Pdot_b_obs,
-                "Pdot_b_int_obs": system.Pdot_b_int_obs,
-                "gamma_obs_ms": system.gamma_obs_ms,
-                "r_obs_us": system.r_obs_us,
-                "s_obs": system.s_obs
-            }
+                "Pdot_b_obs": system.Pdot_b_obs, "Pdot_b_int_obs": system.Pdot_b_int_obs,
+                "gamma_obs_ms": system.gamma_obs_ms, "r_obs_us": system.r_obs_us,
+                "s_obs": system.s_obs,
+            },
+            "note": "Leading-order formulas evaluated with supplied masses and elements. "
+                    "Inputs may depend on upstream fits. Differences omit parameter covariance, "
+                    "higher-order corrections, and model uncertainty; they are not significance tests.",
         }
-
-        # Compute percentage agreements for available empirical targets
-        agreements = {}
-        if system.om_dot_obs_deg_yr is not None:
-            agreements["om_dot"] = (1.0 - abs(om_dot_deg_yr - system.om_dot_obs_deg_yr) / system.om_dot_obs_deg_yr) * 100.0
-        if system.Pdot_b_obs is not None:
-            agreements["Pdot_b"] = (1.0 - abs(Pdot_b - system.Pdot_b_obs) / abs(system.Pdot_b_obs)) * 100.0
-        if system.Pdot_b_int_obs is not None:
-            agreements["Pdot_b_int"] = (1.0 - abs(Pdot_b - system.Pdot_b_int_obs) / abs(system.Pdot_b_int_obs)) * 100.0
-        if system.gamma_obs_ms is not None:
-            agreements["gamma"] = (1.0 - abs(gamma_s * 1e3 - system.gamma_obs_ms) / system.gamma_obs_ms) * 100.0
-        if system.r_obs_us is not None:
-            agreements["r"] = (1.0 - abs(r_s * 1e6 - system.r_obs_us) / system.r_obs_us) * 100.0
-        result["agreements_pct"] = agreements
-
+        pairs = {
+            "om_dot": (result["om_dot_pred_deg_yr"], system.om_dot_obs_deg_yr),
+            "Pdot_b": (pdot, system.Pdot_b_obs),
+            "Pdot_b_int": (pdot, system.Pdot_b_int_obs),
+            "gamma": (result["gamma_pred_ms"], system.gamma_obs_ms),
+            "r": (result["r_pred_us"], system.r_obs_us),
+        }
+        result["relative_difference_pct"] = {key: _percent_difference(*pair)
+                                            for key, pair in pairs.items() if pair[1] is not None}
+        # Compatibility only: the CLI uses relative differences, not "agreement".
+        result["agreements_pct"] = {key: 100 - value if value is not None else None
+                                    for key, value in result["relative_difference_pct"].items()}
         return result
 
+
 class RelationalTripleEngine:
-    """
-    Standard hierarchical 3-body tidal multipole scaling estimates (Harrington 1968,
-    Ford et al. 2000, Archibald et al. 2018).
-    Note: Evaluates closed-form semi-amplitudes for circular hierarchical triples;
-    does not numerically integrate the 3-body differential equations of motion.
+    """Hierarchical tidal amplitude scales, not an exact multipole timing solution.
+
+    Tidal scales use the near-circular approximation and omit orbital phases,
+    angular coefficients and mutual-inclination dynamics. Eccentricity enters
+    the isolated inner-binary Peters decay estimate, not the tidal amplitudes.
     """
 
     @staticmethod
-    def solve(triple: HierarchicalTripleSystem) -> Dict[str, Any]:
-        m1 = triple.m1_msun * M_sun
-        m2 = triple.m2_msun * M_sun
-        m3 = triple.m3_msun * M_sun
-        M_in = m1 + m2
-        M_tot = M_in + m3
-
-        P1 = triple.Pb1_days * day_s
-        P2 = triple.Pb2_days * day_s
-        n1 = 2.0 * np.pi / P1
-        n2 = 2.0 * np.pi / P2
-
-        a1 = (G * M_in / n1**2)**(1.0 / 3.0)
-        a2 = (G * M_tot / n2**2)**(1.0 / 3.0)
+    def solve(triple: HierarchicalTripleSystem, *, baseline_years=5.23):
+        m1, m2, m3 = triple.m1_msun, triple.m2_msun, triple.m3_msun
+        _positive(m1_msun=m1, m2_msun=m2, m3_msun=m3,
+                  Pb1_days=triple.Pb1_days, Pb2_days=triple.Pb2_days, f0_hz=triple.f0_hz)
+        for name in ("e1", "e2"):
+            _interval(name, getattr(triple, name), 0, 1, include_upper=False)
+        for name in ("cos_i1", "cos_i2"):
+            _interval(name, getattr(triple, name), -1, 1)
+        _interval("baseline_years", baseline_years, 0, np.inf)
+        inner, total = m1 + m2, m1 + m2 + m3
+        p1, p2 = triple.Pb1_days * day_s, triple.Pb2_days * day_s
+        n1, n2 = 2*np.pi/p1, 2*np.pi/p2
+        a1, a2 = (GM_sun*inner/n1**2)**(1/3), (GM_sun*total/n2**2)**(1/3)
+        if a1 * (1 + triple.e1) >= a2 * (1 - triple.e2):
+            raise ValueError("Inner apoapsis must be below outer periapsis for hierarchical scale estimates.")
         epsilon = a1 / a2
-
-        # Mass asymmetry factor and symmetric mass ratio
-        delta_m = (m1 - m2) / (m1 + m2)
-        eta_in = (m1 * m2) / (M_in**2)
-
-        sin_i1 = np.sqrt(1.0 - triple.cos_i1**2)
-        x_p_proj = (m2 / M_in) * (a1 / c) * sin_i1
-
-        # 1. Quadrupole Mode (l=2)
-        delta_r_quad = (m2 / M_in) * a1 * (m3 / M_tot) * (n2 / n1)**2
-        A_quad_us = (delta_r_quad / c) * sin_i1 * 1e6
-
-        # 2. Octupole Mode (l=3)
-        delta_r_oct = delta_r_quad * epsilon * delta_m
-        A_oct_ns = (delta_r_oct / c) * sin_i1 * 1e9
-
-        # 3. Hexadecapole Mode (l=4)
-        M4 = 1.0 - 3.0 * eta_in
-        delta_r_hex = delta_r_quad * (epsilon**2) * M4
-        A_hex_ns = (delta_r_hex / c) * sin_i1 * 1e9
-
-        # 4. 2PN Relativistic Cross-term scaling estimate
-        v_c_sq = (n1 * a1 / c)**2
-        delta_t_2pn_ps = x_p_proj * (v_c_sq**2) * 1e12
-
-        # 5. Peters-Mathews 2.5PN Radiation Reaction
-        v_c_cubed = n1 * G * M_in / c**3
-        Pdot_b1 = - (192.0 * np.pi / 5.0) * (v_c_cubed)**(5.0 / 3.0) * eta_in
-
+        asymmetry = (m1 - m2) / inner
+        eta = m1*m2/inner**2
+        sini = np.sqrt(1-triple.cos_i1**2)
+        projected_axis = m2/inner * a1/c * sini
+        displacement = m2/inner * a1 * m3/total * (n2/n1)**2
+        pdot = -(192*np.pi/5) * (n1*T_sun*inner)**(5/3) * eta * _eccentricity_factor(triple.e1)
+        n_dot = -n1 * pdot/p1
         return {
             "system": triple.name,
-            "epsilon_hierarchy": epsilon,
-            "mass_asymmetry": delta_m,
-            "A_quad_us": A_quad_us,
-            "A_oct_ns": A_oct_ns,
-            "A_hex_ns": A_hex_ns,
-            "delta_t_2pn_ps": delta_t_2pn_ps,
-            "Pdot_b1": Pdot_b1,
-            "delta_sep_published": triple.delta_sep_published,
-            "delta_sep_uncertainty": triple.delta_sep_uncertainty
+            "epsilon_hierarchy": float(epsilon), "mass_asymmetry": float(asymmetry),
+            "A_quad_us": float(displacement/c * sini * 1e6),
+            "A_oct_ns": float(displacement/c * sini * epsilon * asymmetry * 1e9),
+            "A_hex_ns": float(displacement/c * sini * epsilon**2 * (1-3*eta) * 1e9),
+            "delta_t_2pn_ps": float(projected_axis * (n1*a1/c)**4 * 1e12),
+            "Pdot_b1": float(pdot),
+            "gw_delay_scale_ns": float(projected_axis * 0.5*n_dot*(baseline_years*year_s)**2 * 1e9),
+            "baseline_years": baseline_years,
+            "published_sep": {
+                "value": triple.delta_sep_published,
+                "uncertainty_68": triple.delta_sep_uncertainty,
+                "absolute_bound_95": triple.delta_sep_bound95,
+                "source": triple.delta_sep_ref,
+                "origin": "Reference metadata, not calculated by this engine",
+            },
+            "note": "Near-circular hierarchical tidal scales; accuracy requires a1/a2 much less than 1 "
+                    "and small eccentricities. No certified truncation error, trajectory, orbital phase, "
+                    "or mutual-inclination evolution is computed. cos_i2 is reference metadata. "
+                    "Octupole scale is signed under inner-body relabeling. GW delay is an amplitude scale.",
         }
 
-class ZenodoWalkForwardEvaluator:
-    """
-    Evaluates published post-fit residuals of Archibald et al. (Nature 2018) for PSR J0337+1715.
-    Dataset: Zenodo DOI: 10.5281/zenodo.1241121 (27,110 unbinned residuals).
-    """
-
-    @staticmethod
-    def evaluate(csv_path: str, num_windows: int = 10) -> Dict[str, Any]:
-        if not os.path.exists(csv_path):
-            raise FileNotFoundError(f"Zenodo CSV file not found at {csv_path}")
-
-        df = pd.read_csv(csv_path, comment='#', header=None)
-        N_total = len(df)
-
-        mjd = df[0].values.astype(float)
-        res_phase = df[1].values.astype(float)
-        unc_phase = df[2].values.astype(float)
-
-        # Pulsar spin frequency from Archibald et al. 2018
-        P0_s = 1.0 / 365.953339305
-        res_us = res_phase * P0_s * 1e6
-        unc_us = unc_phase * P0_s * 1e6
-
-        mjd_min, mjd_max = mjd.min(), mjd.max()
-        span_days = mjd_max - mjd_min
-        span_years = span_days / 365.25
-
-        # Sequential Forecast Windows
-        win_size = span_days / num_windows
-        windows = []
-        for w in range(num_windows):
-            w_start = mjd_min + w * win_size
-            w_end = mjd_min + (w + 1) * win_size
-            mask = (mjd >= w_start) & (mjd <= w_end) if w == num_windows - 1 else (mjd >= w_start) & (mjd < w_end)
-            w_res = res_us[mask]
-            w_unc = unc_us[mask]
-            windows.append({
-                "window": w + 1,
-                "mjd_start": w_start,
-                "mjd_end": w_end,
-                "n_obs": len(w_res),
-                "rms_us": float(np.sqrt(np.mean(w_res**2))),
-                "std_us": float(np.std(w_res)),
-                "mean_drift_us": float(np.mean(w_res)),
-                "chi2_dof": float(np.sum((w_res / w_unc)**2) / len(w_res))
-            })
-
-        # Global Linear Drift Rate
-        t_years = (mjd - mjd_min) / 365.25
-        drift_slope_us_yr, _ = np.polyfit(t_years, res_us, 1)
-
-        return {
-            "N_total": N_total,
-            "span_days": span_days,
-            "span_years": span_years,
-            "overall_rms_us": float(np.sqrt(np.mean(res_us**2))),
-            "overall_std_us": float(np.std(res_us)),
-            "overall_mean_us": float(np.mean(res_us)),
-            "drift_slope_us_yr": float(drift_slope_us_yr),
-            "delta_sep_published": -0.6e-6,
-            "delta_sep_uncertainty": 4.9e-6,
-            "windows": windows,
-            "note": (
-                "These are Archibald et al. (2018) post-fit residuals from a full 40-parameter TEMPO fit. "
-                "Because Delta was already included in the original fit, inspecting these residuals verifies the "
-                "fit quality but does not constitute an independent measurement of Delta."
-            )
-        }
-
-class GenericPulsarDataEvaluator:
-    """Evaluates arbitrary pulsar timing datasets (CSV, ASCII, or NANOGrav format)."""
-
-    @staticmethod
-    def evaluate(file_path: str, num_windows: int = 10, unit: str = "us") -> Dict[str, Any]:
-        if not os.path.exists(file_path):
-            raise FileNotFoundError(f"Data file not found at {file_path}")
-
-        try:
-            df = pd.read_csv(file_path, comment='#', header=None)
-            if len(df.columns) < 3:
-                df = pd.read_csv(file_path, sep=r'\s+', comment='#', header=None)
-        except Exception:
-            df = pd.read_csv(file_path, sep=r'\s+', comment='#', header=None)
-
-        if df.shape[1] >= 4 and np.nanmedian(df.iloc[:, 1].values.astype(float)) > 100.0:
-            mjd = df.iloc[:, 0].values.astype(float)
-            res = df.iloc[:, 2].values.astype(float)
-            unc = df.iloc[:, 3].values.astype(float)
-        else:
-            mjd = df.iloc[:, 0].values.astype(float)
-            res = df.iloc[:, 1].values.astype(float)
-            unc = df.iloc[:, 2].values.astype(float)
-
-        if unit == "s":
-            res_us = res * 1e6
-            unc_us = unc * 1e6
-        elif unit == "ns":
-            res_us = res * 1e-3
-            unc_us = unc * 1e-3
-        else:
-            res_us = res
-            unc_us = unc
-
-        N_total = len(res_us)
-        mjd_min, mjd_max = mjd.min(), mjd.max()
-        span_days = mjd_max - mjd_min
-        span_years = span_days / 365.25
-
-        win_size = span_days / num_windows
-        windows = []
-        for w in range(num_windows):
-            w_start = mjd_min + w * win_size
-            w_end = mjd_min + (w + 1) * win_size
-            mask = (mjd >= w_start) & (mjd <= w_end) if w == num_windows - 1 else (mjd >= w_start) & (mjd < w_end)
-            w_res = res_us[mask]
-            w_unc = unc_us[mask]
-            if len(w_res) > 0:
-                windows.append({
-                    "window": w + 1,
-                    "mjd_start": w_start,
-                    "mjd_end": w_end,
-                    "n_obs": len(w_res),
-                    "rms_us": float(np.sqrt(np.mean(w_res**2))),
-                    "std_us": float(np.std(w_res)),
-                    "mean_drift_us": float(np.mean(w_res)),
-                    "chi2_dof": float(np.sum((w_res / w_unc)**2) / len(w_res))
-                })
-
-        t_years = (mjd - mjd_min) / 365.25
-        drift_slope_us_yr, _ = np.polyfit(t_years, res_us, 1)
-
-        return {
-            "N_total": N_total,
-            "span_days": span_days,
-            "span_years": span_years,
-            "overall_rms_us": float(np.sqrt(np.mean(res_us**2))),
-            "overall_std_us": float(np.std(res_us)),
-            "overall_mean_us": float(np.mean(res_us)),
-            "drift_slope_us_yr": float(drift_slope_us_yr),
-            "global_chi2_dof": float(np.sum((res_us / unc_us)**2) / N_total),
-            "windows": windows
-        }
 
 class CircumbinarySolver:
-    """Secular 3-body nodal precession for circumbinary exoplanets (Doyle et al. 2011)."""
+    """Leading secular quadrupole nodal-precession estimate for a light planet."""
 
     @staticmethod
-    def solve(system: CircumbinaryExoplanetSystem) -> Dict[str, Any]:
-        M_bin = (system.m_starA_msun + system.m_starB_msun) * M_sun
-        P_bin = system.P_bin_days * day_s
-        P_p = system.P_planet_days * day_s
-
-        n_bin = 2.0 * np.pi / P_bin
-        n_p = 2.0 * np.pi / P_p
-
-        a_bin = (G * M_bin / n_bin**2)**(1.0 / 3.0)
-        a_p = (G * M_bin / n_p**2)**(1.0 / 3.0)
-
-        axis_ratio_factor = (a_bin / a_p)**2
-        mass_ratio_factor = (system.m_starA_msun * system.m_starB_msun) / ((system.m_starA_msun + system.m_starB_msun)**2)
-
-        i_mut = np.radians(0.42)
-        ecc_factor = (1.0 + 1.5 * system.e_bin**2) / ((1.0 - system.e_planet**2)**2)
-
-        dOmega_dt = 0.75 * n_p * axis_ratio_factor * mass_ratio_factor * ecc_factor * np.cos(i_mut)
-        P_prec_yr_pred = (2.0 * np.pi / dOmega_dt) / year_s
-
-        agreement_pct = (1.0 - abs(P_prec_yr_pred - system.P_nodal_prec_yr_obs) / system.P_nodal_prec_yr_obs) * 100.0
-
+    def solve(system: CircumbinaryExoplanetSystem):
+        ma, mb, mp = system.m_starA_msun, system.m_starB_msun, system.m_planet_msun
+        _positive(m_starA_msun=ma, m_starB_msun=mb,
+                  P_bin_days=system.P_bin_days, P_planet_days=system.P_planet_days)
+        _interval("m_planet_msun", mp, 0, np.inf)
+        for name in ("e_bin", "e_planet"):
+            _interval(name, getattr(system, name), 0, 1, include_upper=False)
+        _interval("mutual_inclination_deg", system.mutual_inclination_deg, 0, 180)
+        nbin, np_ = 2*np.pi/(system.P_bin_days*day_s), 2*np.pi/(system.P_planet_days*day_s)
+        abin = (GM_sun*(ma+mb)/nbin**2)**(1/3)
+        ap = (GM_sun*(ma+mb+mp)/np_**2)**(1/3)
+        if abin*(1+system.e_bin) >= ap*(1-system.e_planet):
+            raise ValueError("Circumbinary approximation requires separated inner and outer orbits.")
+        factor = (1+1.5*system.e_bin**2)/(1-system.e_planet**2)**2
+        cosine = np.cos(np.radians(system.mutual_inclination_deg))
+        rate = 0.75*np_*(abin/ap)**2 * ma*mb/(ma+mb)**2 * factor * cosine
+        period = None if abs(cosine) < 1e-14 else float(2*np.pi/abs(rate)/year_s)
+        diff = _percent_difference(period, system.P_nodal_prec_yr_obs) if period is not None else None
         return {
-            "system": system.name,
-            "P_nodal_prec_yr_pred": float(P_prec_yr_pred),
+            "system": system.name, "P_nodal_prec_yr_pred": period,
             "P_nodal_prec_yr_obs": system.P_nodal_prec_yr_obs,
-            "agreement_pct": float(agreement_pct),
-            "ttv_semi_amplitude_hours": system.ttv_amplitude_hours
+            "relative_difference_pct": diff,
+            "agreement_pct": 100-diff if diff is not None else None,
+            "ttv_reference_hours": system.ttv_amplitude_hours,
+            "note": "Leading secular quadrupole estimate. Precession and TTV reference values are "
+                    "supplied comparison metadata; no transit light curve or TTV signal is computed.",
         }
 
+
 class RelationalTimingEngine:
-    """Unified master facade for all pulsar timing benchmarks."""
+    """Convenience facade for the formula calculators and optional residual inspection."""
 
     @classmethod
-    def run_all(cls, zenodo_csv: Optional[str] = None) -> Dict[str, Any]:
+    def run_all(cls, zenodo_csv: Optional[str] = None):
         from .systems import PSR_J0337_1715, PSR_J0737_3039, PSR_B1913_16, PSR_J1738_0333, KEPLER_16B
-
         results = {
             "PSR_J0737-3039": PostKeplerianSolver.solve(PSR_J0737_3039),
             "PSR_B1913+16": PostKeplerianSolver.solve(PSR_B1913_16),
             "PSR_J1738+0333": PostKeplerianSolver.solve(PSR_J1738_0333),
             "PSR_J0337+1715_multipoles": RelationalTripleEngine.solve(PSR_J0337_1715),
-            "Kepler-16b": CircumbinarySolver.solve(KEPLER_16B)
+            "Kepler-16b": CircumbinarySolver.solve(KEPLER_16B),
         }
-
-        if zenodo_csv and os.path.exists(zenodo_csv):
-            results["PSR_J0337+1715_real_data"] = ZenodoWalkForwardEvaluator.evaluate(zenodo_csv)
-
+        if zenodo_csv is not None:
+            results["PSR_J0337+1715_real_data"] = ZenodoResidualEvaluator.evaluate(zenodo_csv)
         return results
