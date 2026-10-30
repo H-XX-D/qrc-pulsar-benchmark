@@ -43,3 +43,4 @@ venv.bak/
 # Large datasets (downloaded automatically on demand via `qrc-bench zenodo`)
 *.csv
 !examples/*.csv
+.claude/
