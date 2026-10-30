@@ -47,7 +47,9 @@ def test_cli_custom(tmp_path):
 def test_cli_zenodo():
     paths = ["psr_j0337_zenodo_residuals.csv", "../psr_j0337_zenodo_residuals.csv"]
     csv_path = next((p for p in paths if os.path.exists(p)), None)
-    if csv_path:
-        res = run_cli("zenodo", "--path", csv_path)
-        assert res.returncode == 0
-        assert "Total Radio Observations" in res.stdout
+    if not csv_path:
+        pytest.skip("Zenodo dataset (psr_j0337_zenodo_residuals.csv) not found locally")
+
+    res = run_cli("zenodo", "--path", csv_path)
+    assert res.returncode == 0
+    assert "Total Radio Observations" in res.stdout

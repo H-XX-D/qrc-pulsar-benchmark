@@ -197,7 +197,8 @@ class ZenodoWalkForwardEvaluator:
                 "mjd_start": w_start,
                 "mjd_end": w_end,
                 "n_obs": len(w_res),
-                "rms_us": float(np.std(w_res)),
+                "rms_us": float(np.sqrt(np.mean(w_res**2))),
+                "std_us": float(np.std(w_res)),
                 "mean_drift_us": float(np.mean(w_res)),
                 "chi2_dof": float(np.sum((w_res / w_unc)**2) / len(w_res))
             })
@@ -210,7 +211,8 @@ class ZenodoWalkForwardEvaluator:
             "N_total": N_total,
             "span_days": span_days,
             "span_years": span_years,
-            "overall_rms_us": float(np.std(res_us)),
+            "overall_rms_us": float(np.sqrt(np.mean(res_us**2))),
+            "overall_std_us": float(np.std(res_us)),
             "overall_mean_us": float(np.mean(res_us)),
             "drift_slope_us_yr": float(drift_slope_us_yr),
             "delta_sep_published": -0.6e-6,
@@ -276,7 +278,8 @@ class GenericPulsarDataEvaluator:
                     "mjd_start": w_start,
                     "mjd_end": w_end,
                     "n_obs": len(w_res),
-                    "rms_us": float(np.std(w_res)),
+                    "rms_us": float(np.sqrt(np.mean(w_res**2))),
+                    "std_us": float(np.std(w_res)),
                     "mean_drift_us": float(np.mean(w_res)),
                     "chi2_dof": float(np.sum((w_res / w_unc)**2) / len(w_res))
                 })
@@ -288,7 +291,8 @@ class GenericPulsarDataEvaluator:
             "N_total": N_total,
             "span_days": span_days,
             "span_years": span_years,
-            "overall_rms_us": float(np.std(res_us)),
+            "overall_rms_us": float(np.sqrt(np.mean(res_us**2))),
+            "overall_std_us": float(np.std(res_us)),
             "overall_mean_us": float(np.mean(res_us)),
             "drift_slope_us_yr": float(drift_slope_us_yr),
             "global_chi2_dof": float(np.sum((res_us / unc_us)**2) / N_total),

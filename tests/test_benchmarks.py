@@ -93,12 +93,14 @@ def test_kepler_16b_circumbinary():
 def test_zenodo_real_observations():
     paths = ["psr_j0337_zenodo_residuals.csv", "../psr_j0337_zenodo_residuals.csv"]
     csv_path = next((p for p in paths if os.path.exists(p)), None)
-    if csv_path:
-        res = ZenodoWalkForwardEvaluator.evaluate(csv_path, num_windows=10)
-        assert res["N_total"] == 27110
-        assert res["overall_rms_us"] < 1.70
-        assert abs(res["drift_slope_us_yr"]) < 0.05
-        assert res["delta_sep_published"] == -0.6e-6
+    if not csv_path:
+        pytest.skip("Zenodo dataset (psr_j0337_zenodo_residuals.csv) not found locally")
+
+    res = ZenodoWalkForwardEvaluator.evaluate(csv_path, num_windows=10)
+    assert res["N_total"] == 27110
+    assert res["overall_rms_us"] < 1.70
+    assert abs(res["drift_slope_us_yr"]) < 0.05
+    assert res["delta_sep_published"] == -0.6e-6
 
 def test_generic_pulsar_data_evaluator(tmp_path):
     sample_file = tmp_path / "custom_pulsar.csv"
