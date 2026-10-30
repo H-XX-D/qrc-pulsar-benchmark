@@ -25,7 +25,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-test = ["pytest>=7"]
+test = ["pytest>=7", "pint-pulsar>=1.1"]
 
 [project.scripts]
 qrc-bench = "qrc_pulsar_bench.cli:main"

@@ -177,7 +177,11 @@ def test_com_metric_is_computed_from_returned_positions():
     y=result['cartesian_y']
     com=sum(weights[i]*y[i*6:i*6+3] for i in range(3))
     expected=np.max(np.linalg.norm(com-com[:,[0]],axis=0))
-    assert result['com_drift_m'] == expected
+    # Both values are rounding noise of ~1e11 m positions; summation order
+    # differs between implementations and platforms, so compare at that floor.
+    floor=64*np.finfo(float).eps*np.max(np.abs(y[[0,1,2,6,7,8,12,13,14]]))
+    assert abs(result['com_drift_m']-expected) <= floor
+    assert expected < floor
 
 
 def test_benchmark_detects_equal_radius_but_rotated_trajectory(monkeypatch):
