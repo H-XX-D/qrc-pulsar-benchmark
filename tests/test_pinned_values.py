@@ -224,3 +224,13 @@ def test_qrc_sep_check_reports_conflict_when_prediction_exceeds_bound():
     qrc = RelationalTripleEngine.solve(t)["qrc_sep_prediction"]
     assert qrc["within_published_95_bound"] is False
     assert qrc["pull_vs_published_sigma"] == pytest.approx((5e-6 + 1.09e-6) / 0.74e-6, rel=1e-12)
+
+
+def test_j0337_inclinations_match_archibald_projected_axes():
+    # Archibald et al. (2018) Table 1: tan i = (a sin i) / (a cos i).
+    # Inner 1.2175252 / 1.48950 lt-s (i_I = 39.263(4) deg); outer
+    # 74.672629 / 91.358 lt-s. The (a cos i) errors give about 1e-4 in cos i.
+    inner = np.cos(np.arctan2(1.2175252, 1.48950))
+    outer = np.cos(np.arctan2(74.672629, 91.358))
+    assert PSR_J0337_1715.cos_i1 == pytest.approx(inner, abs=1e-4)
+    assert PSR_J0337_1715.cos_i2 == pytest.approx(outer, abs=1e-4)

@@ -115,8 +115,10 @@ PSR_J0337_1715 = HierarchicalTripleSystem(
     Pb2_days=327.25754,
     e1=0.00069,
     e2=0.03536,
-    cos_i1=0.7694,
-    cos_i2=0.7696,
+    # Archibald 2018 Table 1: tan i = (a sin i)/(a cos i); inner
+    # 1.2175252/1.48950 lt-s (i_I = 39.263 deg), outer 74.672629/91.358 lt-s.
+    cos_i1=0.774252,
+    cos_i2=0.774268,
     f0_hz=365.953339305,
     # Archibald 2018 arXiv v1, main text: -1.09 +/- 0.74 (1 sigma), in 10^-6.
     delta_sep_published=-1.09e-6,
