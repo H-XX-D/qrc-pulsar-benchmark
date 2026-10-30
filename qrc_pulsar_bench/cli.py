@@ -158,6 +158,60 @@ def cmd_nancay(args):
                      "Use 'arecibo' for the former mislabeled subset, or 'custom' for an actual Nancay residual table.")
 
 
+def cmd_fit(args):
+    import os, sys, pandas as pd
+    from .fitter import RelationalTimingFitter
+    path = args.path
+    if not os.path.exists(path):
+        paths = [path, f"../{path}"]
+        path = next((p for p in paths if os.path.exists(p)), None)
+        if not path:
+            raise FileNotFoundError(f"Dataset '{args.path}' not found.")
+
+    df = pd.read_csv(path, comment='#', header=None)
+    mjd = df[0].values.astype(float)
+    res_phase = df[1].values.astype(float)
+    unc_phase = df[2].values.astype(float)
+
+    system = SYSTEMS['PSR_J0337+1715']
+    P0_s = 1.0 / system.f0_hz
+    res_us = res_phase * P0_s * 1e6
+    unc_us = unc_phase * P0_s * 1e6
+
+    backend = args.backend
+    if backend == "arecibo":
+        mask = (df[36].values == 0) & (df[39].values == 0)
+        mjd = mjd[mask]
+        res_us = res_us[mask]
+        unc_us = unc_us[mask]
+        title = "Standalone Relational Least-Squares Fit: Arecibo Subset"
+    else:
+        title = "Standalone Relational Least-Squares Fit: All Observatories"
+
+    print_header(title)
+    print("Fitting reference phase anchors (Delta phi0, Delta f0, Delta T_asc,1, Delta T_asc,2)")
+    print("coupled to the Relational Three-Body ODE across real observation epochs.")
+
+    fit_res = RelationalTimingFitter.fit(mjd, res_us, unc_us, system)
+
+    print_row("Observations fitted", f"{fit_res['num_toas']:,} TOAs")
+    print_row("Baseline duration", f"{fit_res['span_days']:.2f} days ({fit_res['span_years']:.2f} years)")
+    print_row("Pre-fit residual RMS", f"{fit_res['pre_fit_rms_us']:.4f} us ({fit_res['pre_fit_rms_us']*1000.0:.1f} ns)")
+    print_row("Post-fit residual RMS", f"{fit_res['post_fit_rms_us']:.4f} us ({fit_res['post_fit_rms_us']*1000.0:.1f} ns)")
+    print_row("Post-fit standard deviation", f"{fit_res['post_fit_std_us']:.4f} us")
+    print_row("Post-fit mean offset", f"{fit_res['post_fit_mean_us']:+.6f} us")
+    print_row("Reduced Chi-square / dof", f"{fit_res['chi2_dof']:.4f}")
+    print("\nBest-Fit Reference Anchors:")
+    print_row("Phase offset (Delta phi0)", f"{fit_res['params']['phase_offset_us']:+.4f} +/- {fit_res['uncertainties']['phase_offset_us']:.4f} us")
+    print_row("Frequency drift (Delta f0)", f"{fit_res['params']['frequency_drift_us_yr']:+.4f} +/- {fit_res['uncertainties']['frequency_drift_us_yr']:.4f} us/yr")
+    print_row("Inner Node Shift (Delta T_asc,1)", f"{fit_res['params']['delta_tasc1_s']*1000.0:+.4f} +/- {fit_res['uncertainties']['delta_tasc1_s']*1000.0:.4f} ms")
+    print_row("Outer Node Shift (Delta T_asc,2)", f"{fit_res['params']['delta_tasc2_s']*1000.0:+.4f} +/- {fit_res['uncertainties']['delta_tasc2_s']*1000.0:.4f} ms")
+    print("\nNumerical Dynamical Diagnostics:")
+    print_row("3-Body ODE wall time", f"{fit_res['sim_wall_time_s']:.2f} s")
+    print_row("ODE Energy conservation error", f"{fit_res['sim_energy_err']:.2e}")
+    print_row("ODE Center-of-mass drift", f"{fit_res['sim_com_drift_m']:.2e} m (Gauge Invariant)")
+
+
 def cmd_formula_cost(args):
     print_header("Measured local formula evaluation cost")
     print("Each row measures repeated evaluation of this package's scalar formulas.")
@@ -241,6 +295,7 @@ def main(argv=None):
         ("arecibo", cmd_arecibo, "Inspect Arecibo residuals; optionally simulate their duration"),
         ("nancay", cmd_nancay, "Explain the corrected telescope attribution; no Nancay data in this release"),
         ("custom", cmd_custom, "Inspect numeric residual tables (not raw TOAs)"),
+        ("fit", cmd_fit, "Fit reference phase anchors and T_asc using relational 3-body ODE"),
     ]:
         sub = commands.add_parser(name, help=description)
         sub.set_defaults(handler=handler)
@@ -248,6 +303,9 @@ def main(argv=None):
             sub.add_argument("--system", choices=list(SYSTEMS), default="PSR_J0737-3039")
         elif name == "formula-cost":
             sub.add_argument("--repeats", type=_positive_int, default=1000)
+        elif name == "fit":
+            sub.add_argument("--path", default="psr_j0337_zenodo_residuals.csv", help="Path to residuals CSV")
+            sub.add_argument("--backend", choices=["arecibo", "all"], default="arecibo", help="Telescope subset (default: arecibo)")
         elif name in ("simulate", "compare"):
             triples = [key for key, system in SYSTEMS.items() if isinstance(system, HierarchicalTripleSystem)]
             sub.add_argument("--system", choices=triples, default="PSR_J0337+1715")
