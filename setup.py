@@ -2,10 +2,10 @@ from setuptools import setup, find_packages
 
 setup(
     name="qrc-pulsar-bench",
-    version="1.0.0",
+    version="1.1.0",
     author="Todd Hendrixx (H-XX-D)",
     author_email="todd@hendrixxdesign.com",
-    description="High-precision relational pulsar timing & multi-body benchmark suite grounded in Quantum Relational Causality (QRC)",
+    description="Newtonian three-body dynamics, post-Keplerian formulas, and pulsar residual inspection",
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
     url="https://github.com/H-XX-D/qrc-pulsar-benchmark",

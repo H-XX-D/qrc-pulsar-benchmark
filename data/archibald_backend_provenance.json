@@ -1,0 +1,39 @@
+{
+  "source": "https://zenodo.org/records/1241122",
+  "md5": "b387a0c83cde7ab85942f4041c67337b",
+  "backend_jump_flag_counts": [
+    [
+      "AO",
+      0.0,
+      0.0,
+      5355
+    ],
+    [
+      "GBT",
+      0.0,
+      1.0,
+      18487
+    ],
+    [
+      "WSRT",
+      1.0,
+      0.0,
+      3268
+    ]
+  ],
+  "verified_date": "2026-10-30",
+  "file": "tuned2_aligned_pulses_1400_nosun2_primary.tim",
+  "table_columns": [
+    "tel flag",
+    "j_WSRT_1400",
+    "j_GBT_1400",
+    "rows"
+  ],
+  "observatories": {
+    "AO": "Arecibo",
+    "GBT": "Green Bank Telescope",
+    "WSRT": "Westerbork Synthesis Radio Telescope"
+  },
+  "paper": "https://arxiv.org/html/1807.02059v1",
+  "interpretation": "All 27110 .tim rows checked. The zero-zero reference subset is AO (5355 rows), not Nancay. Counts independently match the paper Table 1. No Nancay observations occur in this release."
+}
