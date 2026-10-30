@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Relational 3-Body Dynamical Visualizer & Shape Sphere S²</title>
+  <style>
+    :root {
+      --bg: #0a0c14;
+      --panel-bg: rgba(14, 18, 30, 0.85);
+      --border: rgba(60, 80, 120, 0.4);
+      --text: #e0e6f0;
+      --text-muted: #8a9bb8;
+      --cyan: #00f0ff;
+      --purple: #bf55ec;
+      --gold: #ffbe3b;
+      --blue: #3b82f6;
+      --red: #f43f5e;
+      --green: #10b981;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      overflow: hidden;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      background: rgba(10, 14, 24, 0.95);
+      border-bottom: 1px solid var(--border);
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 10;
+      backdrop-filter: blur(10px);
+    }
+
+    .title-group {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+    }
+
+    h1 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .badge {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      padding: 2px 7px;
+      border-radius: 4px;
+      background: rgba(0, 240, 255, 0.15);
+      border: 1px solid rgba(0, 240, 255, 0.4);
+      color: var(--cyan);
+      font-family: monospace;
+      font-weight: 600;
+    }
+
+    .controls-bar {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    select, button, input[type="range"] {
+      background: #161c2d;
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 6px 12px;
+      font-size: 0.85rem;
+      outline: none;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    select:hover, button:hover {
+      border-color: var(--cyan);
+      background: #1c243a;
+    }
+
+    button.primary {
+      background: rgba(0, 240, 255, 0.2);
+      border-color: var(--cyan);
+      color: #fff;
+      font-weight: 600;
+    }
+
+    button.primary:hover {
+      background: rgba(0, 240, 255, 0.35);
+      box-shadow: 0 0 12px rgba(0, 240, 255, 0.4);
+    }
+
+    .slider-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .slider-group input {
+      width: 90px;
+    }
+
+    main {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      position: relative;
+    }
+
+    .viewport-panel {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      border-right: 1px solid var(--border);
+    }
+
+    .viewport-panel:last-child {
+      border-right: none;
+    }
+
+    canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .viewport-label {
+      position: absolute;
+      top: 14px;
+      left: 16px;
+      background: var(--panel-bg);
+      border: 1px solid var(--border);
+      padding: 6px 12px;
+      border-radius: 6px;
+      pointer-events: none;
+      backdrop-filter: blur(8px);
+    }
+
+    .viewport-label h2 {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .viewport-label p {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+      font-family: monospace;
+    }
+
+    .hud-overlay {
+      position: absolute;
+      bottom: 14px;
+      left: 16px;
+      right: 16px;
+      background: var(--panel-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.78rem;
+      font-family: monospace;
+      backdrop-filter: blur(8px);
+      z-index: 5;
+    }
+
+    .hud-metrics {
+      display: flex;
+      gap: 24px;
+    }
+
+    .metric {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .metric-label {
+      font-size: 0.68rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+    }
+
+    .metric-val {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .legend {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.75rem;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    .hint-box {
+      position: absolute;
+      top: 14px;
+      right: 16px;
+      background: var(--panel-bg);
+      border: 1px solid var(--border);
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      pointer-events: none;
+      backdrop-filter: blur(8px);
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="title-group">
+      <h1>Relational 3-Body Dynamics <span class="badge">S² Shape Sphere</span></h1>
+    </div>
+
+    <div class="controls-bar">
+      <select id="systemSelect">
+        <option value="j0337">PSR J0337+1715 (Hierarchical Triple Pulsar)</option>
+        <option value="figure8">Chenciner-Montgomery Figure-8 Choreography</option>
+        <option value="lagrange">Lagrange Equilateral Triangle (L4/L5)</option>
+        <option value="burrau">Pythagorean Problem of Burrau (Chaotic Ejection)</option>
+        <option value="kepler16">Kepler-16b (Circumbinary Exoplanet)</option>
+      </select>
+
+      <button id="btnPlayPause" class="primary">Pause</button>
+      <button id="btnStep">Step</button>
+      <button id="btnReset">Reset</button>
+
+      <div class="slider-group">
+        <span>Speed</span>
+        <input type="range" id="speedSlider" min="0.1" max="10" step="0.1" value="1.0">
+        <span id="speedVal">1.0x</span>
+      </div>
+
+      <div class="slider-group">
+        <span>Trails</span>
+        <input type="range" id="trailSlider" min="50" max="2000" step="50" value="600">
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- Viewport 1: Real-Space Orbit -->
+    <div class="viewport-panel" id="panelOrbit">
+      <canvas id="canvasOrbit"></canvas>
+      <div class="viewport-label">
+        <h2>Physical Orbits in Center-of-Mass Frame</h2>
+        <p id="orbitSubLabel">Jacobi Relative State & Barycentric Motion</p>
+      </div>
+      <div class="hint-box">Drag to Rotate/Pan &bull; Scroll to Zoom</div>
+    </div>
+
+    <!-- Viewport 2: Montgomery-Dragt Shape Sphere S2 -->
+    <div class="viewport-panel" id="panelSphere">
+      <canvas id="canvasSphere"></canvas>
+      <div class="viewport-label">
+        <h2>Montgomery-Dragt Shape Sphere (S²)</h2>
+        <p>Intrinsic Triangle Geometry: w₁² + w₂² + w₃² = 1</p>
+      </div>
+      <div class="hint-box">Drag to Rotate Sphere &bull; Equator w₃=0: Collinear</div>
+    </div>
+
+    <!-- HUD Overlay -->
+    <div class="hud-overlay">
+      <div class="hud-metrics">
+        <div class="metric">
+          <span class="metric-label">Sim Time</span>
+          <span class="metric-val" id="valTime">0.00 d</span>
+        </div>
+        <div class="metric">
+          <span class="metric-label">Shape Sphere (w₁, w₂, w₃)</span>
+          <span class="metric-val" id="valShape">[0.00, 0.00, 0.00]</span>
+        </div>
+        <div class="metric">
+          <span class="metric-label">Hyper-Radius R</span>
+          <span class="metric-val" id="valHyperR">0.00 AU</span>
+        </div>
+        <div class="metric" id="boxRoemer">
+          <span class="metric-label">Roemer Delay</span>
+          <span class="metric-val" id="valRoemer">0.00 s</span>
+        </div>
+        <div class="metric">
+          <span class="metric-label">Energy Err (ΔE/E₀)</span>
+          <span class="metric-val" id="valEnergy">0.00e-11</span>
+        </div>
+      </div>
+
+      <div class="legend" id="hudLegend">
+        <div class="legend-item"><div class="dot" style="background: var(--cyan);"></div><span id="leg1">Body 1 (Pulsar)</span></div>
+        <div class="legend-item"><div class="dot" style="background: var(--gold);"></div><span id="leg2">Body 2 (Inner WD)</span></div>
+        <div class="legend-item"><div class="dot" style="background: var(--purple);"></div><span id="leg3">Body 3 (Outer WD)</span></div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // =========================================================================
+    // PHYSICAL SYSTEMS CONFIGURATIONS & INITIAL CONDITIONS
+    // =========================================================================
+    const G_GRAV = 1.0;
+
+    const SYSTEMS = {
+      j0337: {
+        name: "PSR J0337+1715",
+        sub: "Pulsar (1.44 M☉) + Inner WD (0.20 M☉) in 1.63d orbit, Outer WD (0.41 M☉) in 327d orbit",
+        scale: 0.75,
+        dt: 0.0015,
+        isAstrophysical: true,
+        masses: [1.4378, 0.19751, 0.4101],
+        names: ["Pulsar (1.44 M☉)", "Inner WD (0.20 M☉)", "Outer WD (0.41 M☉)"],
+        colors: ["#00f0ff", "#ffbe3b", "#bf55ec"],
+        radii: [7, 5, 6],
+        init() {
+          // Inner orbit: a1 ~ 0.012 AU (scaled to 1.5 units for visualization visibility)
+          // Outer orbit: a2 ~ 0.80 AU (scaled to 7.0 units)
+          const m1 = this.masses[0], m2 = this.masses[1], m3 = this.masses[2];
+          const m12 = m1 + m2, mtot = m12 + m3;
+          const a1 = 1.2, a2 = 6.2;
+          const v1 = Math.sqrt(m12 / a1), v2 = Math.sqrt(mtot / a2);
+          
+          const x1 = -(m2 / m12) * a1, y1 = 0, vx1 = 0, vy1 = -(m2 / m12) * v1;
+          const x2 = (m1 / m12) * a1, y2 = 0, vx2 = 0, vy2 = (m1 / m12) * v1;
+          const x3 = a2, y3 = 0, vx3 = 0, vy3 = v2;
+          
+          // Outer COM shift
+          const X12_shift = -(m3 / mtot) * a2;
+          const V12_shift = -(m3 / mtot) * v2;
+          const X3_shift = (m12 / mtot) * a2;
+          const V3_shift = (m12 / mtot) * v2;
+
+          return [
+            { x: x1 + X12_shift, y: y1, z: 0, vx: vx1, vy: vy1 + V12_shift, vz: 0 },
+            { x: x2 + X12_shift, y: y2, z: 0, vx: vx2, vy: vy2 + V12_shift, vz: 0 },
+            { x: X3_shift, y: 0, z: 0, vx: 0, vy: V3_shift, vz: 0 }
+          ];
+        }
+      },
+      figure8: {
+        name: "Figure-8 Orbit",
+        sub: "Chenciner & Montgomery (2000) Choreography with 3 Equal Masses",
+        scale: 2.2,
+        dt: 0.005,
+        isAstrophysical: false,
+        masses: [1.0, 1.0, 1.0],
+        names: ["Body 1 (1.0 M)", "Body 2 (1.0 M)", "Body 3 (1.0 M)"],
+        colors: ["#00f0ff", "#ffbe3b", "#f43f5e"],
+        radii: [6, 6, 6],
+        init() {
+          const x1 = -0.97000436, y1 = 0.24308753;
+          const x2 = 0.97000436, y2 = -0.24308753;
+          const x3 = 0.0, y3 = 0.0;
+          const vx1 = 0.46620531, vy1 = 0.43236573;
+          const vx2 = 0.46620531, vy2 = 0.43236573;
+          const vx3 = -2 * vx1, vy3 = -2 * vy1;
+          return [
+            { x: x1, y: y1, z: 0, vx: vx1, vy: vy1, vz: 0 },
+            { x: x2, y: y2, z: 0, vx: vx2, vy: vy2, vz: 0 },
+            { x: x3, y: y3, z: 0, vx: vx3, vy: vy3, vz: 0 }
+          ];
+        }
+      },
+      lagrange: {
+        name: "Lagrange Equilateral Solution",
+        sub: "Rigid Rotating Equilateral Triangle (Stationary Point at Shape Sphere Pole)",
+        scale: 2.0,
+        dt: 0.005,
+        isAstrophysical: false,
+        masses: [1.0, 1.0, 1.0],
+        names: ["Body 1", "Body 2", "Body 3"],
+        colors: ["#10b981", "#3b82f6", "#bf55ec"],
+        radii: [6, 6, 6],
+        init() {
+          const R0 = 2.0;
+          const v = Math.sqrt(G_GRAV / Math.sqrt(3)) * Math.sqrt(R0);
+          return [
+            { x: R0 * Math.cos(0), y: R0 * Math.sin(0), z: 0, vx: -v * Math.sin(0), vy: v * Math.cos(0), vz: 0 },
+            { x: R0 * Math.cos(2*Math.PI/3), y: R0 * Math.sin(2*Math.PI/3), z: 0, vx: -v * Math.sin(2*Math.PI/3), vy: v * Math.cos(2*Math.PI/3), vz: 0 },
+            { x: R0 * Math.cos(4*Math.PI/3), y: R0 * Math.sin(4*Math.PI/3), z: 0, vx: -v * Math.sin(4*Math.PI/3), vy: v * Math.cos(4*Math.PI/3), vz: 0 }
+          ];
+        }
+      },
+      burrau: {
+        name: "Pythagorean 3-4-5 Problem of Burrau",
+        sub: "Masses 3, 4, 5 at Rest on 3-4-5 Right Triangle (Chaotic Ejection)",
+        scale: 1.0,
+        dt: 0.001,
+        isAstrophysical: false,
+        masses: [3.0, 4.0, 5.0],
+        names: ["Body 1 (M=3)", "Body 2 (M=4)", "Body 3 (M=5)"],
+        colors: ["#f43f5e", "#ffbe3b", "#3b82f6"],
+        radii: [5, 6, 7],
+        init() {
+          // COM centered
+          return [
+            { x: 1.0, y: -5/3, z: 0, vx: 0, vy: 0, vz: 0 },
+            { x: -2.0, y: -5/3, z: 0, vx: 0, vy: 0, vz: 0 },
+            { x: 1.0, y: 7/3, z: 0, vx: 0, vy: 0, vz: 0 }
+          ];
+        }
+      },
+      kepler16: {
+        name: "Kepler-16b Circumbinary Exoplanet",
+        sub: "K-Dwarf (0.69 M☉) + M-Dwarf (0.20 M☉) with Circumbinary Saturn-mass Planet",
+        scale: 1.2,
+        dt: 0.003,
+        isAstrophysical: true,
+        masses: [0.6897, 0.20255, 0.000318],
+        names: ["Star A (0.69 M☉)", "Star B (0.20 M☉)", "Kepler-16b Planet"],
+        colors: ["#ffbe3b", "#f43f5e", "#00f0ff"],
+        radii: [7, 5, 4],
+        init() {
+          const m1 = this.masses[0], m2 = this.masses[1], m3 = this.masses[2];
+          const m12 = m1 + m2, mtot = m12 + m3;
+          const a1 = 1.0, a2 = 3.8;
+          const v1 = Math.sqrt(m12 / a1), v2 = Math.sqrt(mtot / a2);
+          return [
+            { x: -(m2/m12)*a1, y: 0, z: 0, vx: 0, vy: -(m2/m12)*v1, vz: 0 },
+            { x: (m1/m12)*a1, y: 0, z: 0, vx: 0, vy: (m1/m12)*v1, vz: 0 },
+            { x: a2, y: 0, z: 0, vx: 0, vy: v2, vz: 0 }
+          ];
+        }
+      }
+    };
+
+    // =========================================================================
+    // NUMERICAL SIMULATION STATE & RUNGE-KUTTA 4 INTEGRATOR
+    // =========================================================================
+    let currentSysKey = "j0337";
+    let state = [];
+    let trails = [[], [], []];
+    let shapeTrail = [];
+    let simTime = 0.0;
+    let isPlaying = true;
+    let initialEnergy = 0.0;
+    let speedMult = 1.0;
+    let maxTrailLength = 600;
+
+    function resetSimulation(sysKey) {
+      currentSysKey = sysKey;
+      const sys = SYSTEMS[sysKey];
+      state = sys.init();
+      trails = [[], [], []];
+      shapeTrail = [];
+      simTime = 0.0;
+      initialEnergy = computeTotalEnergy();
+
+      document.getElementById("orbitSubLabel").innerText = sys.sub;
+      document.getElementById("leg1").innerText = sys.names[0];
+      document.getElementById("leg2").innerText = sys.names[1];
+      document.getElementById("leg3").innerText = sys.names[2];
+      document.getElementById("boxRoemer").style.display = sys.isAstrophysical ? "flex" : "none";
+    }
+
+    function computeAccelerations(st) {
+      const sys = SYSTEMS[currentSysKey];
+      const m = sys.masses;
+      const acc = [
+        { ax: 0, ay: 0, az: 0 },
+        { ax: 0, ay: 0, az: 0 },
+        { ax: 0, ay: 0, az: 0 }
+      ];
+
+      for (let i = 0; i < 3; i++) {
+        for (let j = i + 1; j < 3; j++) {
+          const dx = st[j].x - st[i].x;
+          const dy = st[j].y - st[i].y;
+          const dz = st[j].z - st[i].z;
+          const dist2 = dx * dx + dy * dy + dz * dz + 1e-12;
+          const dist = Math.sqrt(dist2);
+          const force = (G_GRAV) / (dist2 * dist);
+
+          acc[i].ax += force * m[j] * dx;
+          acc[i].ay += force * m[j] * dy;
+          acc[i].az += force * m[j] * dz;
+
+          acc[j].ax -= force * m[i] * dx;
+          acc[j].ay -= force * m[i] * dy;
+          acc[j].az -= force * m[i] * dz;
+        }
+      }
+      return acc;
+    }
+
+    function rk4Step(dt) {
+      // k1
+      const a1 = computeAccelerations(state);
+      const k1 = state.map((b, i) => ({
+        dx: b.vx * dt, dy: b.vy * dt, dz: b.vz * dt,
+        dvx: a1[i].ax * dt, dvy: a1[i].ay * dt, dvz: a1[i].az * dt
+      }));
+
+      // k2
+      const s2 = state.map((b, i) => ({
+        x: b.x + 0.5 * k1[i].dx, y: b.y + 0.5 * k1[i].dy, z: b.z + 0.5 * k1[i].dz,
+        vx: b.vx + 0.5 * k1[i].dvx, vy: b.vy + 0.5 * k1[i].dvy, vz: b.vz + 0.5 * k1[i].dvz
+      }));
+      const a2 = computeAccelerations(s2);
+      const k2 = s2.map((b, i) => ({
+        dx: b.vx * dt, dy: b.vy * dt, dz: b.vz * dt,
+        dvx: a2[i].ax * dt, dvy: a2[i].ay * dt, dvz: a2[i].az * dt
+      }));
+
+      // k3
+      const s3 = state.map((b, i) => ({
+        x: b.x + 0.5 * k2[i].dx, y: b.y + 0.5 * k2[i].dy, z: b.z + 0.5 * k2[i].dz,
+        vx: b.vx + 0.5 * k2[i].dvx, vy: b.vy + 0.5 * k2[i].dvy, vz: b.vz + 0.5 * k2[i].dvz
+      }));
+      const a3 = computeAccelerations(s3);
+      const k3 = s3.map((b, i) => ({
+        dx: b.vx * dt, dy: b.vy * dt, dz: b.vz * dt,
+        dvx: a3[i].ax * dt, dvy: a3[i].ay * dt, dvz: a3[i].az * dt
+      }));
+
+      // k4
+      const s4 = state.map((b, i) => ({
+        x: b.x + k3[i].dx, y: b.y + k3[i].dy, z: b.z + k3[i].dz,
+        vx: b.vx + k3[i].dvx, vy: b.vy + k3[i].dvy, vz: b.vz + k3[i].dvz
+      }));
+      const a4 = computeAccelerations(s4);
+      const k4 = s4.map((b, i) => ({
+        dx: b.vx * dt, dy: b.vy * dt, dz: b.vz * dt,
+        dvx: a4[i].ax * dt, dvy: a4[i].ay * dt, dvz: a4[i].az * dt
+      }));
+
+      // Final update
+      for (let i = 0; i < 3; i++) {
+        state[i].x += (k1[i].dx + 2 * k2[i].dx + 2 * k3[i].dx + k4[i].dx) / 6;
+        state[i].y += (k1[i].dy + 2 * k2[i].dy + 2 * k3[i].dy + k4[i].dy) / 6;
+        state[i].z += (k1[i].dz + 2 * k2[i].dz + 2 * k3[i].dz + k4[i].dz) / 6;
+        state[i].vx += (k1[i].dvx + 2 * k2[i].dvx + 2 * k3[i].dvx + k4[i].dvx) / 6;
+        state[i].vy += (k1[i].dvy + 2 * k2[i].dvy + 2 * k3[i].dvy + k4[i].dvy) / 6;
+        state[i].vz += (k1[i].dvz + 2 * k2[i].dvz + 2 * k3[i].dvz + k4[i].dvz) / 6;
+
+        trails[i].push({ x: state[i].x, y: state[i].y, z: state[i].z });
+        if (trails[i].length > maxTrailLength) trails[i].shift();
+      }
+
+      // Record shape sphere coords
+      const shape = computeShapeCoordinates();
+      shapeTrail.push(shape);
+      if (shapeTrail.length > maxTrailLength) shapeTrail.shift();
+
+      simTime += dt;
+    }
+
+    function computeTotalEnergy() {
+      const sys = SYSTEMS[currentSysKey];
+      const m = sys.masses;
+      let ke = 0;
+      for (let i = 0; i < 3; i++) {
+        const v2 = state[i].vx**2 + state[i].vy**2 + state[i].vz**2;
+        ke += 0.5 * m[i] * v2;
+      }
+      let pe = 0;
+      for (let i = 0; i < 3; i++) {
+        for (let j = i + 1; j < 3; j++) {
+          const dx = state[j].x - state[i].x;
+          const dy = state[j].y - state[i].y;
+          const dz = state[j].z - state[i].z;
+          const dist = Math.sqrt(dx*dx + dy*dy + dz*dz) + 1e-12;
+          pe -= (G_GRAV * m[i] * m[j]) / dist;
+        }
+      }
+      return ke + pe;
+    }
+
+    // =========================================================================
+    // MONTGOMERY-DRAGT SHAPE SPHERE S² COORDINATES
+    // =========================================================================
+    function computeShapeCoordinates() {
+      const r12 = Math.hypot(state[1].x - state[0].x, state[1].y - state[0].y, state[1].z - state[0].z);
+      const r23 = Math.hypot(state[2].x - state[1].x, state[2].y - state[1].y, state[2].z - state[1].z);
+      const r31 = Math.hypot(state[0].x - state[2].x, state[0].y - state[2].y, state[0].z - state[2].z);
+
+      const a2 = r12 * r12;
+      const b2 = r23 * r23;
+      const c2 = r31 * r31;
+      const R2 = a2 + b2 + c2;
+
+      // 3D vector cross product for triangle area
+      const u1x = state[1].x - state[0].x, u1y = state[1].y - state[0].y, u1z = state[1].z - state[0].z;
+      const u2x = state[2].x - state[0].x, u2y = state[2].y - state[0].y, u2z = state[2].z - state[0].z;
+      const cx = u1y * u2z - u1z * u2y;
+      const cy = u1z * u2x - u1x * u2z;
+      const cz = u1x * u2y - u1y * u2x;
+      const area = 0.5 * Math.hypot(cx, cy, cz);
+
+      const w1 = (2 * c2 - a2 - b2) / R2;
+      const w2 = Math.sqrt(3) * (a2 - b2) / R2;
+      const w3 = (4 * Math.sqrt(3) * area) / R2;
+      const R = Math.sqrt(R2);
+
+      return { w1, w2, w3, R, a: r12, b: r23, c: r31 };
+    }
+
+    // =========================================================================
+    // RENDERING ENGINES & 3D CAMERA CONTROLS
+    // =========================================================================
+    const canvasOrbit = document.getElementById("canvasOrbit");
+    const ctxOrbit = canvasOrbit.getContext("2d");
+
+    const canvasSphere = document.getElementById("canvasSphere");
+    const ctxSphere = canvasSphere.getContext("2d");
+
+    // Camera 1: Orbit
+    let camOrbit = { rotX: 0.35, rotY: -0.45, zoom: 45, panX: 0, panY: 0 };
+    // Camera 2: Shape Sphere
+    let camSphere = { rotX: 0.3, rotY: 0.6, zoom: 170 };
+
+    function setupDragControls(canvas, cam, isPanAvailable = true) {
+      let isDragging = false;
+      let lastX = 0, lastY = 0;
+      let isPanning = false;
+
+      canvas.addEventListener("mousedown", (e) => {
+        isDragging = true;
+        isPanning = isPanAvailable && (e.button === 2 || e.shiftKey);
+        lastX = e.clientX;
+        lastY = e.clientY;
+      });
+
+      window.addEventListener("mousemove", (e) => {
+        if (!isDragging) return;
+        const dx = e.clientX - lastX;
+        const dy = e.clientY - lastY;
+        lastX = e.clientX;
+        lastY = e.clientY;
+
+        if (isPanning) {
+          cam.panX += dx;
+          cam.panY += dy;
+        } else {
+          cam.rotY += dx * 0.008;
+          cam.rotX += dy * 0.008;
+          cam.rotX = Math.max(-Math.PI / 2 + 0.05, Math.min(Math.PI / 2 - 0.05, cam.rotX));
+        }
+      });
+
+      window.addEventListener("mouseup", () => { isDragging = false; });
+      canvas.addEventListener("contextmenu", (e) => e.preventDefault());
+
+      canvas.addEventListener("wheel", (e) => {
+        e.preventDefault();
+        const factor = e.deltaY > 0 ? 0.9 : 1.1;
+        cam.zoom *= factor;
+        cam.zoom = Math.max(10, Math.min(600, cam.zoom));
+      });
+    }
+
+    setupDragControls(canvasOrbit, camOrbit, true);
+    setupDragControls(canvasSphere, camSphere, false);
+
+    function resizeCanvases() {
+      const p1 = document.getElementById("panelOrbit");
+      const p2 = document.getElementById("panelSphere");
+      canvasOrbit.width = p1.clientWidth * window.devicePixelRatio;
+      canvasOrbit.height = p1.clientHeight * window.devicePixelRatio;
+      canvasSphere.width = p2.clientWidth * window.devicePixelRatio;
+      canvasSphere.height = p2.clientHeight * window.devicePixelRatio;
+    }
+    window.addEventListener("resize", resizeCanvases);
+
+    function project3D(x, y, z, cam, width, height) {
+      // Rotate Y (yaw)
+      const cosY = Math.cos(cam.rotY), sinY = Math.sin(cam.rotY);
+      const x1 = x * cosY - z * sinY;
+      const z1 = x * sinY + z * cosY;
+
+      // Rotate X (pitch)
+      const cosX = Math.cos(cam.rotX), sinX = Math.sin(cam.rotX);
+      const y2 = y * cosX - z1 * sinX;
+      const z2 = y * sinX + z1 * cosX;
+
+      const scale = cam.zoom;
+      const px = width / 2 + (cam.panX || 0) * window.devicePixelRatio + x1 * scale;
+      const py = height / 2 + (cam.panY || 0) * window.devicePixelRatio - y2 * scale;
+      return { x: px, y: py, zDepth: z2 };
+    }
+
+    // =========================================================================
+    // DRAW PHYSICAL ORBITS
+    // =========================================================================
+    function drawOrbitScene() {
+      const w = canvasOrbit.width;
+      const h = canvasOrbit.height;
+      ctxOrbit.clearRect(0, 0, w, h);
+
+      const sys = SYSTEMS[currentSysKey];
+
+      // Draw faint center-of-mass grid plane
+      ctxOrbit.strokeStyle = "rgba(40, 60, 90, 0.25)";
+      ctxOrbit.lineWidth = 1;
+      const gridSize = 10, step = 2;
+      for (let g = -gridSize; g <= gridSize; g += step) {
+        const pA = project3D(g, -gridSize, 0, camOrbit, w, h);
+        const pB = project3D(g, gridSize, 0, camOrbit, w, h);
+        ctxOrbit.beginPath();
+        ctxOrbit.moveTo(pA.x, pA.y);
+        ctxOrbit.lineTo(pB.x, pB.y);
+        ctxOrbit.stroke();
+
+        const pC = project3D(-gridSize, g, 0, camOrbit, w, h);
+        const pD = project3D(gridSize, g, 0, camOrbit, w, h);
+        ctxOrbit.beginPath();
+        ctxOrbit.moveTo(pC.x, pC.y);
+        ctxOrbit.lineTo(pD.x, pD.y);
+        ctxOrbit.stroke();
+      }
+
+      // Draw Instantaneous Triangle
+      const p0 = project3D(state[0].x, state[0].y, state[0].z, camOrbit, w, h);
+      const p1 = project3D(state[1].x, state[1].y, state[1].z, camOrbit, w, h);
+      const p2 = project3D(state[2].x, state[2].y, state[2].z, camOrbit, w, h);
+
+      ctxOrbit.strokeStyle = "rgba(0, 240, 255, 0.18)";
+      ctxOrbit.lineWidth = 1.5;
+      ctxOrbit.beginPath();
+      ctxOrbit.moveTo(p0.x, p0.y);
+      ctxOrbit.lineTo(p1.x, p1.y);
+      ctxOrbit.lineTo(p2.x, p2.y);
+      ctxOrbit.closePath();
+      ctxOrbit.stroke();
+
+      // Draw Trails
+      for (let i = 0; i < 3; i++) {
+        const tr = trails[i];
+        if (tr.length < 2) continue;
+        ctxOrbit.lineWidth = 2.0;
+        for (let j = 1; j < tr.length; j++) {
+          const alpha = (j / tr.length) * 0.7;
+          ctxOrbit.strokeStyle = hexToRgba(sys.colors[i], alpha);
+          const ptA = project3D(tr[j - 1].x, tr[j - 1].y, tr[j - 1].z, camOrbit, w, h);
+          const ptB = project3D(tr[j].x, tr[j].y, tr[j].z, camOrbit, w, h);
+          ctxOrbit.beginPath();
+          ctxOrbit.moveTo(ptA.x, ptA.y);
+          ctxOrbit.lineTo(ptB.x, ptB.y);
+          ctxOrbit.stroke();
+        }
+      }
+
+      // Draw Bodies with Glow
+      for (let i = 0; i < 3; i++) {
+        const pt = project3D(state[i].x, state[i].y, state[i].z, camOrbit, w, h);
+        const radius = sys.radii[i] * window.devicePixelRatio;
+
+        // Radial glow
+        const grad = ctxOrbit.createRadialGradient(pt.x, pt.y, radius * 0.2, pt.x, pt.y, radius * 3.5);
+        grad.addColorStop(0, sys.colors[i]);
+        grad.addColorStop(0.4, hexToRgba(sys.colors[i], 0.6));
+        grad.addColorStop(1, "rgba(0,0,0,0)");
+
+        ctxOrbit.fillStyle = grad;
+        ctxOrbit.beginPath();
+        ctxOrbit.arc(pt.x, pt.y, radius * 3.5, 0, Math.PI * 2);
+        ctxOrbit.fill();
+
+        // Solid core
+        ctxOrbit.fillStyle = "#fff";
+        ctxOrbit.beginPath();
+        ctxOrbit.arc(pt.x, pt.y, radius * 0.65, 0, Math.PI * 2);
+        ctxOrbit.fill();
+
+        // Pulsar Emission Beam simulation
+        if (currentSysKey === "j0337" && i === 0) {
+          const angle = simTime * 12.0;
+          ctxOrbit.save();
+          ctxOrbit.translate(pt.x, pt.y);
+          ctxOrbit.rotate(angle);
+          ctxOrbit.strokeStyle = "rgba(0, 240, 255, 0.4)";
+          ctxOrbit.lineWidth = 2;
+          ctxOrbit.beginPath();
+          ctxOrbit.moveTo(0, 0);
+          ctxOrbit.lineTo(25 * window.devicePixelRatio, 0);
+          ctxOrbit.moveTo(0, 0);
+          ctxOrbit.lineTo(-25 * window.devicePixelRatio, 0);
+          ctxOrbit.stroke();
+          ctxOrbit.restore();
+        }
+      }
+    }
+
+    // =========================================================================
+    // DRAW MONTGOMERY-DRAGT SHAPE SPHERE S²
+    // =========================================================================
+    function drawShapeSphereScene() {
+      const w = canvasSphere.width;
+      const h = canvasSphere.height;
+      ctxSphere.clearRect(0, 0, w, h);
+
+      // Draw wireframe sphere S2
+      const rings = 12, sectors = 24;
+      ctxSphere.lineWidth = 1;
+
+      // Parallels of latitude
+      for (let i = -rings / 2; i <= rings / 2; i++) {
+        const lat = (i / (rings / 2)) * (Math.PI / 2);
+        const rLat = Math.cos(lat);
+        const zLat = Math.sin(lat);
+
+        ctxSphere.beginPath();
+        if (i === 0) {
+          // Equator w3 = 0 (Collinear syzygy boundary)
+          ctxSphere.strokeStyle = "rgba(244, 63, 94, 0.85)";
+          ctxSphere.lineWidth = 2.5;
+        } else {
+          ctxSphere.strokeStyle = "rgba(60, 80, 120, 0.3)";
+          ctxSphere.lineWidth = 1.0;
+        }
+
+        for (let j = 0; j <= sectors; j++) {
+          const lon = (j / sectors) * Math.PI * 2;
+          const x = rLat * Math.cos(lon);
+          const y = rLat * Math.sin(lon);
+          const z = zLat;
+          const p = project3D(x, y, z, camSphere, w, h);
+          if (j === 0) ctxSphere.moveTo(p.x, p.y);
+          else ctxSphere.lineTo(p.x, p.y);
+        }
+        ctxSphere.stroke();
+      }
+
+      // Meridians of longitude
+      ctxSphere.strokeStyle = "rgba(60, 80, 120, 0.3)";
+      ctxSphere.lineWidth = 1.0;
+      for (let j = 0; j < sectors; j += 2) {
+        const lon = (j / sectors) * Math.PI * 2;
+        ctxSphere.beginPath();
+        for (let i = -rings / 2; i <= rings / 2; i++) {
+          const lat = (i / (rings / 2)) * (Math.PI / 2);
+          const x = Math.cos(lat) * Math.cos(lon);
+          const y = Math.cos(lat) * Math.sin(lon);
+          const z = Math.sin(lat);
+          const p = project3D(x, y, z, camSphere, w, h);
+          if (i === -rings / 2) ctxSphere.moveTo(p.x, p.y);
+          else ctxSphere.lineTo(p.x, p.y);
+        }
+        ctxSphere.stroke();
+      }
+
+      // Draw Key S2 Landmarks
+      // North Pole w3 = +1 (Counter-Clockwise Equilateral Triangle)
+      const pNorth = project3D(0, 0, 1, camSphere, w, h);
+      ctxSphere.fillStyle = "#10b981";
+      ctxSphere.beginPath();
+      ctxSphere.arc(pNorth.x, pNorth.y, 5 * window.devicePixelRatio, 0, Math.PI * 2);
+      ctxSphere.fill();
+
+      // South Pole w3 = -1 (Clockwise Equilateral Triangle)
+      const pSouth = project3D(0, 0, -1, camSphere, w, h);
+      ctxSphere.fillStyle = "#10b981";
+      ctxSphere.beginPath();
+      ctxSphere.arc(pSouth.x, pSouth.y, 5 * window.devicePixelRatio, 0, Math.PI * 2);
+      ctxSphere.fill();
+
+      // Labels on Sphere
+      ctxSphere.font = `${10 * window.devicePixelRatio}px monospace`;
+      ctxSphere.fillStyle = "#10b981";
+      ctxSphere.fillText("L4 (Equilateral w₃=+1)", pNorth.x + 8, pNorth.y - 6);
+      ctxSphere.fillText("L5 (Equilateral w₃=-1)", pSouth.x + 8, pSouth.y + 12);
+
+      const pCollinear = project3D(1, 0, 0, camSphere, w, h);
+      ctxSphere.fillStyle = "rgba(244, 63, 94, 0.9)";
+      ctxSphere.fillText("Collinear Equator (w₃=0)", pCollinear.x + 8, pCollinear.y);
+
+      // Draw Shape Trajectory on S2
+      if (shapeTrail.length > 1) {
+        ctxSphere.lineWidth = 2.5;
+        for (let j = 1; j < shapeTrail.length; j++) {
+          const alpha = (j / shapeTrail.length) * 0.9;
+          ctxSphere.strokeStyle = `rgba(0, 240, 255, ${alpha})`;
+          // Map (w1, w2, w3) directly to unit 3D coords
+          const sA = shapeTrail[j - 1];
+          const sB = shapeTrail[j];
+          const ptA = project3D(sA.w1, sA.w2, sA.w3, camSphere, w, h);
+          const ptB = project3D(sB.w1, sB.w2, sB.w3, camSphere, w, h);
+          ctxSphere.beginPath();
+          ctxSphere.moveTo(ptA.x, ptA.y);
+          ctxSphere.lineTo(ptB.x, ptB.y);
+          ctxSphere.stroke();
+        }
+      }
+
+      // Draw Current Shape Marker
+      if (shapeTrail.length > 0) {
+        const cur = shapeTrail[shapeTrail.length - 1];
+        const pCur = project3D(cur.w1, cur.w2, cur.w3, camSphere, w, h);
+
+        ctxSphere.fillStyle = "#fff";
+        ctxSphere.beginPath();
+        ctxSphere.arc(pCur.x, pCur.y, 6 * window.devicePixelRatio, 0, Math.PI * 2);
+        ctxSphere.fill();
+
+        ctxSphere.strokeStyle = "#00f0ff";
+        ctxSphere.lineWidth = 2;
+        ctxSphere.beginPath();
+        ctxSphere.arc(pCur.x, pCur.y, 10 * window.devicePixelRatio, 0, Math.PI * 2);
+        ctxSphere.stroke();
+      }
+    }
+
+    function hexToRgba(hex, a) {
+      const c = parseInt(hex.replace("#", ""), 16);
+      return `rgba(${(c >> 16) & 255}, ${(c >> 8) & 255}, ${c & 255}, ${a})`;
+    }
+
+    // =========================================================================
+    // MAIN ANIMATION LOOP
+    // =========================================================================
+    function animate() {
+      if (isPlaying) {
+        const sys = SYSTEMS[currentSysKey];
+        const stepsPerFrame = Math.round(5 * speedMult);
+        for (let s = 0; s < stepsPerFrame; s++) {
+          rk4Step(sys.dt);
+        }
+      }
+
+      drawOrbitScene();
+      drawShapeSphereScene();
+      updateHUD();
+
+      requestAnimationFrame(animate);
+    }
+
+    function updateHUD() {
+      const shape = computeShapeCoordinates();
+      document.getElementById("valTime").innerText = `${simTime.toFixed(2)} d`;
+      document.getElementById("valShape").innerText = `[${shape.w1.toFixed(3)}, ${shape.w2.toFixed(3)}, ${shape.w3.toFixed(3)}]`;
+      document.getElementById("valHyperR").innerText = `${shape.R.toFixed(2)} AU`;
+
+      // Energy conservation error
+      const currentEnergy = computeTotalEnergy();
+      const dE = Math.abs((currentEnergy - initialEnergy) / (initialEnergy || 1.0));
+      document.getElementById("valEnergy").innerText = dE.toExponential(2);
+
+      // Roemer delay for astrophysical systems
+      if (SYSTEMS[currentSysKey].isAstrophysical) {
+        // Line of sight along +z
+        const roemerDelaySec = (state[0].z * 1.496e11) / 299792458.0;
+        document.getElementById("valRoemer").innerText = `${roemerDelaySec.toFixed(4)} s`;
+      }
+    }
+
+    // =========================================================================
+    // UI EVENT LISTENERS
+    // =========================================================================
+    document.getElementById("systemSelect").addEventListener("change", (e) => {
+      resetSimulation(e.target.value);
+    });
+
+    const btnPlayPause = document.getElementById("btnPlayPause");
+    btnPlayPause.addEventListener("click", () => {
+      isPlaying = !isPlaying;
+      btnPlayPause.innerText = isPlaying ? "Pause" : "Play";
+      btnPlayPause.classList.toggle("primary", isPlaying);
+    });
+
+    document.getElementById("btnStep").addEventListener("click", () => {
+      isPlaying = false;
+      btnPlayPause.innerText = "Play";
+      btnPlayPause.classList.remove("primary");
+      const sys = SYSTEMS[currentSysKey];
+      rk4Step(sys.dt * 5);
+      drawOrbitScene();
+      drawShapeSphereScene();
+      updateHUD();
+    });
+
+    document.getElementById("btnReset").addEventListener("click", () => {
+      resetSimulation(currentSysKey);
+    });
+
+    const speedSlider = document.getElementById("speedSlider");
+    const speedVal = document.getElementById("speedVal");
+    speedSlider.addEventListener("input", (e) => {
+      speedMult = parseFloat(e.target.value);
+      speedVal.innerText = `${speedMult.toFixed(1)}x`;
+    });
+
+    const trailSlider = document.getElementById("trailSlider");
+    trailSlider.addEventListener("input", (e) => {
+      maxTrailLength = parseInt(e.target.value);
+    });
+
+    // Initialize
+    resizeCanvases();
+    resetSimulation("j0337");
+    requestAnimationFrame(animate);
+  </script>
+</body>
+</html>
