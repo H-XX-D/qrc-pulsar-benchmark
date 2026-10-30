@@ -89,6 +89,21 @@ class PostKeplerianSolver:
         return result
 
 
+def _qrc_sep_check(triple):
+    """Compare the QRC Delta prediction with the independent published result."""
+    pred = triple.delta_sep_qrc_prediction
+    if pred is None:
+        return None
+    value, sigma, bound = triple.delta_sep_published, triple.delta_sep_uncertainty, triple.delta_sep_bound95
+    return {
+        "value": float(pred),
+        "origin": "QRC theory prediction (supplied input, not derived or fitted by this engine)",
+        "within_published_95_bound": bool(abs(pred) < bound) if bound is not None else None,
+        "pull_vs_published_sigma": float(abs(pred - value) / sigma) if value is not None and sigma else None,
+        "compared_with": triple.delta_sep_ref,
+    }
+
+
 class RelationalTripleEngine:
     """Hierarchical tidal amplitude scales, not an exact multipole timing solution.
 
@@ -138,6 +153,7 @@ class RelationalTripleEngine:
                 "source": triple.delta_sep_ref,
                 "origin": "Reference metadata, not calculated by this engine",
             },
+            "qrc_sep_prediction": _qrc_sep_check(triple),
             "note": "Near-circular hierarchical tidal scales; accuracy requires a1/a2 much less than 1 "
                     "and small eccentricities. No certified truncation error, trajectory, orbital phase, "
                     "or mutual-inclination evolution is computed. cos_i2 is reference metadata. "
