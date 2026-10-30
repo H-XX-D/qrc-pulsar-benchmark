@@ -44,3 +44,11 @@ from .dynamics import (RelationalState, RelationalThreeBodyIntegrator,
 from .symplectic import SymplecticThreeBodyIntegrator
 from .fitter import RelationalTimingFitter
 from .pint_model import RelationalTripleDelayComponent, register_qrc_with_pint
+from .chaos_metrics import (
+    ChaosFingerprint,
+    compute_moment_of_inertia,
+    compute_virial_kinetics,
+    compute_power_spectral_slope,
+    compute_spectral_entropy,
+    extract_chaos_fingerprint,
+)

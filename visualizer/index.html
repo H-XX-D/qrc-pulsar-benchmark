@@ -318,6 +318,14 @@
           <span class="metric-label">Hyper-Radius R</span>
           <span class="metric-val" id="valHyperR">0.00 AU</span>
         </div>
+        <div class="metric">
+          <span class="metric-label">Virial Ratio (2K/|U|)</span>
+          <span class="metric-val" id="valVirial">1.00</span>
+        </div>
+        <div class="metric">
+          <span class="metric-label">Moment of Inertia I</span>
+          <span class="metric-val" id="valInertia">0.00e0</span>
+        </div>
         <div class="metric" id="boxRoemer">
           <span class="metric-label">Roemer Delay</span>
           <span class="metric-val" id="valRoemer">0.00 s</span>
@@ -1024,8 +1032,40 @@
       document.getElementById("valShape").innerText = `[${shape.w1.toFixed(3)}, ${shape.w2.toFixed(3)}, ${shape.w3.toFixed(3)}]`;
       document.getElementById("valHyperR").innerText = `${shape.R.toFixed(2)} AU`;
 
+      // Energy, Virial ratio, and Moment of Inertia
+      const sys = SYSTEMS[currentSysKey];
+      const m = sys.masses;
+      let ke = 0;
+      for (let i = 0; i < 3; i++) {
+        const v2 = state[i].vx**2 + state[i].vy**2 + state[i].vz**2;
+        ke += 0.5 * m[i] * v2;
+      }
+      let pe = 0;
+      for (let i = 0; i < 3; i++) {
+        for (let j = i + 1; j < 3; j++) {
+          const dx = state[j].x - state[i].x;
+          const dy = state[j].y - state[i].y;
+          const dz = state[j].z - state[i].z;
+          const dist = Math.sqrt(dx*dx + dy*dy + dz*dz) + 1e-12;
+          pe -= (G_GRAV * m[i] * m[j]) / dist;
+        }
+      }
+      const qVir = (2.0 * ke) / (Math.abs(pe) || 1e-12);
+      document.getElementById("valVirial").innerText = qVir.toFixed(2);
+
+      const mTot = m[0] + m[1] + m[2];
+      const cmX = (m[0]*state[0].x + m[1]*state[1].x + m[2]*state[2].x) / mTot;
+      const cmY = (m[0]*state[0].y + m[1]*state[1].y + m[2]*state[2].y) / mTot;
+      const cmZ = (m[0]*state[0].z + m[1]*state[1].z + m[2]*state[2].z) / mTot;
+      let I_val = 0;
+      for (let i = 0; i < 3; i++) {
+        const r2 = (state[i].x - cmX)**2 + (state[i].y - cmY)**2 + (state[i].z - cmZ)**2;
+        I_val += m[i] * r2;
+      }
+      document.getElementById("valInertia").innerText = I_val.toExponential(2);
+
       // Energy conservation error
-      const currentEnergy = computeTotalEnergy();
+      const currentEnergy = ke + pe;
       const dE = Math.abs((currentEnergy - initialEnergy) / (initialEnergy || 1.0));
       document.getElementById("valEnergy").innerText = dE.toExponential(2);
 
