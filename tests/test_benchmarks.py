@@ -10,7 +10,13 @@ and theoretical invariants within strict published scientific tolerances.
 import pytest
 import os
 from qrc_pulsar_bench.systems import PSR_J0337_1715, PSR_J0737_3039, PSR_B1913_16, PSR_J1738_0333, KEPLER_16B
-from qrc_pulsar_bench.engine import PostKeplerianSolver, RelationalTripleEngine, CircumbinarySolver, ZenodoWalkForwardEvaluator
+from qrc_pulsar_bench.engine import (
+    PostKeplerianSolver,
+    RelationalTripleEngine,
+    CircumbinarySolver,
+    ZenodoWalkForwardEvaluator,
+    GenericPulsarDataEvaluator
+)
 from qrc_pulsar_bench.shape_sphere import verify_laplace_beltrami_orthogonality, ShapeSphereReduction
 
 def test_shape_sphere_invariance():
@@ -84,4 +90,21 @@ def test_zenodo_real_observations():
         assert res["overall_rms_us"] < 1.70
         assert abs(res["drift_slope_us_yr"]) < 0.05
         assert res["pull_qrc"] < 0.20
+
+def test_generic_pulsar_data_evaluator(tmp_path):
+    # Create synthetic custom timing data file
+    sample_file = tmp_path / "custom_pulsar.csv"
+    with open(sample_file, "w") as f:
+        f.write("# MJD, residual_us, uncertainty_us\n")
+        for i in range(100):
+            mjd_val = 58000.0 + i * 5.0
+            res_val = 0.05 * (-1.0 if i % 2 == 0 else 1.0)
+            unc_val = 0.5
+            f.write(f"{mjd_val}, {res_val}, {unc_val}\n")
+
+    res = GenericPulsarDataEvaluator.evaluate(str(sample_file), num_windows=5, unit="us")
+    assert res["N_total"] == 100
+    assert res["overall_rms_us"] < 0.10
+    assert abs(res["drift_slope_us_yr"]) < 0.05
+    assert len(res["windows"]) == 5
 

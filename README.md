@@ -113,10 +113,13 @@ qrc-bench run --system PSR_J0337+1715
 # 3. Confront real Zenodo 27,110 unbinned radio observations:
 qrc-bench zenodo --path psr_j0337_zenodo_residuals.csv
 
-# 4. View computational complexity comparison:
+# 4. Evaluate YOUR OWN proprietary / unreleased pulsar data (CSV, TOA, TIM):
+qrc-bench custom --path my_pulsar_data.csv --unit us --windows 10
+
+# 5. View computational complexity comparison:
 qrc-bench compare
 
-# 5. Run automated test suite:
+# 6. Run automated test suite:
 pytest tests/
 ```
 

@@ -12,7 +12,14 @@ import argparse
 import time
 from .constants import G, c, M_sun, AU, Z_H
 from .systems import SYSTEMS, PSR_J0337_1715, PSR_J0737_3039, PSR_B1913_16, PSR_J1738_0333, KEPLER_16B
-from .engine import PostKeplerianSolver, RelationalTripleEngine, CircumbinarySolver, ZenodoWalkForwardEvaluator, RelationalTimingEngine
+from .engine import (
+    PostKeplerianSolver,
+    RelationalTripleEngine,
+    CircumbinarySolver,
+    ZenodoWalkForwardEvaluator,
+    GenericPulsarDataEvaluator,
+    RelationalTimingEngine
+)
 from .shape_sphere import verify_laplace_beltrami_orthogonality
 
 def print_header(title: str):
@@ -133,6 +140,33 @@ def cmd_zenodo(args):
     for w in res["windows"]:
         print(f"{w['window']:<4} | {f'{w['mjd_start']:.1f} - {w['mjd_end']:.1f}':<22} | {w['n_obs']:<8} | {w['rms_us']:<10.3f} | {w['chi2_dof']:<10.3f} | {w['mean_drift_us']:<+16.4f}")
 
+def cmd_custom(args):
+    file_path = args.path
+    unit = args.unit
+    num_windows = args.windows
+
+    print_header("EVALUATING CUSTOM / PROPRIETARY PULSAR TIMING DATASET")
+    print(f"Target File: {file_path}")
+    print(f"Input Unit:  {unit}")
+    print(f"Windows:     {num_windows}\n")
+
+    res = GenericPulsarDataEvaluator.evaluate(file_path, num_windows=num_windows, unit=unit)
+    print_row("Total Observations Loaded", f"{res['N_total']:,}")
+    print_row("Temporal Span", f"{res['span_days']:.1f} days ({res['span_years']:.2f} years)")
+    print_row("Overall Timing Residual RMS", f"{res['overall_rms_us']:.3f} microseconds ({res['overall_rms_us']*1000:.1f} ns)")
+    print_row("Mean Residual Offset", f"{res['overall_mean_us']:+.4f} microseconds")
+    print_row("Secular Drift Slope", f"{res['drift_slope_us_yr']:+.4f} microseconds/year")
+    print_row("Global Reduced chi2/dof", f"{res['global_chi2_dof']:.3f}")
+
+    drift_status = "PASSED (Zero Phase Slip)" if abs(res['drift_slope_us_yr']) < 0.05 else "DRIFT DETECTED"
+    print_row("Walk-Forward Stability Verdict", drift_status)
+
+    print("\nWalk-Forward Sequential Forecast Windows:")
+    print(f"{'Win':<4} | {'MJD Range':<22} | {'N_Obs':<8} | {'RMS (us)':<10} | {'chi2/dof':<10} | {'Mean Drift (us)'}")
+    print("-" * 75)
+    for w in res["windows"]:
+        print(f"{w['window']:<4} | {f'{w['mjd_start']:.1f} - {w['mjd_end']:.1f}':<22} | {w['n_obs']:<8} | {w['rms_us']:<10.3f} | {w['chi2_dof']:<10.3f} | {w['mean_drift_us']:<+16.4f}")
+
 def cmd_compare(args):
     print_header("COMPUTATIONAL COMPLEXITY & PERFORMANCE COMPARISON")
     print(f"{'Method / Architecture':<30} | {'Complexity':<14} | {'1000-Orbit Wall Time':<24} | {'Phase Slip (5 yr)'}")
@@ -162,6 +196,11 @@ def main():
 
     subparsers.add_parser("compare", help="Compare computational complexity vs Cartesian ODE integrators")
 
+    custom_parser = subparsers.add_parser("custom", help="Evaluate arbitrary custom/proprietary pulsar timing data (CSV, TOA, TIM)")
+    custom_parser.add_argument("--path", required=True, help="Path to proprietary/unreleased timing dataset (columns: MJD, residual, uncertainty)")
+    custom_parser.add_argument("--unit", choices=["us", "ns", "s"], default="us", help="Units of input residuals (default: us)")
+    custom_parser.add_argument("--windows", type=int, default=10, help="Number of walk-forward forecast windows (default: 10)")
+
     args = parser.parse_args()
     if args.command == "list":
         cmd_list(args)
@@ -171,6 +210,8 @@ def main():
         cmd_all(args)
     elif args.command == "zenodo":
         cmd_zenodo(args)
+    elif args.command == "custom":
+        cmd_custom(args)
     elif args.command == "compare":
         cmd_compare(args)
     else:

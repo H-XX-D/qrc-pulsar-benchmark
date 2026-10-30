@@ -212,6 +212,84 @@ class ZenodoWalkForwardEvaluator:
             "windows": windows
         }
 
+class GenericPulsarDataEvaluator:
+    """Evaluates arbitrary proprietary or custom pulsar timing datasets (CSV, TOA, or TIM)."""
+
+    @staticmethod
+    def evaluate(file_path: str, num_windows: int = 10, unit: str = "us") -> Dict[str, Any]:
+        """
+        Parses custom dataset containing (MJD, residual, uncertainty).
+        Supports:
+        - CSV with columns (mjd, residual, uncertainty)
+        - Space/tab-delimited files
+        """
+        if not os.path.exists(file_path):
+            raise FileNotFoundError(f"Data file not found at {file_path}")
+
+        # Try parsing CSV first, then whitespace delimited
+        try:
+            df = pd.read_csv(file_path, comment='#', header=None)
+            if len(df.columns) < 3:
+                df = pd.read_csv(file_path, sep=r'\s+', comment='#', header=None)
+        except Exception:
+            df = pd.read_csv(file_path, sep=r'\s+', comment='#', header=None)
+
+        # Extract first 3 numeric columns
+        mjd = df.iloc[:, 0].values.astype(float)
+        res = df.iloc[:, 1].values.astype(float)
+        unc = df.iloc[:, 2].values.astype(float)
+
+        # Scale to microseconds if unit is seconds or pulse turns
+        if unit == "s":
+            res_us = res * 1e6
+            unc_us = unc * 1e6
+        elif unit == "ns":
+            res_us = res * 1e-3
+            unc_us = unc * 1e-3
+        else: # "us"
+            res_us = res
+            unc_us = unc
+
+        N_total = len(res_us)
+        mjd_min, mjd_max = mjd.min(), mjd.max()
+        span_days = mjd_max - mjd_min
+        span_years = span_days / 365.25
+
+        # Walk-forward windows
+        win_size = span_days / num_windows
+        windows = []
+        for w in range(num_windows):
+            w_start = mjd_min + w * win_size
+            w_end = mjd_min + (w + 1) * win_size
+            mask = (mjd >= w_start) & (mjd <= w_end) if w == num_windows - 1 else (mjd >= w_start) & (mjd < w_end)
+            w_res = res_us[mask]
+            w_unc = unc_us[mask]
+            if len(w_res) > 0:
+                windows.append({
+                    "window": w + 1,
+                    "mjd_start": w_start,
+                    "mjd_end": w_end,
+                    "n_obs": len(w_res),
+                    "rms_us": float(np.std(w_res)),
+                    "mean_drift_us": float(np.mean(w_res)),
+                    "chi2_dof": float(np.sum((w_res / w_unc)**2) / len(w_res))
+                })
+
+        # Global drift
+        t_years = (mjd - mjd_min) / 365.25
+        drift_slope_us_yr, intercept = np.polyfit(t_years, res_us, 1)
+
+        return {
+            "N_total": N_total,
+            "span_days": span_days,
+            "span_years": span_years,
+            "overall_rms_us": float(np.std(res_us)),
+            "overall_mean_us": float(np.mean(res_us)),
+            "drift_slope_us_yr": float(drift_slope_us_yr),
+            "global_chi2_dof": float(np.sum((res_us / unc_us)**2) / (N_total - 1)),
+            "windows": windows
+        }
+
 class CircumbinarySolver:
     """Relational solver for circumbinary exoplanet nodal precession & TTV."""
 
