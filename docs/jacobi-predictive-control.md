@@ -55,6 +55,26 @@ The true trajectory is used only to generate measurements at available epochs
 and to score results. This is not an implementation of an optical sensor,
 GNSS receiver, pulsar TOA pipeline or real navigation-data ingestion.
 
+An existing `OrbitClockEKF` solution can be supplied after explicitly converting
+its Moon-relative state. Clock states remain with the estimator. For example:
+
+```python
+import numpy as np
+from qrc_pulsar_bench.jacobi_control import NavigationEstimate
+
+q = model.from_moon(ekf.state[:6], ekf.time_s)
+sigma_r = np.sqrt(np.linalg.eigvalsh(ekf.covariance[:3, :3]).max())
+sigma_v = np.sqrt(np.linalg.eigvalsh(ekf.covariance[3:6, 3:6]).max())
+nav = NavigationEstimate(q, ekf.time_s, last_physical_measurement_s, sigma_r, sigma_v)
+decision = controller.decide(nav, current_mass_kg)
+```
+
+The estimator must be propagated to the decision epoch and account for accepted
+commands. The observation timestamp must be the last physical measurement
+epoch, not the time the propagated estimate was produced. The scalar sigma
+interface loses covariance correlations; it supports the stated clearance
+heuristic, not a formal robust-control uncertainty tube.
+
 ## Planning and damping
 
 The long plan spans 90 days. At each six-hour decision epoch the controller:
@@ -107,6 +127,13 @@ bounded burns in radial, tangential, Earth-relative and inertial directions.
 It selects the smallest tested delta-v that maintains predicted clearance
 through the decision horizon. Emergency burns may use the reserved propellant
 and bypass routine burn spacing.
+
+The campaign calls guidance and safety checks at six-hour decision epochs.
+This validates scheduled predictive checks, not a continuously running
+millisecond reflex. The API can be called at additional navigation epochs, but
+interrupt-driven health monitoring, execution during an already active burn,
+worst-case compute latency and the required flight watchdog cadence have not
+been validated. Unexpected hazards between scheduled checks remain a gap.
 
 The status distinguishes `EMERGENCY_BURN`, `NO_FEASIBLE_EMERGENCY`,
 `CLEARANCE_ALREADY_VIOLATED`, `NAVIGATION_STALE`, and
@@ -177,9 +204,43 @@ radius with 45-degree inclination. Measurement errors are independent 30 m
 position and 2 mm/s velocity errors per axis. The truth receives an unmodelled
 2e-9 m/s² transverse force and 1e-9 m/s² radial force, plus a 2e-7 m/s²
 transverse episode on days 30–33. A separate run loses fixes on days 45–47.
+Specifically, fix deliveries at decision epochs in that interval are withheld;
+the simulation does not model an optical sensor physically powering down.
 These are assumptions, not fitted spacecraft properties or measured fault rates.
 
 ## Numerical verification and interpretation
+
+Executed 90-day results are stored in
+[the result receipt](jacobi-control-results-2026-10-31.json). All scenarios use
+the same initial displacement, declared force mismatch and noise seed; common
+epochs receive the same noise draws. Only delivery of navigation fixes changes
+in the outage case. These are six-hour sampled tracking statistics:
+
+| Case | Position RMS | Maximum position error | Correction delta-v | Propellant used |
+| --- | ---: | ---: | ---: | ---: |
+| No correction burns | 1,328.69 km | 2,515.98 km | 0 | 0 |
+| Predictive controller | 189.05 m | 1,157.58 m | 3.2480 m/s | 0.7522 kg |
+| Controller, 48-hour fix-delivery outage | 274.73 m | 1,851.28 m | 3.2435 m/s | 0.7511 kg |
+
+The nominal maximum includes the 1.158 km starting displacement. Monthly RMS
+tracking errors are 206.75, 184.43 and 175.47 m. The nominal case issues 318
+burns and coasts at 42 decision epochs; the outage case issues 310 burns and
+reports eight stale-navigation decisions. Every routine burn is at least six
+hours after the preceding burn. Zero opposite burns within that minimum
+spacing verifies the dwell rule; it does not establish absence of all orbital
+error oscillations. The delayed fixes are idealized direct-state observations,
+and a single paired seed supplies no failure probability.
+
+![Synthetic 90-day tracking and delta-v comparison](jacobi-control-90day.png)
+
+The low-lunar emergency scenario coasts into the exclusion zone. With a
+hypothetical 100 N actuator, the finite search finds an 88.072 m/s, 431.49 s
+prograde burn. The subsequently propagated three-hour trajectory remains at
+least 118.20 km above the 50 km exclusion floor. **The burn uses all 20 kg of
+available propellant.** Survival over that interval therefore does not establish
+a viable remaining mission. With the 0.2 N actuator or zero thrust the search
+reports `NO_FEASIBLE_EMERGENCY`. Those outcomes are retained, not relabeled as
+successful aborts.
 
 The first 90-day coordinate comparison failed: a C2 cubic origin interpolation
 and looser integration differed by 581.35 m from an independently integrated
@@ -200,6 +261,23 @@ The native gravity contract remains the existing binary64 C ABI, with caller-own
 buffers and explicit status returns. Its independent normalization, derivative,
 pole and invalid-input tests remain part of the full suite. No new language
 bridge or hardware completion claim is introduced.
+
+The checked repository snapshot passes 301 tests; 15 directly exercise this
+controller. The package wheel contains all three new modules, and their syntax
+parses as Python 3.9. Passing unrelated heuristic tests is not evidence for
+hardware or safety assertions; the independent trajectory and analytic checks
+above supply the relevant evidence here. Exact source/input hashes and full
+commands/states are retained under
+`/Users/hendrixx./qrc-jacobi-control-2026-10-31/`.
+
+A separate ideal-CR3BP counterexample further checks the confinement claim in
+the concurrently authored catastrophe module. With its mass ratio 5.666e-5,
+initial state `[1.00194334,0,0,-0.03,0,0]` and a declared finite-secondary radius
+0.0013, `C_J=3.0555453` exceeds the module's stored threshold 3.0018, yet the
+trajectory impacts in 1,723.56 s. Maximum Jacobi-integral drift is below 2e-14.
+The integral was conserved; the implication from a closed neck to impact
+safety was the failed reasoning step. A finite-burn, trajectory-specific
+clearance calculation repairs that step only over its tested horizon.
 
 The Recall Gate-3 tripwire was expanded and its capped graph continued from its
 boundary. The relevant orbital branches were followed separately. Current

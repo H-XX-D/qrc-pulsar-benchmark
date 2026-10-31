@@ -1,0 +1,322 @@
+{
+  "classification": "synthetic closed-loop control, not flight telemetry or FPGA validation",
+  "mission": "90-day-capable high lunar orbit; not an NRHO/L2 stationkeeping demonstration",
+  "inputs": {
+    "epoch_jd_tdb": 2460310.5,
+    "lunar_degree": 20,
+    "parameters": {
+      "gm_moon": 4902799967088.641,
+      "gm_earth": 398600435507022.7,
+      "gm_sun": 1.3271244004127942e+20,
+      "moon_radius_m": 1738000.0,
+      "moon_j2": 0,
+      "area_mass_m2_kg": 0.02,
+      "reflectivity": 1.3,
+      "earth_radius_m": 6378137.0
+    },
+    "extra": {
+      "earth_j2": true,
+      "other_planets": true,
+      "first_pn": true,
+      "tide_convention": "none",
+      "love_k2": 0.024116,
+      "earth_j2_value": 0.0010826358699107248
+    },
+    "spacecraft_area_mass_classification": "assumed, not measured",
+    "inner_interpolation": "degree 5 spline; position, velocity, acceleration from same spline",
+    "physics_inputs": [
+      {
+        "file": "gggrx_0900c_sha.tab",
+        "url": "https://pds-geosciences.wustl.edu/grail/grail-l-lgrs-5-rdr-v1/grail_1001/shadr/gggrx_0900c_sha.tab",
+        "sha256": "dab6ab06e0d3d7cbc594ea4bd03151a65534ed5fdf4f147ae38662428c04454e",
+        "bytes": 49574944
+      },
+      {
+        "file": "gggrx_0900c_sha.lbl",
+        "url": "https://pds-geosciences.wustl.edu/grail/grail-l-lgrs-5-rdr-v1/grail_1001/shadr/gggrx_0900c_sha.lbl",
+        "sha256": "acc623e4b42a19f8feba1e7bda5189e984aa907491db12dede64bd426a1681c0",
+        "bytes": 10828
+      },
+      {
+        "file": "moon_pa_de421_1900-2050.bpc",
+        "url": "https://naif.jpl.nasa.gov/pub/naif/generic_kernels/pck/moon_pa_de421_1900-2050.bpc",
+        "sha256": "656f90616403d75a75f0cd6c8830fc5b44f8cb4facb5ccb8915e752b397520cf",
+        "bytes": 1770496
+      },
+      {
+        "file": "moon_080317.tf",
+        "url": "https://naif.jpl.nasa.gov/pub/naif/generic_kernels/fk/satellites/moon_080317.tf",
+        "sha256": "78732477b96f9863e7b0d65bcee3c22b8707ca5ed0db56d1173319cb2e8c7993",
+        "bytes": 21437
+      }
+    ],
+    "file_sha256": {
+      "/Users/hendrixx./qrc-cislunar-data-2026-10-30/de440s.bsp": "c1c7feeab882263fc493a9d5a5b2ddd71b54826cdf65d8d17a76126b260a49f2",
+      "/Users/hendrixx./qrc-cislunar-data-2026-10-30/gm_de440.tpc": "924ddf4fb9ead9fe8a1aa55780bcabde40b09d00065d58226e24b68d8092f140",
+      "/Users/hendrixx./qrc-force-followup-2026-10-31/liblunar.so": "127503666f988971e04aaa79e2adb2d7be7f66ae25f082e1998a01e95406b78d"
+    }
+  },
+  "reference_min_clearance_m": 8196078.031409679,
+  "initial_jacobi_state": [
+    -353481692.01754326,
+    141040175.39499596,
+    88256721.08087778,
+    -404.7889354227052,
+    -275.20662827865016,
+    97.32976849661327
+  ],
+  "source_sha256": {
+    "jacobi_control.py": "fc99e33f1936991b1d20c72b608298fe111dd1b78ec8e948f12216c45219aed0",
+    "jacobi_control_demo.py": "df0c8dc6ced439f87be404267f3f71711fe6b994cba5df7c8982a0c2d439f5c9"
+  },
+  "results": {
+    "controlled": {
+      "seed": 20261031,
+      "control": true,
+      "sensor_outage": false,
+      "days": 90.0,
+      "rms_tracking_m": 189.05311694097213,
+      "max_tracking_m": 1157.5836902790224,
+      "final_tracking_m": 317.2023656743463,
+      "total_dv_m_s": 3.2480149420284388,
+      "fuel_used_kg": 0.752173098581693,
+      "burn_count": 318,
+      "rapid_opposite_burns": 0,
+      "minimum_burn_spacing_s": 21600.0,
+      "mode_counts": {
+        "PREDICTIVE_BURN": 318,
+        "COAST": 42
+      },
+      "monthly": [
+        {
+          "start_day": 0.0,
+          "rms_tracking_m": 206.75023002135205,
+          "max_tracking_m": 1157.5836902790224,
+          "dv_m_s": 1.0955258999493958
+        },
+        {
+          "start_day": 30.0,
+          "rms_tracking_m": 184.4329181625669,
+          "max_tracking_m": 426.8101034049669,
+          "dv_m_s": 1.1341967659556065
+        },
+        {
+          "start_day": 60.0,
+          "rms_tracking_m": 175.47133860017152,
+          "max_tracking_m": 402.1808531612128,
+          "dv_m_s": 1.0182922761234323
+        }
+      ],
+      "navigation_rms_m": 51.15980278318139,
+      "wall_seconds": 219.45510412499425,
+      "settings": {
+        "decision_interval_s": 21600.0,
+        "planning_horizon_s": 172800.0,
+        "linear_step_s": 3600.0,
+        "response_time_s": 43200.0,
+        "position_on_m": 300.0,
+        "position_off_m": 100.0,
+        "velocity_on_m_s": 0.01,
+        "velocity_off_m_s": 0.003,
+        "minimum_burn_spacing_s": 21600.0,
+        "maximum_observation_age_s": 7200.0,
+        "moon_floor_m": 50000.0,
+        "earth_floor_m": 200000.0,
+        "uncertainty_multiplier": 3.0,
+        "position_cost_scale_m": 1000.0,
+        "velocity_cost_scale_m_s": 0.05,
+        "dv_cost_scale_m_s": 0.05
+      },
+      "actuator": {
+        "thrust_n": 0.2,
+        "isp_s": 220.0,
+        "dry_mass_kg": 480.0,
+        "reserve_kg": 0.5,
+        "routine_burn_s": 600.0,
+        "emergency_burn_s": 3600.0,
+        "minimum_dv_m_s": 0.0001
+      }
+    },
+    "outage": {
+      "seed": 20261031,
+      "control": true,
+      "sensor_outage": true,
+      "days": 90.0,
+      "rms_tracking_m": 274.7304813203423,
+      "max_tracking_m": 1851.2808237924137,
+      "final_tracking_m": 317.20236537807864,
+      "total_dv_m_s": 3.243529041921025,
+      "fuel_used_kg": 0.7511350375775692,
+      "burn_count": 310,
+      "rapid_opposite_burns": 0,
+      "minimum_burn_spacing_s": 21600.0,
+      "mode_counts": {
+        "PREDICTIVE_BURN": 310,
+        "COAST": 42,
+        "NAVIGATION_STALE": 8
+      },
+      "monthly": [
+        {
+          "start_day": 0.0,
+          "rms_tracking_m": 206.75023002135205,
+          "max_tracking_m": 1157.5836902790224,
+          "dv_m_s": 1.0955258999493958
+        },
+        {
+          "start_day": 30.0,
+          "rms_tracking_m": 390.59741497041637,
+          "max_tracking_m": 1851.2808237924137,
+          "dv_m_s": 1.129709035144527
+        },
+        {
+          "start_day": 60.0,
+          "rms_tracking_m": 175.47031416779018,
+          "max_tracking_m": 402.1812669179708,
+          "dv_m_s": 1.0182941068270988
+        }
+      ],
+      "navigation_rms_m": 145.20380626987156,
+      "wall_seconds": 216.25195604198962,
+      "settings": {
+        "decision_interval_s": 21600.0,
+        "planning_horizon_s": 172800.0,
+        "linear_step_s": 3600.0,
+        "response_time_s": 43200.0,
+        "position_on_m": 300.0,
+        "position_off_m": 100.0,
+        "velocity_on_m_s": 0.01,
+        "velocity_off_m_s": 0.003,
+        "minimum_burn_spacing_s": 21600.0,
+        "maximum_observation_age_s": 7200.0,
+        "moon_floor_m": 50000.0,
+        "earth_floor_m": 200000.0,
+        "uncertainty_multiplier": 3.0,
+        "position_cost_scale_m": 1000.0,
+        "velocity_cost_scale_m_s": 0.05,
+        "dv_cost_scale_m_s": 0.05
+      },
+      "actuator": {
+        "thrust_n": 0.2,
+        "isp_s": 220.0,
+        "dry_mass_kg": 480.0,
+        "reserve_kg": 0.5,
+        "routine_burn_s": 600.0,
+        "emergency_burn_s": 3600.0,
+        "minimum_dv_m_s": 0.0001
+      }
+    },
+    "open": {
+      "seed": 20261031,
+      "control": false,
+      "sensor_outage": false,
+      "days": 90.0,
+      "rms_tracking_m": 1328691.4738913432,
+      "max_tracking_m": 2515984.040899113,
+      "final_tracking_m": 2515984.040899113,
+      "total_dv_m_s": 0.0,
+      "fuel_used_kg": 0.0,
+      "burn_count": 0,
+      "rapid_opposite_burns": 0,
+      "minimum_burn_spacing_s": null,
+      "mode_counts": {},
+      "monthly": [
+        {
+          "start_day": 0.0,
+          "rms_tracking_m": 308301.60052962427,
+          "max_tracking_m": 537987.9058795722,
+          "dv_m_s": 0
+        },
+        {
+          "start_day": 30.0,
+          "rms_tracking_m": 1044652.2117808515,
+          "max_tracking_m": 1493685.8830948607,
+          "dv_m_s": 0
+        },
+        {
+          "start_day": 60.0,
+          "rms_tracking_m": 2025232.1543597747,
+          "max_tracking_m": 2515984.040899113,
+          "dv_m_s": 0
+        }
+      ],
+      "navigation_rms_m": 51.1593031778009,
+      "wall_seconds": 81.84764379198896,
+      "settings": {
+        "decision_interval_s": 21600.0,
+        "planning_horizon_s": 172800.0,
+        "linear_step_s": 3600.0,
+        "response_time_s": 43200.0,
+        "position_on_m": 300.0,
+        "position_off_m": 100.0,
+        "velocity_on_m_s": 0.01,
+        "velocity_off_m_s": 0.003,
+        "minimum_burn_spacing_s": 21600.0,
+        "maximum_observation_age_s": 7200.0,
+        "moon_floor_m": 50000.0,
+        "earth_floor_m": 200000.0,
+        "uncertainty_multiplier": 3.0,
+        "position_cost_scale_m": 1000.0,
+        "velocity_cost_scale_m_s": 0.05,
+        "dv_cost_scale_m_s": 0.05
+      },
+      "actuator": {
+        "thrust_n": 0.2,
+        "isp_s": 220.0,
+        "dry_mass_kg": 480.0,
+        "reserve_kg": 0.5,
+        "routine_burn_s": 600.0,
+        "emergency_burn_s": 3600.0,
+        "minimum_dv_m_s": 0.0001
+      }
+    }
+  },
+  "validation": {
+    "days": 90.0,
+    "independent_coordinate_max_position_m": 0.6256873328302219,
+    "independent_coordinate_final_position_m": 0.5872329375880428,
+    "degree20_vs120_max_acceleration_m_s2": 4.235164736271502e-22,
+    "emergency_cases": [
+      {
+        "thrust_n": 100.0,
+        "mode": "EMERGENCY_BURN",
+        "reason": "Tested finite burn avoids predicted exclusion-zone entry over this horizon",
+        "candidates": 37,
+        "predicted_clearance_m": 118136.01296042828,
+        "burn_s": 431.4926000000007,
+        "direction": [
+          0.0,
+          1.0,
+          0.0
+        ],
+        "verified_horizon_complete": true,
+        "verified_floor_clearance_m": 118198.41296042828,
+        "delta_v_m_s": 88.07194276365334
+      },
+      {
+        "thrust_n": 0.2,
+        "mode": "NO_FEASIBLE_EMERGENCY",
+        "reason": "No tested finite burn maintains clearance; recovery is not established",
+        "candidates": 37,
+        "predicted_clearance_m": -5.216861609369516e-09
+      },
+      {
+        "thrust_n": 0.0,
+        "mode": "NO_FEASIBLE_EMERGENCY",
+        "reason": "No tested finite burn maintains clearance; recovery is not established",
+        "candidates": 1,
+        "predicted_clearance_m": -5.216861609369516e-09
+      }
+    ],
+    "coast_floor_crossing_s": 1512.191115265881
+  },
+  "protocol_notes": {
+    "scoring": "Position tracking norm at six-hour decision epochs, not a continuous-time bound",
+    "pairing": "One fixed seed; identical noise draws at common epochs, unavailable fixes omitted in outage case",
+    "classification": "Synthetic spacecraft and direct-state fixes; public planetary/gravity inputs; not flight validation",
+    "uncertainty": "No Monte Carlo probability, real sensor performance or onboard hardware guarantee is inferred",
+    "full_command_and_state_artifacts": "/Users/hendrixx./qrc-jacobi-control-2026-10-31/final",
+    "emergency_tradeoff": "100 N case consumes all 20 kg propellant; clearance for three hours does not mean continued mission success",
+    "numerical_correction": "Initial cubic-origin, loose-tolerance campaign stopped; final uses quintic origin and tighter Jacobi integration"
+  },
+  "source_hashes_match_current_files": true
+}
