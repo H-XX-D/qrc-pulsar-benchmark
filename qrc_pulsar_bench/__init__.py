@@ -171,5 +171,6 @@ from .catastrophe_avoidance import (
     CatastropheAvoidanceFlightSystem,
     PowerBudgetComparison,
     CatastropheHazardState,
+    AutonomyInversionProfile,
 )
 

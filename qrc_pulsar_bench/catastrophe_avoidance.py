@@ -33,6 +33,26 @@ class PowerBudgetComparison:
 
 
 @dataclass(frozen=True)
+class AutonomyInversionProfile:
+    """Formalizes the transition from Ground-in-the-Loop viability to Autonomous Sovereignty.
+
+    The Autonomy Inversion Law states that when the round-trip light time (tau_rtlt)
+    exceeds the dynamical evolution time (tau_dyn = safe_corridor / v_rel), Ground-in-the-Loop
+    transitions from a safety asset to an absolute point-of-failure.
+    """
+    target_name: str
+    distance_au: float
+    round_trip_light_time_s: float
+    relative_velocity_mps: float
+    safe_corridor_km: float
+    dynamical_evolution_time_s: float
+    inversion_ratio: float  # tau_rtlt / tau_dyn
+    human_in_loop_viable: bool
+    survival_criticality_rank: int  # 1 = Highest single determinant of survival
+    onboard_autonomy_criticality_weight: float  # 0.0 to 1.0
+
+
+@dataclass(frozen=True)
 class CatastropheHazardState:
     """Real-time health and dynamical hazard assessment."""
     jacobi_constant: float
@@ -248,3 +268,62 @@ class CatastropheAvoidanceFlightSystem:
             "onboard_autonomous_reflex_ms": 35.0,
             "autonomy_speedup_factor": round(speedup_factor, 1),
         }
+
+    def evaluate_autonomy_inversion_boundary(
+        self,
+        target_name: str,
+        distance_au: float,
+        relative_velocity_mps: float,
+        safe_corridor_km: float,
+    ) -> AutonomyInversionProfile:
+        """Evaluates whether Ground-in-the-Loop is physically capable of preventing catastrophe."""
+        c_speed = 299792.458  # km/s
+        distance_km = distance_au * 149597870.7
+
+        tau_rtlt_s = (2.0 * distance_km) / c_speed
+        tau_dyn_s = (safe_corridor_km * 1000.0) / max(relative_velocity_mps, 1e-3)
+
+        inversion_ratio = tau_rtlt_s / max(tau_dyn_s, 1e-6)
+
+        # If inversion ratio > 1.0, light-time delay exceeds physical time to catastrophe
+        human_viable = inversion_ratio < 1.0
+
+        if inversion_ratio >= 100.0:
+            rank = 1  # Supreme survival determinant
+            autonomy_weight = 1.00
+        elif inversion_ratio >= 1.0:
+            rank = 1  # Essential primary survival system
+            autonomy_weight = 0.95
+        elif inversion_ratio >= 0.1:
+            rank = 2  # Shared responsibility
+            autonomy_weight = 0.60
+        else:
+            rank = 3  # Ground-assisted
+            autonomy_weight = 0.20
+
+        return AutonomyInversionProfile(
+            target_name=target_name,
+            distance_au=distance_au,
+            round_trip_light_time_s=round(tau_rtlt_s, 2),
+            relative_velocity_mps=relative_velocity_mps,
+            safe_corridor_km=safe_corridor_km,
+            dynamical_evolution_time_s=round(tau_dyn_s, 2),
+            inversion_ratio=round(inversion_ratio, 2),
+            human_in_loop_viable=human_viable,
+            survival_criticality_rank=rank,
+            onboard_autonomy_criticality_weight=autonomy_weight,
+        )
+
+    def generate_fleet_autonomy_inversion_audit(self) -> List[AutonomyInversionProfile]:
+        """Runs the Autonomy Inversion audit across all flight targets from LEO to Neptune."""
+        targets = [
+            ("Low Earth Orbit (ISS)", 400.0 / 149597870.7, 7600.0, 10.0),
+            ("Lunar Gateway (NRHO)", 384400.0 / 149597870.7, 1500.0, 5.0),
+            ("Ceres (Occator Plume)", 2.769, 500.0, 5.0),
+            ("Jupiter (Europa Skim)", 5.203, 2100.0, 10.0),
+            ("Saturn (Enceladus Vent)", 9.582, 1250.0, 5.0),
+            ("Uranus (Miranda Rift)", 19.218, 1850.0, 5.0),
+            ("Neptune (Triton Cryovent)", 30.070, 2400.0, 5.0),
+        ]
+        return [self.evaluate_autonomy_inversion_boundary(*t) for t in targets]
+

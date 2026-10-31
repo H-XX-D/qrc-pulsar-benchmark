@@ -90,3 +90,28 @@ def test_dsn_reaction_comparison():
     assert metrics_jupiter["onboard_autonomous_reflex_ms"] == 35.0
     # Speedup factor is >100,000x faster than human ground controllers
     assert metrics_jupiter["autonomy_speedup_factor"] > 100000.0
+
+
+def test_autonomy_inversion_audit():
+    """Verifies that human-in-the-loop is viable in LEO but dead beyond the Moon."""
+    flight_sys = CatastropheAvoidanceFlightSystem()
+    audit = flight_sys.generate_fleet_autonomy_inversion_audit()
+
+    # LEO: Ground viable, inversion ratio < 0.01
+    leo = audit[0]
+    assert leo.human_in_loop_viable is True
+    assert leo.inversion_ratio < 0.05
+    assert leo.survival_criticality_rank > 1
+
+    # Ceres, Jupiter, Saturn, Uranus, Neptune: Inversion occurs, human-in-the-loop NOT viable
+    for profile in audit[2:]:  # From Ceres outward
+        assert profile.human_in_loop_viable is False
+        assert profile.inversion_ratio > 100.0
+        assert profile.survival_criticality_rank == 1
+        assert profile.onboard_autonomy_criticality_weight == 1.00
+
+    # At Neptune: Inversion ratio > 10,000x
+    neptune = audit[-1]
+    assert neptune.inversion_ratio > 10000.0
+    assert neptune.round_trip_light_time_s > 29000.0
+
