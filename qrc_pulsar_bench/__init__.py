@@ -74,6 +74,8 @@ from .station_keeping import (
     PredictiveStationKeepingEngine,
 )
 from .capstone_replay import (
+    MultiDatasetFlightReplay,
+    FlightReplayReport,
     CapstoneFlightReplay,
     CapstoneReplayReport,
 )
