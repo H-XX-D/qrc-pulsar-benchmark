@@ -29,6 +29,12 @@ It distinguishes unresolved spacecraft/reference inputs from measured effects
 and compares the current spatial shape and conventional solvers at the same
 numerical error target.
 
+The [Jacobi predictive-control experiment](docs/jacobi-predictive-control.md)
+adds a long mission reference, rolling correction planning, damped feedback,
+bounded finite burns and an emergency maneuver search. Its observations and
+spacecraft fault cases are explicitly synthetic; it does not claim certified
+collision avoidance, validated NRHO maintenance or flight hardware readiness.
+
 The binary calculators implement leading-order GR relations using supplied masses
 and orbital elements. The triple calculator estimates perturbation scales for
 near-circular, tightly hierarchical systems. The geometric shape map describes

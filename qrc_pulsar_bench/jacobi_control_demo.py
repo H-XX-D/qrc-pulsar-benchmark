@@ -13,7 +13,7 @@ from pathlib import Path
 import time
 
 import numpy as np
-from scipy.interpolate import CubicSpline
+from scipy.interpolate import make_interp_spline
 
 from .cislunar_forces import (CislunarForceParameters, acceleration_components)
 from .cislunar_perturbations import BarycentricEnvironment, CislunarPerturbations, PerturbationOptions
@@ -27,12 +27,13 @@ def make_model(physics_dir, ephemeris, gm_kernel, native_library, duration_s, de
     epoch = 2460310.5  # 2024-01-01 00:00 TDB; explicitly synthetic mission
     env = BarycentricEnvironment(epoch, duration_s, ephemeris, gm_kernel)
     grid = env.spline.x
-    positions, velocities = env.spline(grid), env.spline(grid, 1)
-    # C2 interpolant is required for a consistent accelerated Jacobi origin.
-    # Its position, velocity and acceleration are all derived from one spline.
-    inner_spline = CubicSpline(grid, positions[:, 0]-positions[:, 1],
-        bc_type=((1, velocities[0, 0]-velocities[0, 1]),
-                 (1, velocities[-1, 0]-velocities[-1, 1])), extrapolate=False)
+    positions = env.spline(grid)
+    # C4 quintic interpolation makes the origin acceleration sufficiently smooth
+    # for long DOP853 integrations. C2 cubic interpolation introduced measurable
+    # jerk discontinuity quadrature error in the 90-day coordinate control.
+    degree_inner = 5 if len(grid) >= 6 else min(3, len(grid)-1)
+    inner_spline = make_interp_spline(grid, positions[:, 0]-positions[:, 1], k=degree_inner)
+    inner_spline.extrapolate = False
     def inner(t):
         if not 0 <= t <= duration_s:
             raise ValueError("Epoch outside Jacobi ephemeris")
@@ -54,7 +55,7 @@ def make_model(physics_dir, ephemeris, gm_kernel, native_library, duration_s, de
     model = JacobiFlightModel(acceleration, inner, moon_radius_m=field.radius_m, max_step_s=max_step_s)
     return model, dict(epoch_jd_tdb=epoch, lunar_degree=degree, parameters=asdict(parameters),
         extra=asdict(extra.options), spacecraft_area_mass_classification='assumed, not measured',
-        inner_interpolation='C2 cubic with position, velocity, acceleration from same spline',
+        inner_interpolation=f'degree {degree_inner} spline; position, velocity, acceleration from same spline',
         physics_inputs=physics_inputs(physics_dir),
         file_sha256={str(p):hashlib.sha256(Path(p).read_bytes()).hexdigest()
                      for p in (ephemeris, gm_kernel, native_library)})
@@ -85,7 +86,6 @@ def run_campaign(model, reference, initial, duration, *, seed, outage=False, con
     history = []
     commands = []
     times, truths, estimates, errors, records = [], [], [], [], []
-    last_decision = None
     total_dv = 0.
     start_wall = time.perf_counter()
     epochs = np.r_[np.arange(0, duration, settings.decision_interval_s), duration]
@@ -124,10 +124,13 @@ def run_campaign(model, reference, initial, duration, *, seed, outage=False, con
         # Fixed 10-minute sensor delivery latency. A 48-hour outage occurs in
         # the stress campaign only. Each observation is generated when available.
         sensing = not (outage and 45*86400 <= t < 47*86400)
+        # Common random draws at every epoch isolate the outage intervention
+        # from a different post-outage noise sequence in the paired campaign.
+        noise = rng.normal(size=6)
         if sensing:
             stamp = max(0., t-600.)
             sigma = np.r_[[30.]*3, [.002]*3]
-            measured = observed_state(stamp)+rng.normal(size=6)*sigma
+            measured = observed_state(stamp)+noise*sigma
             measured_mass = mass
             for burn in commands:
                 overlap = max(0., min(t, burn.stop_s)-max(stamp, burn.start_s))

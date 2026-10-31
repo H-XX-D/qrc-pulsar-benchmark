@@ -7,6 +7,7 @@ The controller receives navigation estimates and a *planned* reference, never
 future observed spacecraft states. This is a simulation API, not flight software.
 """
 from dataclasses import dataclass, field
+from typing import Optional
 import numpy as np
 from scipy.integrate import solve_ivp
 from scipy.linalg import expm
@@ -49,6 +50,8 @@ class Actuator:
     def capacity(self, mass, emergency=False, interval_s=np.inf):
         if not np.isfinite(mass) or mass < self.dry_mass_kg:
             raise ValueError("Mass below dry mass")
+        if np.isnan(interval_s) or interval_s <= 0:
+            raise ValueError("Positive actuator interval required")
         floor = self.dry_mass_kg + (0 if emergency else self.reserve_kg)
         fuel = max(0., mass - floor)
         duration = min(self.emergency_burn_s if emergency else self.routine_burn_s, interval_s)
@@ -57,6 +60,8 @@ class Actuator:
 
     def command(self, dv, time_s, mass, *, emergency=False, interval_s=np.inf):
         dv = _array(dv, (3,), "delta v")
+        if not np.isfinite(time_s):
+            raise ValueError("Finite command epoch required")
         magnitude = np.linalg.norm(dv)
         allowed = min(magnitude, self.capacity(mass, emergency, interval_s))
         if self.thrust_n == 0 or allowed < self.minimum_dv_m_s or magnitude == 0:
@@ -143,8 +148,10 @@ class JacobiFlightModel:
     position offset while omitting its acceleration produces a fictitious force.
     """
     def __init__(self, acceleration, inner, *, moon_fraction=GM_MOON/(GM_EARTH+GM_MOON),
-                 moon_radius_m=R_MOON, earth_radius_m=R_EARTH, max_step_s=1800., rtol=2e-11):
-        if not 0 < moon_fraction < 1 or min(moon_radius_m, earth_radius_m, max_step_s, rtol) <= 0:
+                 moon_radius_m=R_MOON, earth_radius_m=R_EARTH, max_step_s=1800., rtol=2e-13):
+        parameters = [moon_fraction, moon_radius_m, earth_radius_m, max_step_s, rtol]
+        if (not np.all(np.isfinite(parameters)) or not 0 < moon_fraction < 1
+                or min(moon_radius_m, earth_radius_m, max_step_s, rtol) <= 0):
             raise ValueError("Invalid model geometry or integration tolerances")
         self.acceleration = acceleration
         self.inner = inner
@@ -170,6 +177,9 @@ class JacobiFlightModel:
 
     def propagate(self, state, start, stop, mass, burn=None, *, floors=(0., 0.)):
         state = _array(state, (6,), "Jacobi state")
+        floors = _array(floors, (2,), "clearance floors")
+        if np.any(floors < 0):
+            raise ValueError("Nonnegative clearance floors required")
         if not np.all(np.isfinite([start, stop, mass])) or stop <= start or mass <= 0:
             raise ValueError("Positive interval and mass required")
         if burn is not None:
@@ -200,7 +210,7 @@ class JacobiFlightModel:
             collision.terminal = True
             collision.direction = -1
             sol = solve_ivp(rhs, (left, right), y, method="DOP853", rtol=self.rtol,
-                            atol=np.r_[[1e-4]*3, [1e-8]*3, 1e-10],
+                            atol=np.r_[[1e-6]*3, [1e-10]*3, 1e-10],
                             max_step=self.max_step_s, dense_output=True, events=collision)
             if not sol.success:
                 raise RuntimeError(sol.message)
@@ -223,7 +233,7 @@ class ControlDecision:
     burn: object = None
     planned_times_s: np.ndarray = field(default_factory=lambda: np.empty(0))
     planned_dv_m_s: np.ndarray = field(default_factory=lambda: np.empty((0, 3)))
-    predicted_clearance_m: float = float("nan")
+    predicted_clearance_m: Optional[float] = None
     candidates_evaluated: int = 0
 
 
