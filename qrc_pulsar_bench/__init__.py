@@ -103,6 +103,7 @@ from .jovian_tour import (
 from .sample_return import (
     SampleReturnConstants,
     StationaryCollectorLauncher,
+    DualModePropulsionSystem,
     AutonomousInterplanetaryGNC,
     EarthOrbitalStationCapture,
     SampleReturnMissionReport,

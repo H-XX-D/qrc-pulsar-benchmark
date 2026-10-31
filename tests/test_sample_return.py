@@ -17,6 +17,7 @@ import numpy as np
 from qrc_pulsar_bench.sample_return import (
     SampleReturnConstants,
     StationaryCollectorLauncher,
+    DualModePropulsionSystem,
     AutonomousInterplanetaryGNC,
     EarthOrbitalStationCapture,
     SampleReturnMissionReport,
@@ -166,3 +167,48 @@ def test_mission_synthesis_report():
     assert "Lunar Gateway NRHO Invariant Manifold Capture" in summary
     assert "Geosynchronous Orbiting Station" in summary
     assert "Orbiting Rover Tug Intercept" in summary
+
+
+def test_dual_mode_propulsion_system():
+    """Verify hybrid Hydrazine impulsive + micro-ion continuous propulsion ledger."""
+    prop = DualModePropulsionSystem(
+        gross_mass_kg=15.0,
+        sample_payload_kg=1.0,
+        avionics_bus_dry_kg=5.0,
+        propulsion_hardware_dry_kg=3.0,
+        hydrazine_propellant_kg=3.8,
+        ion_propellant_kg=2.2,
+    )
+
+    assert prop.dry_mass_kg == 9.0
+    assert prop.current_mass_kg == 15.0
+
+    # Test single burns
+    burn_res = prop.burn_chemical(100.0)
+    assert burn_res["burn_type"] == "chemical_hydrazine"
+    assert burn_res["delta_v_mps"] == 100.0
+    assert burn_res["fuel_consumed_kg"] > 0.0
+
+    ion_res = prop.burn_ion(500.0)
+    assert ion_res["burn_type"] == "micro_ion"
+    assert ion_res["delta_v_mps"] == 500.0
+    assert ion_res["fuel_consumed_kg"] > 0.0
+
+    # Exhaustion check
+    with pytest.raises(ValueError, match="Hydrazine fuel exhausted"):
+        prop.burn_chemical(5000.0)
+
+    # Staged mission profile simulation
+    fresh_prop = DualModePropulsionSystem()
+    ledger = fresh_prop.simulate_staged_mission_profile()
+
+    assert ledger["initial_gross_mass_kg"] == 15.0
+    assert ledger["dry_mass_kg"] == 9.0
+    assert ledger["phase1_departure_chem_dv_mps"] > 100.0  # ~123.6 m/s
+    assert ledger["phase2_cruise_ion_dv_mps"] > 4800.0      # ~4,952.4 m/s
+    assert ledger["phase3_tcm_chem_dv_mps"] > 70.0         # ~76.5 m/s
+    assert ledger["phase4_aerogeo_attitude_chem_dv_mps"] > 15.0  # ~19.5 m/s
+    assert ledger["phase5_terminal_geo_chem_dv_mps"] > 400.0     # ~454.8 m/s
+    assert ledger["total_mission_dv_mps"] > 5600.0         # Combined >5.6 km/s capability
+    assert ledger["final_mass_after_docking_kg"] >= 9.0    # Preserves sample payload
+
