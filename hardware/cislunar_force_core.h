@@ -6,7 +6,8 @@
 // env[0:3] Earth relative Moon, [3:6] Sun relative Moon, [6:9] lunar pole.
 // params: GM Moon, GM Earth, GM Sun, Moon radius, J2, SRP acceleration at 1 AU,
 // Earth radius. SRP coefficient = nominal solar pressure * Cr * area/mass.
-// Binary conical umbra; partial eclipses and high-degree gravity not modeled.
+// Uniform-disc penumbra/annular eclipse, larger individual obscuration if both
+// bodies overlap. For high-degree gravity see the separate lunar_harmonics ABI.
 // Return 0 success, 1 invalid input/collision. Outputs unchanged on failure.
 extern "C" {
 int cislunar_acceleration(const double pos[3], const double env[9],

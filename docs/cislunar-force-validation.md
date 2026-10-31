@@ -1,5 +1,9 @@
 # Cislunar force repair and forward validation
 
+This page preserves the first force-repair experiment. The subsequent
+[gravity, maneuver, SRP and orbit/clock refinement](cislunar-force-refinement.md)
+adds a spatial lunar field and a separate synthetic navigation experiment.
+
 The mission replay now propagates explicit physical forces from an initial
 spacecraft state. Future spacecraft samples are used only to score a forecast.
 The implementation remains an inertial position/velocity solver; these results
@@ -37,7 +41,9 @@ the quadrupole potential, including rotated axes.
 
 Solar gravity and radiation pressure are separate. Cannonball SRP is
 `P_1AU * Cr * area/mass * (AU/d)^2`, directed away from the Sun. Moon/Earth
-conical umbra switches it off in full shadow; partial eclipses are unresolved.
+occultation switches it off in full shadow. The subsequent refinement adds
+uniform-disc partial and annular eclipses in both Python and the native kernel;
+simultaneous Earth/Moon obscuration is approximated by the larger individual one.
 **Default area/mass is zero**, so SRP stays disabled until supplied explicitly.
 Unknown properties are not estimated from the future reference trajectory.
 
@@ -183,13 +189,14 @@ unknown instead of a literal zero. Passing host tests does not verify FPGA speed
 
 ## Remaining force and estimation limits
 
-Low lunar orbit needs a spatial gravity field (e.g. a specified, correctly
-normalized GRAIL harmonic model and matching lunar body-fixed orientation), not
-just J2. Maneuver histories need independently supplied thrust/attitude/mass
-inputs. SRP needs verified spacecraft properties; thermal recoil, partial
-shadow, Earth oblateness, planetary perturbations, solid-body tides and
-relativity remain outside this model. Initial-state covariance and an actual
-sensor/clock estimator remain necessary for an onboard-navigation comparison.
+The first experiment used J2 only. The subsequent refinement implements a
+normalized GRAIL harmonic field and matching lunar orientation, explicit finite
+burns, plate SRP, partial shadow and an orbit/clock estimator. Independent
+epoch-specific maneuver and spacecraft properties are still missing for the
+reported arcs, and the estimator has only a synthetic measurement demonstration.
+Thermal recoil, Earth oblateness, additional planetary perturbations, solid-body
+tides and relativity remain outside this force model. Initial-state covariance
+and actual onboard sensor validation are still needed.
 
 The dependency review also reached interbody transfers, Jovian tours, sample
 return and GEO capture. Their regression tests pass, but literal targeting

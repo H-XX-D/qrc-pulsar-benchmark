@@ -80,13 +80,19 @@ def lunar_pole_icrf(jd_tdb):
 
 
 def sunlight_fraction(r, earth, sun, moon_radius=R_MOON, earth_radius=R_EARTH):
-    """Binary conical umbra by Moon/Earth; partial eclipses are NOT resolved."""
+    """Uniform solar-disc occultation, including penumbra and annular eclipses.
+
+    Apparent angular discs use planar overlap areas (no limb darkening). If both
+    bodies partly occult the Sun, use the larger individual obscuration; their
+    exact overlapping union is not resolved.
+    """
     r, earth, sun = (_vector(x, n) for x, n in [(r, "position"), (earth, "earth"), (sun, "sun")])
     to_sun = sun - r
     ds = np.linalg.norm(to_sun)
     if ds <= R_SUN:
         raise ValueError("Spacecraft is inside the Sun")
     sun_angle = np.arcsin(R_SUN / ds)
+    visibility = 1.0
     for centre, radius in ((np.zeros(3), moon_radius), (earth, earth_radius)):
         to_body = centre - r
         db = np.linalg.norm(to_body)
@@ -95,9 +101,19 @@ def sunlight_fraction(r, earth, sun, moon_radius=R_MOON, earth_radius=R_EARTH):
         if db >= ds:
             continue
         separation = np.arccos(np.clip(np.dot(to_body, to_sun) / (db * ds), -1, 1))
-        if separation + sun_angle <= np.arcsin(radius / db):
-            return 0.0
-    return 1.0
+        body_angle = np.arcsin(radius / db)
+        visibility = min(visibility, _disc_visibility(sun_angle,body_angle,separation))
+    return visibility
+
+
+def _disc_visibility(a,b,d):
+    if d >= a+b: return 1.0
+    if d <= abs(a-b): return max(0.0,1.0-(b/a)**2) if a>b else 0.0
+    x=np.clip((d*d+a*a-b*b)/(2*d*a),-1,1)
+    y=np.clip((d*d+b*b-a*a)/(2*d*b),-1,1)
+    product=max(0.0,(-d+a+b)*(d+a-b)*(d-a+b)*(d+a+b))
+    overlap=a*a*np.arccos(x)+b*b*np.arccos(y)-0.5*np.sqrt(product)
+    return float(np.clip(1-overlap/(np.pi*a*a),0,1))
 
 
 @dataclass(frozen=True)

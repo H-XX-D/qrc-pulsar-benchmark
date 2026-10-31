@@ -23,7 +23,8 @@ def test_archives_and_diagnostics_are_not_force_attribution(dataset,n,days):
     assert forecast['uses_reference_feedback'] is False
 
 
-def test_future_spacecraft_values_cannot_change_force_or_prediction(tmp_path):
+@pytest.mark.parametrize('harmonics',[False,True])
+def test_future_spacecraft_values_cannot_change_force_or_prediction(tmp_path,harmonics):
     original=MultiDatasetFlightReplay()
     path=tmp_path/'modified.npz'
     pos=original.pos_km.copy(); vel=original.vel_km_s.copy()
@@ -31,6 +32,16 @@ def test_future_spacecraft_values_cannot_change_force_or_prediction(tmp_path):
     pos[2:]+=np.array([1e6,-2e6,3e6])
     np.savez(path,times_jd=original.times_jd,positions_km=pos,velocities_km_s=vel)
     changed=MultiDatasetFlightReplay(dataset_path=str(path),environment=original.environment)
+    if harmonics:
+        from qrc_pulsar_bench.lunar_gravity import LunarHarmonics,InertialLunarGravity
+        c=np.zeros((3,3)); s=c.copy(); c[0,0]=1; c[2,2]=2e-5
+        field=LunarHarmonics(c,s,GM_MOON,1738e3,frame='TEST',source='synthetic control')
+        class Orientation:
+            frame='TEST'
+            def __call__(self,t):
+                a=t/1e5
+                return np.array([[np.cos(a),-np.sin(a),0],[np.sin(a),np.cos(a),0],[0,0,1]])
+        original.lunar_gravity=changed.lunar_gravity=InertialLunarGravity(field,Orientation())
     for t in [0, 3600, 7200]:
         np.testing.assert_array_equal(original.eval_total_acceleration(original.initial_state[:3],t),
                                       changed.eval_total_acceleration(changed.initial_state[:3],t))

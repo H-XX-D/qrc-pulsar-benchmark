@@ -60,6 +60,12 @@ class MultiDatasetFlightReplay:
         parameters: CislunarForceParameters = CislunarForceParameters(),
         ephemeris: str = "builtin",
         environment=None,
+        lunar_gravity=None,
+        maneuvers=None,
+        maneuver_evidence=(),
+        allow_retrospective_maneuvers=False,
+        radiation_pressure=None,
+        additional_acceleration=None,
     ):
         self.dataset_name = dataset_name
         module_dir = os.path.dirname(__file__)
@@ -81,7 +87,7 @@ class MultiDatasetFlightReplay:
             self.times_jd = np.array(data['times_jd'], dtype=float)
             self.pos_km = np.array(data['positions_km'], dtype=float)
             self.vel_km_s = np.array(data['velocities_km_s'], dtype=float)
-        n = len(self.times_jd)
+        n = self.times_jd.size
         if (self.times_jd.ndim != 1 or n < 3
                 or self.pos_km.shape != (n, 3) or self.vel_km_s.shape != (n, 3)
                 or not all(np.all(np.isfinite(x)) for x in (self.times_jd, self.pos_km, self.vel_km_s))
@@ -100,6 +106,15 @@ class MultiDatasetFlightReplay:
         self.environment = environment if environment is not None else PlanetaryEphemeris(
             self.times_jd[0], self.total_duration_s, ephemeris=ephemeris)
         self.ephemeris_source = getattr(self.environment, "source", "caller-supplied")
+        self.lunar_gravity = lunar_gravity
+        if radiation_pressure is not None and parameters.area_mass_m2_kg:
+            raise ValueError("Configure either cannonball or plate SRP, not both")
+        self.radiation_pressure = radiation_pressure
+        self.additional_acceleration = additional_acceleration
+        from .maneuvers import ManeuverSchedule
+        self.maneuvers = maneuvers if maneuvers is not None else ManeuverSchedule()
+        self.maneuver_evidence = tuple(maneuver_evidence)
+        self.allow_retrospective_maneuvers = bool(allow_retrospective_maneuvers)
         self._reference = CubicHermiteSpline(self.times_s, self.pos_m, self.vel_m_s, extrapolate=False)
         self._diagnostics = None
 
@@ -114,6 +129,8 @@ class MultiDatasetFlightReplay:
     def parameters(self, value):
         if not isinstance(value, CislunarForceParameters):
             raise TypeError("Expected CislunarForceParameters")
+        if getattr(self,"radiation_pressure",None) is not None and value.area_mass_m2_kg:
+            raise ValueError("Configure either cannonball or plate SRP, not both")
         self._parameters = value
         self._diagnostics = None
 
@@ -121,8 +138,19 @@ class MultiDatasetFlightReplay:
         return third_body_tide(r, self._get_r_em(t_s), self.parameters.gm_earth)
 
     def eval_total_acceleration(self, r, t_s):
-        """Moon monopole/J2, differential Earth/Sun gravity, configured SRP only."""
-        return cislunar_acceleration(r, *self.environment(t_s), self.parameters)
+        """Configured lunar gravity, differential Earth/Sun gravity and SRP.
+
+        Commanded thrust is added separately by the segmented propagator.
+        """
+        environment = self.environment(t_s)
+        if self.lunar_gravity is None and self.radiation_pressure is None:
+            return cislunar_acceleration(r, *environment, self.parameters)
+        from .cislunar_forces import acceleration_components
+        terms = acceleration_components(r, *environment, self.parameters)
+        # A complete harmonic field replaces both old lunar terms, including GM.
+        lunar=(terms["moon_point_mass"]+terms["moon_j2"]) if self.lunar_gravity is None else self.lunar_gravity(r,t_s)
+        srp=terms["srp"] if self.radiation_pressure is None else self.radiation_pressure(r,environment[0],environment[1],t_s)
+        return lunar+terms["earth_tide"]+terms["sun_tide"]+srp
 
     @staticmethod
     def _differentiate(times, velocities, width):
@@ -140,6 +168,20 @@ class MultiDatasetFlightReplay:
             out[i] = weights @ velocities[sl]
         return out
 
+    def eval_state_acceleration(self, r, v, t_s):
+        """Full state-dependent force, including an explicitly supplied correction.
+
+        Position-only callers of eval_total_acceleration retain their old
+        contract. Velocity-dependent first-PN corrections require this method.
+        """
+        acceleration = self.eval_total_acceleration(r,t_s)
+        if self.additional_acceleration is not None:
+            extra = np.asarray(self.additional_acceleration(r,v,t_s),dtype=float)
+            if extra.shape != (3,) or not np.all(np.isfinite(extra)):
+                raise ValueError("Additional acceleration must be a finite three-vector")
+            acceleration = acceleration + extra
+        return acceleration
+
     def residual_diagnostics(self):
         """Offline finite-difference residuals, not identified physical forces.
 
@@ -147,19 +189,18 @@ class MultiDatasetFlightReplay:
         not an uncertainty bound. Maneuvers, frame/state errors, differentiation
         error and omitted forces can all contribute. Endpoints are one-sided.
         """
-        if self._diagnostics is None:
-            low = self._differentiate(self.times_s, self.vel_m_s, 3)
-            high = self._differentiate(self.times_s, self.vel_m_s, min(5, self.n_epochs))
-            modeled = np.array([self.eval_total_acceleration(r, t)
-                                for r, t in zip(self.pos_m, self.times_s)])
-            self._diagnostics = {
-                "residual_mps2": high - modeled,
-                "differencing_disagreement_mps2": high - low,
-                "modeled_acceleration_mps2": modeled,
-                "interpretation": "offline sampled residual; force attribution unverified",
-                "used_by_propagator": False,
-            }
-        return self._diagnostics
+        # Recompute: callers may change force callbacks or supplied commands.
+        low = self._differentiate(self.times_s, self.vel_m_s, 3)
+        high = self._differentiate(self.times_s, self.vel_m_s, min(5, self.n_epochs))
+        modeled = np.array([self.eval_state_acceleration(r, v, t) + self.maneuvers.acceleration(t)
+                            for r, v, t in zip(self.pos_m, self.vel_m_s, self.times_s)])
+        return {
+            "residual_mps2": high - modeled,
+            "differencing_disagreement_mps2": high - low,
+            "modeled_acceleration_mps2": modeled,
+            "interpretation": "offline sampled residual including configured thrust; force attribution unverified",
+            "used_by_propagator": False,
+        }
 
     @property
     def a_dist_flight(self):
@@ -196,18 +237,32 @@ class MultiDatasetFlightReplay:
             raise ValueError("Invalid initial state, propagation times or solver settings")
         if np.linalg.norm(state[:3]) <= self.parameters.moon_radius_m:
             raise ValueError("Initial state intersects Moon")
-        def rhs(t, y):
-            return np.r_[y[3:], self.eval_total_acceleration(y[:3], t)]
         def impact(t, y):
             return np.linalg.norm(y[:3]) - self.parameters.moon_radius_m
         impact.terminal = True
         impact.direction = -1
-        solution = solve_ivp(rhs, (times[0], times[-1]), state, t_eval=times,
-                             method="DOP853", rtol=rtol, atol=np.r_[[1e-4]*3, [1e-7]*3],
-                             max_step=max_step_s, events=impact)
-        if not solution.success or solution.y.shape[1] != len(times):
-            raise RuntimeError("Propagation stopped: lunar impact or integration failure: " + solution.message)
-        return solution.y.T
+        self.maneuvers.validate_available(times[0],times[-1],self.allow_retrospective_maneuvers)
+        if self.radiation_pressure is not None and self.radiation_pressure.available_at_s>times[0]:
+            raise ValueError("Radiation-pressure inputs were not available at prediction start")
+        boundaries=self.maneuvers.boundaries(times[0],times[-1])
+        output=np.empty((len(times),6)); output[0]=state
+        for left,right in zip(boundaries,boundaries[1:]):
+            # Freeze which burn is active on this smooth integration segment.
+            # Evaluate the left limit at burn stop so endpoint RK stages do not
+            # accidentally use an off-thrust derivative for the powered segment.
+            active=[b for b in self.maneuvers.burns if b.start_s<=0.5*(left+right)<b.stop_s]
+            def rhs(t,y):
+                thrust=sum((b.acceleration(min(t,np.nextafter(b.stop_s,-np.inf))) for b in active),np.zeros(3))
+                return np.r_[y[3:], self.eval_state_acceleration(y[:3],y[3:],t)+thrust]
+            indices=np.flatnonzero((times>left)&(times<=right))
+            evaluate=np.unique(np.r_[times[indices],right])
+            solution=solve_ivp(rhs,(left,right),state,t_eval=evaluate,
+                method="DOP853",rtol=rtol,atol=np.r_[[1e-4]*3,[1e-7]*3],max_step=max_step_s,events=impact)
+            if not solution.success or solution.y.shape[1]!=len(evaluate):
+                raise RuntimeError("Propagation stopped: lunar impact or integration failure: "+solution.message)
+            output[indices]=solution.y[:,:len(indices)].T
+            state=solution.y[:,-1]
+        return output
 
     def run_forward(self, duration_days=None, *, max_step_s=120.0, rtol=1e-11):
         """Initial-only forecast scored against later archived spacecraft epochs.
@@ -223,13 +278,22 @@ class MultiDatasetFlightReplay:
             raise ValueError("Duration must include at least one held-out epoch")
         predicted = self.propagate(self.initial_state, times, max_step_s=max_step_s, rtol=rtol)
         errors = np.linalg.norm(predicted[1:, :3] - self.pos_m[1:len(times)], axis=1)
+        end_jd=self.times_jd[0]+times[-1]/86400.0
+        events=[e for e in self.maneuver_evidence if e.start_jd_tdb<end_jd and e.stop_jd_tdb>self.times_jd[0]]
         return {
             "dataset": self.dataset_name, "times_s": times, "states_si": predicted,
             "position_error_m": errors, "rms_position_error_m": float(np.sqrt(np.mean(errors**2))),
             "max_position_error_m": float(np.max(errors)), "final_position_error_m": float(errors[-1]),
             "ephemeris_source": self.ephemeris_source, "uses_reference_feedback": False,
             "uses_trajectory_derived_forces": False,
-            "srp_enabled": bool(self.parameters.srp_acceleration_1au),
+            "additional_state_dependent_forces":self.additional_acceleration is not None,
+            "srp_enabled": bool(self.parameters.srp_acceleration_1au) or self.radiation_pressure is not None,
+            "commanded_burn_count":sum(b.start_s<times[-1] and b.stop_s>times[0] for b in self.maneuvers.burns),
+            "retrospective_commands_allowed":self.allow_retrospective_maneuvers,
+            "maneuver_screening":"known_event_in_interval" if events else "no_event_in_supplied_catalog",
+            "maneuver_catalog_complete":False,
+            "maneuver_evidence_sources":[e.source for e in events],
+            "gravity_model":getattr(getattr(self.lunar_gravity,"field",None),"source","approximate J2"),
         }
 
     def get_reference_state(self, t_s: float) -> Tuple[np.ndarray, np.ndarray]:

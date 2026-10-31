@@ -8,6 +8,16 @@ static double dot(const double x[3], const double y[3]) {
     return x[0]*y[0] + x[1]*y[1] + x[2]*y[2];
 }
 static double clamp(double x) { return x < -1 ? -1 : (x > 1 ? 1 : x); }
+static double disc_visibility(double a,double b,double d) {
+    if (d>=a+b) return 1;
+    if (d<=std::abs(a-b)) return a>b ? 1-b*b/(a*a) : 0;
+    double product=(-d+a+b)*(d+a-b)*(d-a+b)*(d+a+b);
+    double overlap=a*a*std::acos(clamp((d*d+a*a-b*b)/(2*d*a)))
+                  +b*b*std::acos(clamp((d*d+b*b-a*a)/(2*d*b)))
+                  -0.5*std::sqrt(product>0 ? product : 0);
+    double fraction=1-overlap/(3.14159265358979323846*a*a);
+    return fraction<0 ? 0 : (fraction>1 ? 1 : fraction);
+}
 
 extern "C" int cislunar_acceleration(const double r[3], const double env[9],
                                     const double p[7], double out[3]) {
@@ -44,8 +54,10 @@ extern "C" int cislunar_acceleration(const double r[3], const double env[9],
             for (int j=0; j<3; ++j) to_body[j]=(body==0 ? 0 : env[j])-r[j];
             double db=norm(to_body), radius=(body==0 ? p[3] : p[6]);
             if (db<=radius) return 1;
-            if (db<ds && std::acos(clamp(dot(to_body,to_sun)/(db*ds)))+sun_angle<=std::asin(radius/db))
-                visibility=0;
+            if (db<ds) {
+                double fraction=disc_visibility(sun_angle,std::asin(radius/db),std::acos(clamp(dot(to_body,to_sun)/(db*ds))));
+                if (fraction<visibility) visibility=fraction;
+            }
         }
         for (int j=0; j<3; ++j)
             result[j]-=visibility*p[5]*au*au*to_sun[j]/(ds*ds*ds);

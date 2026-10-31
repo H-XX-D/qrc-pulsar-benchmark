@@ -141,6 +141,15 @@ def test_cpp_invalid_inputs_do_not_mutate_state(native_library):
     np.testing.assert_array_equal(out,[123.,456.,789.])
 
 
+def test_cpp_python_penumbra_parity(native_library):
+    r=np.array([-4e7*np.cos(.0435),4e7*np.sin(.0435),0])
+    env=(np.array([0,384e6,0]),np.array([AU,0,0]),np.array([0,0,1]))
+    assert 0 < sunlight_fraction(r,env[0],env[1]) < 1
+    p=CislunarForceParameters(area_mass_m2_kg=.02)
+    native=NativeCislunarKernel(native_library,p)
+    np.testing.assert_allclose(native.acceleration(r,env),cislunar_acceleration(r,*env,p),rtol=2e-12,atol=2e-17)
+
+
 def test_optimizer_checks_final_endpoint_and_uses_supplied_forces():
     calls=[]
     def acceleration(r,t):

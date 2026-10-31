@@ -1,0 +1,693 @@
+{
+  "protocol": "Same first spacecraft state; no fitting/resets/reference-derived forces; future spacecraft samples only scored after propagation",
+  "reference_kind": "Reconstructed Horizons ephemerides, not raw navigation measurements",
+  "planetary_ephemeris_is_preloaded": true,
+  "frame": "Moon-centred ICRF, metres, seconds, JD TDB",
+  "physics_inputs": [
+    {
+      "file": "gggrx_0900c_sha.tab",
+      "url": "https://pds-geosciences.wustl.edu/grail/grail-l-lgrs-5-rdr-v1/grail_1001/shadr/gggrx_0900c_sha.tab",
+      "sha256": "dab6ab06e0d3d7cbc594ea4bd03151a65534ed5fdf4f147ae38662428c04454e",
+      "bytes": 49574944
+    },
+    {
+      "file": "gggrx_0900c_sha.lbl",
+      "url": "https://pds-geosciences.wustl.edu/grail/grail-l-lgrs-5-rdr-v1/grail_1001/shadr/gggrx_0900c_sha.lbl",
+      "sha256": "acc623e4b42a19f8feba1e7bda5189e984aa907491db12dede64bd426a1681c0",
+      "bytes": 10828
+    },
+    {
+      "file": "moon_pa_de421_1900-2050.bpc",
+      "url": "https://naif.jpl.nasa.gov/pub/naif/generic_kernels/pck/moon_pa_de421_1900-2050.bpc",
+      "sha256": "656f90616403d75a75f0cd6c8830fc5b44f8cb4facb5ccb8915e752b397520cf",
+      "bytes": 1770496
+    },
+    {
+      "file": "moon_080317.tf",
+      "url": "https://naif.jpl.nasa.gov/pub/naif/generic_kernels/fk/satellites/moon_080317.tf",
+      "sha256": "78732477b96f9863e7b0d65bcee3c22b8707ca5ed0db56d1173319cb2e8c7993",
+      "bytes": 21437
+    }
+  ],
+  "ephemeris_sha256": "c1c7feeab882263fc493a9d5a5b2ddd71b54826cdf65d8d17a76126b260a49f2",
+  "native_library_sha256": "127503666f988971e04aaa79e2adb2d7be7f66ae25f082e1998a01e95406b78d",
+  "lunar_model": {
+    "degree": 120,
+    "gm_m3_s2": 4902799967088.641,
+    "radius_m": 1738000.0,
+    "frame": "MOON_PA_DE421"
+  },
+  "results": [
+    {
+      "dataset": "capstone_nov2022",
+      "rms_position_error_m": 341755.0114790029,
+      "max_position_error_m": 704098.9033484037,
+      "final_position_error_m": 704098.9033484037,
+      "ephemeris_source": "/Users/hendrixx./qrc-cislunar-data-2026-10-30/de440s.bsp",
+      "uses_reference_feedback": false,
+      "uses_trajectory_derived_forces": false,
+      "srp_enabled": false,
+      "commanded_burn_count": 0,
+      "retrospective_commands_allowed": false,
+      "maneuver_screening": "known_event_in_interval",
+      "maneuver_catalog_complete": false,
+      "maneuver_evidence_sources": [
+        "https://www.nasa.gov/news-release/capstone-forges-new-path-for-nasas-future-artemis-moon-missions/"
+      ],
+      "gravity_model": "approximate J2",
+      "model": "sun-j2",
+      "duration_days": 3.0,
+      "heldout_epochs": 36,
+      "wall_seconds": 1.4729462919931393,
+      "reference_sha256": "75b4c4e5bd17f4313359407ef743ab4a10e2305446bceeb55e72d368066eb7db"
+    },
+    {
+      "dataset": "capstone_nov2022",
+      "rms_position_error_m": 341754.081016079,
+      "max_position_error_m": 704097.0048699841,
+      "final_position_error_m": 704097.0048699841,
+      "ephemeris_source": "/Users/hendrixx./qrc-cislunar-data-2026-10-30/de440s.bsp",
+      "uses_reference_feedback": false,
+      "uses_trajectory_derived_forces": false,
+      "srp_enabled": false,
+      "commanded_burn_count": 0,
+      "retrospective_commands_allowed": false,
+      "maneuver_screening": "known_event_in_interval",
+      "maneuver_catalog_complete": false,
+      "maneuver_evidence_sources": [
+        "https://www.nasa.gov/news-release/capstone-forges-new-path-for-nasas-future-artemis-moon-missions/"
+      ],
+      "gravity_model": "https://pds-geosciences.wustl.edu/grail/grail-l-lgrs-5-rdr-v1/grail_1001/shadr/gggrx_0900c_sha.tab",
+      "model": "grgm900c-degree120",
+      "duration_days": 3.0,
+      "heldout_epochs": 36,
+      "wall_seconds": 3.49199533398496,
+      "reference_sha256": "75b4c4e5bd17f4313359407ef743ab4a10e2305446bceeb55e72d368066eb7db",
+      "solver_refinement_max_position_change_m": 1.8704518989672052e-07
+    },
+    {
+      "dataset": "capstone_feb2023",
+      "rms_position_error_m": 1916.0310002211866,
+      "max_position_error_m": 4135.188809405162,
+      "final_position_error_m": 4135.188809405162,
+      "ephemeris_source": "/Users/hendrixx./qrc-cislunar-data-2026-10-30/de440s.bsp",
+      "uses_reference_feedback": false,
+      "uses_trajectory_derived_forces": false,
+      "srp_enabled": false,
+      "commanded_burn_count": 0,
+      "retrospective_commands_allowed": false,
+      "maneuver_screening": "no_event_in_supplied_catalog",
+      "maneuver_catalog_complete": false,
+      "maneuver_evidence_sources": [],
+      "gravity_model": "approximate J2",
+      "model": "sun-j2",
+      "duration_days": 3.0,
+      "heldout_epochs": 36,
+      "wall_seconds": 1.4872086659888737,
+      "reference_sha256": "ebddf438baa5647fcddb8a2618563068746b0a94b3dcf664d265a03911a9c23e"
+    },
+    {
+      "dataset": "capstone_feb2023",
+      "rms_position_error_m": 1910.5915353899463,
+      "max_position_error_m": 4123.389083215822,
+      "final_position_error_m": 4123.389083215822,
+      "ephemeris_source": "/Users/hendrixx./qrc-cislunar-data-2026-10-30/de440s.bsp",
+      "uses_reference_feedback": false,
+      "uses_trajectory_derived_forces": false,
+      "srp_enabled": false,
+      "commanded_burn_count": 0,
+      "retrospective_commands_allowed": false,
+      "maneuver_screening": "no_event_in_supplied_catalog",
+      "maneuver_catalog_complete": false,
+      "maneuver_evidence_sources": [],
+      "gravity_model": "https://pds-geosciences.wustl.edu/grail/grail-l-lgrs-5-rdr-v1/grail_1001/shadr/gggrx_0900c_sha.tab",
+      "model": "grgm900c-degree120",
+      "duration_days": 3.0,
+      "heldout_epochs": 36,
+      "wall_seconds": 3.4715872080123518,
+      "reference_sha256": "ebddf438baa5647fcddb8a2618563068746b0a94b3dcf664d265a03911a9c23e",
+      "solver_refinement_max_position_change_m": 2.1021499905342907e-07
+    },
+    {
+      "dataset": "artemis1_nov2022",
+      "rms_position_error_m": 9733713.377744215,
+      "max_position_error_m": 19316632.55094532,
+      "final_position_error_m": 19316632.55094532,
+      "ephemeris_source": "/Users/hendrixx./qrc-cislunar-data-2026-10-30/de440s.bsp",
+      "uses_reference_feedback": false,
+      "uses_trajectory_derived_forces": false,
+      "srp_enabled": false,
+      "commanded_burn_count": 0,
+      "retrospective_commands_allowed": false,
+      "maneuver_screening": "known_event_in_interval",
+      "maneuver_catalog_complete": false,
+      "maneuver_evidence_sources": [
+        "https://www.nasa.gov/blogs/missions/2022/11/25/artemis-i-flight-day-10-orion-enters-distant-retrograde-orbit/"
+      ],
+      "gravity_model": "approximate J2",
+      "model": "sun-j2",
+      "duration_days": 3.0,
+      "heldout_epochs": 36,
+      "wall_seconds": 1.4773081250023097,
+      "reference_sha256": "70cd084c70c83344ba1422a0c0da40d6544a433f5565196730a0b151028d453f"
+    },
+    {
+      "dataset": "artemis1_nov2022",
+      "rms_position_error_m": 9733713.43874774,
+      "max_position_error_m": 19316632.55470421,
+      "final_position_error_m": 19316632.55470421,
+      "ephemeris_source": "/Users/hendrixx./qrc-cislunar-data-2026-10-30/de440s.bsp",
+      "uses_reference_feedback": false,
+      "uses_trajectory_derived_forces": false,
+      "srp_enabled": false,
+      "commanded_burn_count": 0,
+      "retrospective_commands_allowed": false,
+      "maneuver_screening": "known_event_in_interval",
+      "maneuver_catalog_complete": false,
+      "maneuver_evidence_sources": [
+        "https://www.nasa.gov/blogs/missions/2022/11/25/artemis-i-flight-day-10-orion-enters-distant-retrograde-orbit/"
+      ],
+      "gravity_model": "https://pds-geosciences.wustl.edu/grail/grail-l-lgrs-5-rdr-v1/grail_1001/shadr/gggrx_0900c_sha.tab",
+      "model": "grgm900c-degree120",
+      "duration_days": 3.0,
+      "heldout_epochs": 36,
+      "wall_seconds": 3.4788051249925047,
+      "reference_sha256": "70cd084c70c83344ba1422a0c0da40d6544a433f5565196730a0b151028d453f",
+      "solver_refinement_max_position_change_m": 8.297451736199947e-07
+    },
+    {
+      "dataset": "lro_jan2023",
+      "rms_position_error_m": 22748.754481851876,
+      "max_position_error_m": 49382.720730239984,
+      "final_position_error_m": 47418.77705200596,
+      "ephemeris_source": "/Users/hendrixx./qrc-cislunar-data-2026-10-30/de440s.bsp",
+      "uses_reference_feedback": false,
+      "uses_trajectory_derived_forces": false,
+      "srp_enabled": false,
+      "commanded_burn_count": 0,
+      "retrospective_commands_allowed": false,
+      "maneuver_screening": "no_event_in_supplied_catalog",
+      "maneuver_catalog_complete": false,
+      "maneuver_evidence_sources": [],
+      "gravity_model": "approximate J2",
+      "model": "sun-j2",
+      "duration_days": 3.0,
+      "heldout_epochs": 2160,
+      "wall_seconds": 1.8575676670006942,
+      "reference_sha256": "1b8f939a1eeaf4024fff356d43e918ac744e35dde125e4fa0f3f70782956759a"
+    },
+    {
+      "dataset": "lro_jan2023",
+      "rms_position_error_m": 459.30843848302135,
+      "max_position_error_m": 946.6919453331634,
+      "final_position_error_m": 938.9934400413031,
+      "ephemeris_source": "/Users/hendrixx./qrc-cislunar-data-2026-10-30/de440s.bsp",
+      "uses_reference_feedback": false,
+      "uses_trajectory_derived_forces": false,
+      "srp_enabled": false,
+      "commanded_burn_count": 0,
+      "retrospective_commands_allowed": false,
+      "maneuver_screening": "no_event_in_supplied_catalog",
+      "maneuver_catalog_complete": false,
+      "maneuver_evidence_sources": [],
+      "gravity_model": "https://pds-geosciences.wustl.edu/grail/grail-l-lgrs-5-rdr-v1/grail_1001/shadr/gggrx_0900c_sha.tab",
+      "model": "grgm900c-degree120",
+      "duration_days": 3.0,
+      "heldout_epochs": 2160,
+      "wall_seconds": 9.55470091701136,
+      "reference_sha256": "1b8f939a1eeaf4024fff356d43e918ac744e35dde125e4fa0f3f70782956759a",
+      "solver_refinement_max_position_change_m": 0.6926237658087284
+    }
+  ],
+  "limitations": [
+    "No mission burn vectors supplied; evidence catalog incomplete",
+    "Default SRP disabled; no verified epoch-specific spacecraft properties",
+    "No lunar solid-body tides/thermal recoil/albedo, Earth oblateness, other planets or relativity",
+    "Gravity parameters and reconstructed initial state have no propagated covariance in forecasts"
+  ],
+  "source_sha256": {
+    "capstone_replay.py": "2d5c63631845bb0afa08e413ed5149439cc4e855bf88f2f0b7d8ee5b9dd4e690",
+    "cislunar_forces.py": "a4287ed7468c700e7c7227cd45b6ecfb6324f89c7f491a1c3d7ca758b029993f",
+    "lunar_gravity.py": "6fa70dcc9fd4a713d746c4e72a0c7f1b6c3735a1537ec35332e7c0a9b8919019",
+    "maneuvers.py": "f30153567b6cf1dd0e2e905cb7407c29f2b655812a7ba5683847388d774ec96e",
+    "radiation_pressure.py": "0188baa32729d669176fa2ba4e47a92e418965870271e6532d52c370d8ce99c3",
+    "navigation_filter.py": "902bd21ef5b4fcd1bb2e989783139d7b15bfaeb45a0265fb58295c5324da7d23",
+    "cislunar_refinement.py": "2f4644674b44dee2ceb243297babd007b7746c1a0666c2bf8698def4844a2424"
+  },
+  "lro_degree_sensitivity": [
+    {
+      "dataset": "lro_jan2023",
+      "rms_position_error_m": 9935.481348394394,
+      "max_position_error_m": 17203.393687272215,
+      "final_position_error_m": 8073.801842635617,
+      "ephemeris_source": "/Users/hendrixx./qrc-cislunar-data-2026-10-30/de440s.bsp",
+      "uses_reference_feedback": false,
+      "uses_trajectory_derived_forces": false,
+      "srp_enabled": false,
+      "commanded_burn_count": 0,
+      "retrospective_commands_allowed": false,
+      "maneuver_screening": "no_event_in_supplied_catalog",
+      "maneuver_catalog_complete": false,
+      "maneuver_evidence_sources": [],
+      "gravity_model": "https://pds-geosciences.wustl.edu/grail/grail-l-lgrs-5-rdr-v1/grail_1001/shadr/gggrx_0900c_sha.tab",
+      "model": "grgm900c-degree2",
+      "duration_days": 3.0,
+      "heldout_epochs": 2160,
+      "wall_seconds": 2.863818915997399,
+      "max_position_change_from_degree120_m": 17391.623962962258
+    },
+    {
+      "dataset": "lro_jan2023",
+      "rms_position_error_m": 6282.039974595873,
+      "max_position_error_m": 11652.167928323603,
+      "final_position_error_m": 10251.003166097966,
+      "ephemeris_source": "/Users/hendrixx./qrc-cislunar-data-2026-10-30/de440s.bsp",
+      "uses_reference_feedback": false,
+      "uses_trajectory_derived_forces": false,
+      "srp_enabled": false,
+      "commanded_burn_count": 0,
+      "retrospective_commands_allowed": false,
+      "maneuver_screening": "no_event_in_supplied_catalog",
+      "maneuver_catalog_complete": false,
+      "maneuver_evidence_sources": [],
+      "gravity_model": "https://pds-geosciences.wustl.edu/grail/grail-l-lgrs-5-rdr-v1/grail_1001/shadr/gggrx_0900c_sha.tab",
+      "model": "grgm900c-degree20",
+      "duration_days": 3.0,
+      "heldout_epochs": 2160,
+      "wall_seconds": 2.906571542000165,
+      "max_position_change_from_degree120_m": 10739.310435673455
+    },
+    {
+      "dataset": "lro_jan2023",
+      "rms_position_error_m": 708.9262277350151,
+      "max_position_error_m": 1397.4101376037434,
+      "final_position_error_m": 1298.404600184521,
+      "ephemeris_source": "/Users/hendrixx./qrc-cislunar-data-2026-10-30/de440s.bsp",
+      "uses_reference_feedback": false,
+      "uses_trajectory_derived_forces": false,
+      "srp_enabled": false,
+      "commanded_burn_count": 0,
+      "retrospective_commands_allowed": false,
+      "maneuver_screening": "no_event_in_supplied_catalog",
+      "maneuver_catalog_complete": false,
+      "maneuver_evidence_sources": [],
+      "gravity_model": "https://pds-geosciences.wustl.edu/grail/grail-l-lgrs-5-rdr-v1/grail_1001/shadr/gggrx_0900c_sha.tab",
+      "model": "grgm900c-degree40",
+      "duration_days": 3.0,
+      "heldout_epochs": 2160,
+      "wall_seconds": 4.063558583002305,
+      "max_position_change_from_degree120_m": 508.19055385067026
+    },
+    {
+      "dataset": "lro_jan2023",
+      "rms_position_error_m": 457.3048233926723,
+      "max_position_error_m": 965.9323936171606,
+      "final_position_error_m": 953.8972279776012,
+      "ephemeris_source": "/Users/hendrixx./qrc-cislunar-data-2026-10-30/de440s.bsp",
+      "uses_reference_feedback": false,
+      "uses_trajectory_derived_forces": false,
+      "srp_enabled": false,
+      "commanded_burn_count": 0,
+      "retrospective_commands_allowed": false,
+      "maneuver_screening": "no_event_in_supplied_catalog",
+      "maneuver_catalog_complete": false,
+      "maneuver_evidence_sources": [],
+      "gravity_model": "https://pds-geosciences.wustl.edu/grail/grail-l-lgrs-5-rdr-v1/grail_1001/shadr/gggrx_0900c_sha.tab",
+      "model": "grgm900c-degree80",
+      "duration_days": 3.0,
+      "heldout_epochs": 2160,
+      "wall_seconds": 6.760529249993851,
+      "max_position_change_from_degree120_m": 54.49577386252465
+    },
+    {
+      "dataset": "lro_jan2023",
+      "rms_position_error_m": 459.86314388524283,
+      "max_position_error_m": 946.683878937657,
+      "final_position_error_m": 938.5132546169502,
+      "ephemeris_source": "/Users/hendrixx./qrc-cislunar-data-2026-10-30/de440s.bsp",
+      "uses_reference_feedback": false,
+      "uses_trajectory_derived_forces": false,
+      "srp_enabled": false,
+      "commanded_burn_count": 0,
+      "retrospective_commands_allowed": false,
+      "maneuver_screening": "no_event_in_supplied_catalog",
+      "maneuver_catalog_complete": false,
+      "maneuver_evidence_sources": [],
+      "gravity_model": "https://pds-geosciences.wustl.edu/grail/grail-l-lgrs-5-rdr-v1/grail_1001/shadr/gggrx_0900c_sha.tab",
+      "model": "grgm900c-degree180",
+      "duration_days": 3.0,
+      "heldout_epochs": 2160,
+      "wall_seconds": 13.891901458002394,
+      "max_position_change_from_degree120_m": 5.7052150796237395
+    }
+  ],
+  "lro_historical_srp_sensitivity": [
+    {
+      "dataset": "lro_jan2023",
+      "rms_position_error_m": 496.15936545359534,
+      "max_position_error_m": 1032.3610665778122,
+      "final_position_error_m": 1032.3610665778122,
+      "ephemeris_source": "/Users/hendrixx./qrc-cislunar-data-2026-10-30/de440s.bsp",
+      "uses_reference_feedback": false,
+      "uses_trajectory_derived_forces": false,
+      "srp_enabled": true,
+      "commanded_burn_count": 0,
+      "retrospective_commands_allowed": false,
+      "maneuver_screening": "no_event_in_supplied_catalog",
+      "maneuver_catalog_complete": false,
+      "maneuver_evidence_sources": [],
+      "gravity_model": "https://pds-geosciences.wustl.edu/grail/grail-l-lgrs-5-rdr-v1/grail_1001/shadr/gggrx_0900c_sha.tab",
+      "model": "historical-srp-1000kg",
+      "duration_days": 3.0,
+      "heldout_epochs": 2160,
+      "wall_seconds": 10.987756917020306,
+      "mass_kg": 1000.0,
+      "area_m2": 14,
+      "reflectivity": 1.67,
+      "source": "https://ntrs.nasa.gov/api/citations/20140008968/downloads/20140008968.pdf",
+      "classification": "Historical cannonball area/Cr; mass sensitivity, not verified January 2023 inputs"
+    },
+    {
+      "dataset": "lro_jan2023",
+      "rms_position_error_m": 493.0597754210456,
+      "max_position_error_m": 1025.1672350728304,
+      "final_position_error_m": 1025.1672350728304,
+      "ephemeris_source": "/Users/hendrixx./qrc-cislunar-data-2026-10-30/de440s.bsp",
+      "uses_reference_feedback": false,
+      "uses_trajectory_derived_forces": false,
+      "srp_enabled": true,
+      "commanded_burn_count": 0,
+      "retrospective_commands_allowed": false,
+      "maneuver_screening": "no_event_in_supplied_catalog",
+      "maneuver_catalog_complete": false,
+      "maneuver_evidence_sources": [],
+      "gravity_model": "https://pds-geosciences.wustl.edu/grail/grail-l-lgrs-5-rdr-v1/grail_1001/shadr/gggrx_0900c_sha.tab",
+      "model": "historical-srp-1057.11kg",
+      "duration_days": 3.0,
+      "heldout_epochs": 2160,
+      "wall_seconds": 10.929877582995687,
+      "mass_kg": 1057.105,
+      "area_m2": 14,
+      "reflectivity": 1.67,
+      "source": "https://ntrs.nasa.gov/api/citations/20140008968/downloads/20140008968.pdf",
+      "classification": "Historical cannonball area/Cr; mass sensitivity, not verified January 2023 inputs"
+    },
+    {
+      "dataset": "lro_jan2023",
+      "rms_position_error_m": 491.8131202587531,
+      "max_position_error_m": 1021.9476470169667,
+      "final_position_error_m": 1021.9476470169667,
+      "ephemeris_source": "/Users/hendrixx./qrc-cislunar-data-2026-10-30/de440s.bsp",
+      "uses_reference_feedback": false,
+      "uses_trajectory_derived_forces": false,
+      "srp_enabled": true,
+      "commanded_burn_count": 0,
+      "retrospective_commands_allowed": false,
+      "maneuver_screening": "no_event_in_supplied_catalog",
+      "maneuver_catalog_complete": false,
+      "maneuver_evidence_sources": [],
+      "gravity_model": "https://pds-geosciences.wustl.edu/grail/grail-l-lgrs-5-rdr-v1/grail_1001/shadr/gggrx_0900c_sha.tab",
+      "model": "historical-srp-1100kg",
+      "duration_days": 3.0,
+      "heldout_epochs": 2160,
+      "wall_seconds": 11.21728537499439,
+      "mass_kg": 1100.0,
+      "area_m2": 14,
+      "reflectivity": 1.67,
+      "source": "https://ntrs.nasa.gov/api/citations/20140008968/downloads/20140008968.pdf",
+      "classification": "Historical cannonball area/Cr; mass sensitivity, not verified January 2023 inputs"
+    }
+  ],
+  "synthetic_navigation": {
+    "classification": "Synthetic idealized pseudorange observations generated from reconstructed LRO positions; not flight sensor data",
+    "measurement_equation": "z = direction dot r + clock_bias + independent Gaussian noise",
+    "seed": 20261031,
+    "directions_icrf": [
+      [
+        0.5773502691896258,
+        0.5773502691896258,
+        0.5773502691896258
+      ],
+      [
+        0.5773502691896258,
+        -0.5773502691896258,
+        -0.5773502691896258
+      ],
+      [
+        -0.5773502691896258,
+        0.5773502691896258,
+        -0.5773502691896258
+      ],
+      [
+        -0.5773502691896258,
+        -0.5773502691896258,
+        0.5773502691896258
+      ]
+    ],
+    "noise_sigma_m": 300.0,
+    "true_clock_bias_m": 6000.0,
+    "true_clock_drift_m_s": 0.03,
+    "initial_orbit_error_si": [
+      1000.0,
+      -1000.0,
+      500.0,
+      0.5,
+      -0.5,
+      0.2
+    ],
+    "initial_covariance": [
+      [
+        4000000.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        4000000.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        4000000.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        4.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        4.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        4.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        100000000.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.010000000000000002
+      ]
+    ],
+    "acceleration_noise_psd_m2_s3": 1e-10,
+    "clock_drift_noise_psd_m2_s3": 1e-08,
+    "duration_s": 21600.0,
+    "sensor_stop_s": 14400,
+    "observations_per_epoch": 4,
+    "sensed_epochs": 25,
+    "sensor_interval_s": 599.9999642372131,
+    "sensed_position_rms_m": 252.93496175726867,
+    "outage_position_rms_m": 224.6658155682265,
+    "open_loop_sensed_position_rms_m": 33585.78332331971,
+    "open_loop_outage_position_rms_m": 71588.73944940316,
+    "final_position_error_m": 225.99606310488304,
+    "open_loop_final_position_error_m": 81111.37368091202,
+    "clock_bias_rms_m": 68.53353632121564,
+    "final_clock_bias_error_m": -78.79255254773307,
+    "final_clock_drift_error_m_s": -0.008745539394300842,
+    "mean_nis_four_observations": 3.400804838954179,
+    "wall_seconds": 9.551736584020546,
+    "limitations": [
+      "Synthetic simultaneous directions; no actual pulsar catalog/visibility/phase ambiguity",
+      "No raw photon/TOA adapter, relativistic delays, dispersion or detector noise model",
+      "A single fixed seed and six-hour arc; not a Monte Carlo consistency or flight test"
+    ]
+  },
+  "historical_maneuver_metadata_example": {
+    "event": {
+      "start_jd_tdb": 2457147.139136405,
+      "stop_jd_tdb": 2457147.1395484423,
+      "source": "https://pds-geosciences.wustl.edu/lro/lro-l-rss-1-tracking-v1/lrors_0001/data/sff/fdf25_sk34a_2015124_2015125_01.txt",
+      "description": "LRO FDF25 retrospective maneuver calibration",
+      "delta_v_vector_available": false
+    },
+    "plan_epoch_jd_tdb": 2457149.129921127,
+    "planned_delta_v_mps": 2.537,
+    "average_spacecraft_mass_kg": 1057.105,
+    "direction_available": false,
+    "classification": "retrospective calibration; not a complete inertial thrust history",
+    "sha256": "cb49d89ce397624724f2aa3fc92435b0895f72fa9a9dab462708240341946f03"
+  },
+  "additional_checks": {
+    "orientation": [
+      {
+        "dataset": "capstone_nov2022",
+        "comparison": "600-second RotationSpline vs direct CSPICE at 113 off-grid epochs",
+        "max_orientation_error_rad": 1.3440274416218659e-11
+      },
+      {
+        "dataset": "capstone_feb2023",
+        "comparison": "600-second RotationSpline vs direct CSPICE at 113 off-grid epochs",
+        "max_orientation_error_rad": 1.201374979450878e-11
+      },
+      {
+        "dataset": "artemis1_nov2022",
+        "comparison": "600-second RotationSpline vs direct CSPICE at 113 off-grid epochs",
+        "max_orientation_error_rad": 5.350262493778563e-12
+      },
+      {
+        "dataset": "lro_jan2023",
+        "comparison": "600-second RotationSpline vs direct CSPICE at 113 off-grid epochs",
+        "max_orientation_error_rad": 8.049151835300365e-12
+      }
+    ],
+    "integration_intermediate": [
+      {
+        "step_s": 60,
+        "rtol": 2e-12,
+        "rms_position_error_m": 459.5187272161412
+      },
+      {
+        "step_s": 30,
+        "rtol": 2e-12,
+        "rms_position_error_m": 459.78050467681334,
+        "max_position_change_from_60s_m": 0.7225179305189279
+      }
+    ],
+    "integration_fine": [
+      {
+        "step_s": 15,
+        "rtol": 2e-12,
+        "rms_position_error_m": 459.780485434388
+      },
+      {
+        "step_s": 7.5,
+        "rtol": 2e-12,
+        "rms_position_error_m": 459.780493681298,
+        "max_position_change_from_15s_m": 1.8257794108634212e-05
+      }
+    ],
+    "lro_selected_archive_requery": {
+      "query_url": "https://ssd.jpl.nasa.gov/api/horizons.api?format=json&COMMAND=%27-85%27&OBJ_DATA=%27YES%27&EPHEM_TYPE=%27VECTORS%27&CENTER=%27500%40301%27&TLIST=%272459945.500000000000%0A2459945.545833332930%0A2459945.547222222202%0A2459945.548611111008%0A2459945.549999999814%0A2459946.500000000000%0A2459948.500000000000%27&REF_PLANE=%27FRAME%27&REF_SYSTEM=%27ICRF%27&TIME_TYPE=%27TDB%27&VEC_TABLE=%272%27&VEC_CORR=%27NONE%27&OUT_UNITS=%27KM-S%27&CSV_FORMAT=%27YES%27",
+      "indices": [
+        0,
+        33,
+        34,
+        35,
+        36,
+        720,
+        2160
+      ],
+      "epoch_jd_tdb": [
+        2459945.5,
+        2459945.545833333,
+        2459945.547222222,
+        2459945.548611111,
+        2459945.55,
+        2459946.5,
+        2459948.5
+      ],
+      "position_difference_m": [
+        0.0,
+        0.05704519592597107,
+        0.0029311324399779338,
+        0.014655373109647842,
+        0.026392313210408542,
+        0.0,
+        0.0
+      ],
+      "velocity_difference_m_s": [
+        0.0,
+        5.109469875903163e-05,
+        2.625932894419318e-06,
+        1.3148398442813611e-05,
+        2.366875883023822e-05,
+        0.0,
+        0.0
+      ],
+      "scope": "Seven selected archived states including the early residual transition; not a reconstruction-accuracy certificate"
+    },
+    "tests": {
+      "full_suite_passed": 235,
+      "log": "pytest-final.log",
+      "native_sanitizers": [
+        "address",
+        "undefined"
+      ],
+      "native_degrees_checked": [
+        0,
+        2,
+        120,
+        360
+      ]
+    },
+    "evidence_directory": "/Users/hendrixx./qrc-force-followup-2026-10-31",
+    "limits": "Sampled numerical convergence and selected-source checks do not certify full force completeness or reference accuracy",
+    "source_receipts": {
+      "check_refinement.py": "ad1bd4d7446e2be95fe9b115b028ceca97c5c6f4a3a7e0754f12bd4fe38b1623",
+      "check_fine_refinement.py": "5d7c612149a41687b6cebb397404b2ca05958861991afa50a6a81599de9143c5",
+      "check_orientation.py": "e9dcd3792f76644b1cfe633452378047c8d201634678405ecf0b7b292ba4eda4",
+      "check_lro_archive.py": "cec0ac0fee4f778defbd0e452cb4ad33722ed5a83db59ea73f22568945ec324a",
+      "native_sanitizer.cpp": "0a8afacfdf95cbf008e569a06ee1400481b795fc025a344adf12695e1db14dee",
+      "plot_results.py": "ce460100a78330c099ada36d67c1f59e3c1c143e273102ade38ed3d112da935a"
+    }
+  }
+}

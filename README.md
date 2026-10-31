@@ -16,6 +16,13 @@ documents the physical Moon/Earth/Sun force model, initial-only archive comparis
 and native C++ bridge. Sampled spacecraft residuals are diagnostics, never force
 inputs. Optional planetary ephemerides require `pip install '.[navigation]'`.
 
+The [lunar gravity and navigation refinement](docs/cislunar-force-refinement.md)
+adds published GRAIL harmonics, finite-burn and plate-SRP interfaces, and a
+sequential orbit/clock estimator. LRO's three-day initial-state forecast improves
+from 22.75 km to about 0.46 km RMS; the separately reported sensor experiment
+uses synthetic measurements. The guide includes all four archive comparisons,
+remaining force/input gaps and reproduction commands.
+
 The binary calculators implement leading-order GR relations using supplied masses
 and orbital elements. The triple calculator estimates perturbation scales for
 near-circular, tightly hierarchical systems. The geometric shape map describes
