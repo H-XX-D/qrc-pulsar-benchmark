@@ -1,0 +1,58 @@
+{
+  "classification": "Frozen MPC settings and QP interface; H and g change at each planning update",
+  "configuration": "mpc_2h_dv0.05",
+  "settings": {
+    "interval_s": 1800.0,
+    "horizon_steps": 4,
+    "position_scale_m": 100.0,
+    "velocity_scale_m_s": 0.01,
+    "dv_scale_m_s": 0.05,
+    "maximum_dv_m_s": 0.15,
+    "residual_tolerance": 2e-05,
+    "moon_floor_m": 50000.0,
+    "earth_floor_m": 200000.0
+  },
+  "total_signed_bits": 24,
+  "fractional_bits": 16,
+  "active_decision_variables": 12,
+  "maximum_decision_variables": 36,
+  "iterations_per_qp": 256,
+  "maximum_qps_per_update": 2,
+  "normalized_command_bounds": [
+    -1,
+    1
+  ],
+  "axis_dv_scale": "min(maximum_dv, per-burn actuator capacity, remaining routine delta-v / horizon steps) / sqrt(3)",
+  "input_arrays": {
+    "hessian": "36x36 symmetric row-major, padded with zeros; normalized max absolute row sum <= 1",
+    "gradient": "36 elements, padded",
+    "warm_start": "36 elements in [-1,1], padded",
+    "beta": "0 <= beta < 1 from positive-definite host QP",
+    "tolerance": "positive integer encoded residual tolerance"
+  },
+  "integer_residual_tolerance": 1,
+  "host_responsibilities": [
+    "causal navigation",
+    "force Jacobians and trajectory reference",
+    "positive-definite QP construction and scaling",
+    "finite-burn timing refinement",
+    "nonlinear first-burn clearance screen",
+    "actuator allocation"
+  ],
+  "status": {
+    "success": 0,
+    "invalid_input": 1,
+    "stale": 2,
+    "arithmetic_range": 4,
+    "iteration_budget": 16,
+    "host_clearance_screen": 32
+  },
+  "failure_response": "Inhibit routine command; no PID fallback; external emergency supervision remains required",
+  "device": null,
+  "source_receipts": {
+    "protocol.json": "6f860781e4a5ee7c302d648f08c4826f7b6b96fb28bd53ad3a061dc32724a9f1",
+    "train.json": "f0b2b0244d71dd54f3775265de18a60db9a7180fd291dcb6d3cbbedc5bfa377e",
+    "precision.json": "91f059321260d96d26924ed73b7fecab573889a4153a2e46385d1f3400365e51",
+    "precision-selection.json": "8a4c65ba1b2e325c629e3da4090d748bea80badf9310171d3698057c0742527c"
+  }
+}

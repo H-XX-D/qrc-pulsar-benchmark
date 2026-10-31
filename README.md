@@ -40,6 +40,21 @@ adds a causal navigation/disturbance filter, imperfect burns, corrupted and
 missing fixes, conventional control baselines, and a separate tuning/evaluation
 split. It tests coordinate, guidance and estimation benefits separately.
 
+The [ARTEMIS replay and FPGA PID experiment](docs/artemis-fpga-pid.md) downloads
+definitive P1/P2 orbit products and tests initial-only propagation, including
+maneuver and reference-discontinuity diagnostics. A separate synthetic control
+campaign repairs an initial tuning failure and obtains 19.6–28.9 m steady RMS
+on four fresh three-day scenarios with a portable 24-bit integer PID core.
+Those control errors are simulated; FPGA synthesis and flight validation remain
+unperformed, and no hardware device is assumed.
+
+The [predictive MPC implementation](docs/artemis-predictive-mpc.md) replaces PID
+guidance in the new ARTEMIS experiment with a bounded sequence optimizer. It
+executes the first finite burn, then replans; the tuned PID is retained as a
+comparison baseline. The integer C++ QP core has a fixed iteration budget and
+no PID fallback. Navigation, QP formation and nonlinear burn checks remain on
+the host pending a selected FPGA architecture.
+
 The binary calculators implement leading-order GR relations using supplied masses
 and orbital elements. The triple calculator estimates perturbation scales for
 near-circular, tightly hierarchical systems. The geometric shape map describes

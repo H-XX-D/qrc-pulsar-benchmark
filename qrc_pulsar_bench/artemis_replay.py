@@ -33,8 +33,8 @@ def make_model(epoch_jd_tdb, duration, physics_dir, ephemeris, gm_kernel, native
                *, cram=.016, degree=60, max_step_s=300., rtol=2e-13):
     """Same sourced force components as the control campaign at a real epoch.
 
-    Cr*A/m is explicit. The replay trains it only on September arcs, not on
-    an earlier forecast-versus-predicted-ephemeris calibration.
+    Cr*A/m is an explicit nominal input. September sensitivity runs vary it;
+    this campaign does not fit it to later spacecraft states.
     """
     env=BarycentricEnvironment(epoch_jd_tdb,duration,ephemeris,gm_kernel,grid_step_s=300.)
     grid=env.spline.x;positions=env.spline(grid)

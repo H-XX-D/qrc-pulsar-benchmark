@@ -1,0 +1,2595 @@
+{
+  "classification": "Definitive navigation-product replay plus separate synthetic control tests on ARTEMIS initial geometries; no FPGA device results",
+  "source_sha256": {
+    "qrc_pulsar_bench/artemis_replay.py": "01816998563d2ea4d8438b0d7b63e6b3c5860e153f091bcb1c2b7d7de56a52b0",
+    "qrc_pulsar_bench/artemis_pid_benchmark.py": "72fd148fd02ac8d84d349c8cf5a7bf4a957dd522d07a41bf45a3193faff772d2",
+    "qrc_pulsar_bench/fpga_pid.py": "7daf016122b40e8c1846f50e9ea56d451bd10833af607ea2436ab73ffab6e824",
+    "hardware/orbit_pid_core.cpp": "1404408dd4264d95350e81d7f12ce1cc47be47adf27e3994c2f09a77c61c24d2",
+    "hardware/orbit_pid_core.h": "230fb3404d4b1fe15be4fafbb59eca9969c9bba3ce498cfedbacea5ff12cf1a6",
+    "qrc_pulsar_bench/adaptive_control.py": "35fa55c3258ef7a33424a3e3853dacc7ed8eee018022523e997b563c7f6373fc",
+    "qrc_pulsar_bench/jacobi_control.py": "83929b41e1aa4a688812ab64d231bb81e8a96bb1dd1b1b8ca4dfb2cb0cdb9661"
+  },
+  "protocol_sha256": "01037a71285d7e8ffa1774975b2f5dded095d4b415262cb8b7a4068c53114a56",
+  "precision_selection": {
+    "selected_bits": 24,
+    "settings": "tau6h_i0.0",
+    "rule": "On all four training scenarios: <=1% relative RMS and DV change, <=10m max-error change, no collision or arithmetic range faults.",
+    "comparisons": [
+      {
+        "case": "P1_sep",
+        "seed": 4101,
+        "bits": 16,
+        "rms_relative_change": 2.2306785754798004,
+        "dv_relative_change": 0.7067461600895515,
+        "max_error_change_m": 0.0,
+        "passed": false
+      },
+      {
+        "case": "P1_sep",
+        "seed": 4101,
+        "bits": 24,
+        "rms_relative_change": 0.001186888237596051,
+        "dv_relative_change": 0.0006596055318046634,
+        "max_error_change_m": 0.0,
+        "passed": true
+      },
+      {
+        "case": "P1_sep",
+        "seed": 4101,
+        "bits": 32,
+        "rms_relative_change": 5.2849812406829955e-05,
+        "dv_relative_change": 6.624406405197902e-06,
+        "max_error_change_m": 0.0,
+        "passed": true
+      },
+      {
+        "case": "P1_sep",
+        "seed": 4102,
+        "bits": 16,
+        "rms_relative_change": 4.11838032245613,
+        "dv_relative_change": 1.3527153610987055,
+        "max_error_change_m": 705.163255977361,
+        "passed": false
+      },
+      {
+        "case": "P1_sep",
+        "seed": 4102,
+        "bits": 24,
+        "rms_relative_change": 0.0006275119292864506,
+        "dv_relative_change": 0.0009856553840628113,
+        "max_error_change_m": 0.0022322189562942185,
+        "passed": true
+      },
+      {
+        "case": "P1_sep",
+        "seed": 4102,
+        "bits": 32,
+        "rms_relative_change": 9.0308046537535e-06,
+        "dv_relative_change": 3.7841747849709506e-06,
+        "max_error_change_m": 2.701443554542493e-05,
+        "passed": true
+      },
+      {
+        "case": "P2_sep",
+        "seed": 4101,
+        "bits": 16,
+        "rms_relative_change": 0.10994477160760407,
+        "dv_relative_change": 0.15773903887364704,
+        "max_error_change_m": 0.0,
+        "passed": false
+      },
+      {
+        "case": "P2_sep",
+        "seed": 4101,
+        "bits": 24,
+        "rms_relative_change": 0.002224756927432958,
+        "dv_relative_change": 0.0018112903160044658,
+        "max_error_change_m": 0.0,
+        "passed": true
+      },
+      {
+        "case": "P2_sep",
+        "seed": 4101,
+        "bits": 32,
+        "rms_relative_change": 7.311328906300929e-06,
+        "dv_relative_change": 4.095430520711929e-06,
+        "max_error_change_m": 0.0,
+        "passed": true
+      },
+      {
+        "case": "P2_sep",
+        "seed": 4102,
+        "bits": 16,
+        "rms_relative_change": 4.941696512890296,
+        "dv_relative_change": 0.5096442466217033,
+        "max_error_change_m": 1511.5932727661648,
+        "passed": false
+      },
+      {
+        "case": "P2_sep",
+        "seed": 4102,
+        "bits": 24,
+        "rms_relative_change": 0.0009902397163328303,
+        "dv_relative_change": 0.00023377634356047672,
+        "max_error_change_m": 0.0016643616053784172,
+        "passed": true
+      },
+      {
+        "case": "P2_sep",
+        "seed": 4102,
+        "bits": 32,
+        "rms_relative_change": 2.4611794009476995e-06,
+        "dv_relative_change": 8.522508105901494e-07,
+        "max_error_change_m": 5.577212459684233e-05,
+        "passed": true
+      }
+    ]
+  },
+  "training_selection": {
+    "selected": "tau6h_i0.0",
+    "met_constraints": true,
+    "candidates": [
+      {
+        "configuration": "tau1h_i0.0",
+        "feasible": true,
+        "mean_dv_m_s": 0.6495555459932398,
+        "worst_steady_rms_m": 40.7361400874542
+      },
+      {
+        "configuration": "tau1h_i0.1",
+        "feasible": true,
+        "mean_dv_m_s": 0.6977602470119896,
+        "worst_steady_rms_m": 47.007146607737695
+      },
+      {
+        "configuration": "tau1h_i0.3",
+        "feasible": true,
+        "mean_dv_m_s": 0.7430484621252873,
+        "worst_steady_rms_m": 49.60909771793368
+      },
+      {
+        "configuration": "tau3h_i0.0",
+        "feasible": false,
+        "mean_dv_m_s": 0.6774885725360524,
+        "worst_steady_rms_m": 7440.434951675437
+      },
+      {
+        "configuration": "tau3h_i0.1",
+        "feasible": false,
+        "mean_dv_m_s": 0.4571808208516618,
+        "worst_steady_rms_m": 2008.3437339532331
+      },
+      {
+        "configuration": "tau3h_i0.3",
+        "feasible": false,
+        "mean_dv_m_s": 0.8573302503788842,
+        "worst_steady_rms_m": 13202.994696963066
+      },
+      {
+        "configuration": "tau6h_i0.0",
+        "feasible": true,
+        "mean_dv_m_s": 0.3628234534656341,
+        "worst_steady_rms_m": 129.0737776831498
+      },
+      {
+        "configuration": "tau6h_i0.1",
+        "feasible": true,
+        "mean_dv_m_s": 0.39504010064197137,
+        "worst_steady_rms_m": 146.91552723746807
+      },
+      {
+        "configuration": "tau6h_i0.3",
+        "feasible": true,
+        "mean_dv_m_s": 0.4335310671330974,
+        "worst_steady_rms_m": 265.1602113023257
+      }
+    ]
+  },
+  "evaluation": [
+    {
+      "case": "P1_oct",
+      "split": "evaluation",
+      "seed": 5101,
+      "faults": false,
+      "configuration": "tau6h_i0.0",
+      "arithmetic": "16",
+      "classification": "synthetic controlled spacecraft on ARTEMIS initial geometry; not historical control validation",
+      "settings": {
+        "interval_s": 1800.0,
+        "response_s": 21600.0,
+        "integral_strength": 0.0,
+        "derivative_filter_s": 1800.0,
+        "max_dv_m_s": 0.15,
+        "integral_limit_m_s": 0.03
+      },
+      "actuator": {
+        "thrust_n": 0.2,
+        "isp_s": 220.0,
+        "dry_mass_kg": 480.0,
+        "reserve_kg": 0.5,
+        "routine_burn_s": 600.0,
+        "emergency_burn_s": 3600.0,
+        "minimum_dv_m_s": 0.0001
+      },
+      "model": {
+        "epoch_jd_tdb": 2455835.5007659993,
+        "parameters": {
+          "gm_moon": 4902799967088.641,
+          "gm_earth": 398600435507022.7,
+          "gm_sun": 1.3271244004127942e+20,
+          "moon_radius_m": 1738000.0,
+          "moon_j2": 0,
+          "area_mass_m2_kg": 0.016,
+          "reflectivity": 1.0,
+          "earth_radius_m": 6378137.0
+        },
+        "extra": {
+          "earth_j2": true,
+          "other_planets": true,
+          "first_pn": true,
+          "tide_convention": "none",
+          "love_k2": 0.024116,
+          "earth_j2_value": 0.0010826358699107248
+        },
+        "lunar_degree": 60
+      },
+      "rms_m": 353.8797423884222,
+      "steady_rms_m": 350.42702614790676,
+      "max_m": 686.1331521359381,
+      "final_m": 223.52610823866948,
+      "dv_m_s": 1.1902090793197881,
+      "fuel_kg": 0.2757592686303951,
+      "burns": 122,
+      "collision": false,
+      "pid_cpu_s": 0.007932999999995083,
+      "online_cpu_s": 15.419289999999997,
+      "total_cpu_s": 28.440796000000002,
+      "core_status_counts": {
+        "0": 140,
+        "8": 4
+      },
+      "fixes_rejected": 0,
+      "fixes_accepted": 145,
+      "bias_clips": 0
+    },
+    {
+      "case": "P1_oct",
+      "split": "evaluation",
+      "seed": 5101,
+      "faults": false,
+      "configuration": "tau6h_i0.0",
+      "arithmetic": "24",
+      "classification": "synthetic controlled spacecraft on ARTEMIS initial geometry; not historical control validation",
+      "settings": {
+        "interval_s": 1800.0,
+        "response_s": 21600.0,
+        "integral_strength": 0.0,
+        "derivative_filter_s": 1800.0,
+        "max_dv_m_s": 0.15,
+        "integral_limit_m_s": 0.03
+      },
+      "actuator": {
+        "thrust_n": 0.2,
+        "isp_s": 220.0,
+        "dry_mass_kg": 480.0,
+        "reserve_kg": 0.5,
+        "routine_burn_s": 600.0,
+        "emergency_burn_s": 3600.0,
+        "minimum_dv_m_s": 0.0001
+      },
+      "model": {
+        "epoch_jd_tdb": 2455835.5007659993,
+        "parameters": {
+          "gm_moon": 4902799967088.641,
+          "gm_earth": 398600435507022.7,
+          "gm_sun": 1.3271244004127942e+20,
+          "moon_radius_m": 1738000.0,
+          "moon_j2": 0,
+          "area_mass_m2_kg": 0.016,
+          "reflectivity": 1.0,
+          "earth_radius_m": 6378137.0
+        },
+        "extra": {
+          "earth_j2": true,
+          "other_planets": true,
+          "first_pn": true,
+          "tide_convention": "none",
+          "love_k2": 0.024116,
+          "earth_j2_value": 0.0010826358699107248
+        },
+        "lunar_degree": 60
+      },
+      "rms_m": 413.3005466653205,
+      "steady_rms_m": 415.48699322603585,
+      "max_m": 858.137889005754,
+      "final_m": 408.1260152768515,
+      "dv_m_s": 1.4554995780812552,
+      "fuel_kg": 0.33720363295952893,
+      "burns": 144,
+      "collision": false,
+      "pid_cpu_s": 0.007565999999986417,
+      "online_cpu_s": 16.176913999999993,
+      "total_cpu_s": 29.534385999999998,
+      "core_status_counts": {
+        "0": 141,
+        "8": 3
+      },
+      "fixes_rejected": 0,
+      "fixes_accepted": 145,
+      "bias_clips": 0
+    },
+    {
+      "case": "P1_oct",
+      "split": "evaluation",
+      "seed": 5101,
+      "faults": false,
+      "configuration": "tau6h_i0.0",
+      "arithmetic": "32",
+      "classification": "synthetic controlled spacecraft on ARTEMIS initial geometry; not historical control validation",
+      "settings": {
+        "interval_s": 1800.0,
+        "response_s": 21600.0,
+        "integral_strength": 0.0,
+        "derivative_filter_s": 1800.0,
+        "max_dv_m_s": 0.15,
+        "integral_limit_m_s": 0.03
+      },
+      "actuator": {
+        "thrust_n": 0.2,
+        "isp_s": 220.0,
+        "dry_mass_kg": 480.0,
+        "reserve_kg": 0.5,
+        "routine_burn_s": 600.0,
+        "emergency_burn_s": 3600.0,
+        "minimum_dv_m_s": 0.0001
+      },
+      "model": {
+        "epoch_jd_tdb": 2455835.5007659993,
+        "parameters": {
+          "gm_moon": 4902799967088.641,
+          "gm_earth": 398600435507022.7,
+          "gm_sun": 1.3271244004127942e+20,
+          "moon_radius_m": 1738000.0,
+          "moon_j2": 0,
+          "area_mass_m2_kg": 0.016,
+          "reflectivity": 1.0,
+          "earth_radius_m": 6378137.0
+        },
+        "extra": {
+          "earth_j2": true,
+          "other_planets": true,
+          "first_pn": true,
+          "tide_convention": "none",
+          "love_k2": 0.024116,
+          "earth_j2_value": 0.0010826358699107248
+        },
+        "lunar_degree": 60
+      },
+      "rms_m": 412.93637254502994,
+      "steady_rms_m": 415.1168254157104,
+      "max_m": 857.1086021309048,
+      "final_m": 407.6554382486517,
+      "dv_m_s": 1.4545882908693772,
+      "fuel_kg": 0.33699258117684394,
+      "burns": 144,
+      "collision": false,
+      "pid_cpu_s": 0.008121000000009815,
+      "online_cpu_s": 16.08732599999999,
+      "total_cpu_s": 29.314214999999997,
+      "core_status_counts": {
+        "0": 141,
+        "8": 3
+      },
+      "fixes_rejected": 0,
+      "fixes_accepted": 145,
+      "bias_clips": 0
+    },
+    {
+      "case": "P1_oct",
+      "split": "evaluation",
+      "seed": 5101,
+      "faults": false,
+      "configuration": "tau6h_i0.0",
+      "arithmetic": "float64",
+      "classification": "synthetic controlled spacecraft on ARTEMIS initial geometry; not historical control validation",
+      "settings": {
+        "interval_s": 1800.0,
+        "response_s": 21600.0,
+        "integral_strength": 0.0,
+        "derivative_filter_s": 1800.0,
+        "max_dv_m_s": 0.15,
+        "integral_limit_m_s": 0.03
+      },
+      "actuator": {
+        "thrust_n": 0.2,
+        "isp_s": 220.0,
+        "dry_mass_kg": 480.0,
+        "reserve_kg": 0.5,
+        "routine_burn_s": 600.0,
+        "emergency_burn_s": 3600.0,
+        "minimum_dv_m_s": 0.0001
+      },
+      "model": {
+        "epoch_jd_tdb": 2455835.5007659993,
+        "parameters": {
+          "gm_moon": 4902799967088.641,
+          "gm_earth": 398600435507022.7,
+          "gm_sun": 1.3271244004127942e+20,
+          "moon_radius_m": 1738000.0,
+          "moon_j2": 0,
+          "area_mass_m2_kg": 0.016,
+          "reflectivity": 1.0,
+          "earth_radius_m": 6378137.0
+        },
+        "extra": {
+          "earth_j2": true,
+          "other_planets": true,
+          "first_pn": true,
+          "tide_convention": "none",
+          "love_k2": 0.024116,
+          "earth_j2_value": 0.0010826358699107248
+        },
+        "lunar_degree": 60
+      },
+      "rms_m": 412.93528462994664,
+      "steady_rms_m": 415.1153516205443,
+      "max_m": 857.0960323094154,
+      "final_m": 407.65183076322194,
+      "dv_m_s": 1.4545858713615258,
+      "fuel_kg": 0.3369920208249937,
+      "burns": 144,
+      "collision": false,
+      "pid_cpu_s": 0.005386999999973163,
+      "online_cpu_s": 16.284191000000003,
+      "total_cpu_s": 29.709259999999997,
+      "core_status_counts": {
+        "0": 141,
+        "8": 3
+      },
+      "fixes_rejected": 0,
+      "fixes_accepted": 145,
+      "bias_clips": 0
+    },
+    {
+      "case": "P1_oct",
+      "split": "evaluation",
+      "seed": 5102,
+      "faults": true,
+      "configuration": "tau6h_i0.0",
+      "arithmetic": "16",
+      "classification": "synthetic controlled spacecraft on ARTEMIS initial geometry; not historical control validation",
+      "settings": {
+        "interval_s": 1800.0,
+        "response_s": 21600.0,
+        "integral_strength": 0.0,
+        "derivative_filter_s": 1800.0,
+        "max_dv_m_s": 0.15,
+        "integral_limit_m_s": 0.03
+      },
+      "actuator": {
+        "thrust_n": 0.2,
+        "isp_s": 220.0,
+        "dry_mass_kg": 480.0,
+        "reserve_kg": 0.5,
+        "routine_burn_s": 600.0,
+        "emergency_burn_s": 3600.0,
+        "minimum_dv_m_s": 0.0001
+      },
+      "model": {
+        "epoch_jd_tdb": 2455835.5007659993,
+        "parameters": {
+          "gm_moon": 4902799967088.641,
+          "gm_earth": 398600435507022.7,
+          "gm_sun": 1.3271244004127942e+20,
+          "moon_radius_m": 1738000.0,
+          "moon_j2": 0,
+          "area_mass_m2_kg": 0.016,
+          "reflectivity": 1.0,
+          "earth_radius_m": 6378137.0
+        },
+        "extra": {
+          "earth_j2": true,
+          "other_planets": true,
+          "first_pn": true,
+          "tide_convention": "none",
+          "love_k2": 0.024116,
+          "earth_j2_value": 0.0010826358699107248
+        },
+        "lunar_degree": 60
+      },
+      "rms_m": 6573.905103052586,
+      "steady_rms_m": 6553.715136424099,
+      "max_m": 10728.242061456092,
+      "final_m": 6247.715282043308,
+      "dv_m_s": 5.197731613474391,
+      "fuel_kg": 1.203143573045736,
+      "burns": 133,
+      "collision": false,
+      "pid_cpu_s": 0.0069719999999762194,
+      "online_cpu_s": 18.89504100000007,
+      "total_cpu_s": 32.54934599999999,
+      "core_status_counts": {
+        "0": 114,
+        "8": 19,
+        "2": 11
+      },
+      "fixes_rejected": 1,
+      "fixes_accepted": 132,
+      "bias_clips": 0
+    },
+    {
+      "case": "P1_oct",
+      "split": "evaluation",
+      "seed": 5102,
+      "faults": true,
+      "configuration": "tau6h_i0.0",
+      "arithmetic": "24",
+      "classification": "synthetic controlled spacecraft on ARTEMIS initial geometry; not historical control validation",
+      "settings": {
+        "interval_s": 1800.0,
+        "response_s": 21600.0,
+        "integral_strength": 0.0,
+        "derivative_filter_s": 1800.0,
+        "max_dv_m_s": 0.15,
+        "integral_limit_m_s": 0.03
+      },
+      "actuator": {
+        "thrust_n": 0.2,
+        "isp_s": 220.0,
+        "dry_mass_kg": 480.0,
+        "reserve_kg": 0.5,
+        "routine_burn_s": 600.0,
+        "emergency_burn_s": 3600.0,
+        "minimum_dv_m_s": 0.0001
+      },
+      "model": {
+        "epoch_jd_tdb": 2455835.5007659993,
+        "parameters": {
+          "gm_moon": 4902799967088.641,
+          "gm_earth": 398600435507022.7,
+          "gm_sun": 1.3271244004127942e+20,
+          "moon_radius_m": 1738000.0,
+          "moon_j2": 0,
+          "area_mass_m2_kg": 0.016,
+          "reflectivity": 1.0,
+          "earth_radius_m": 6378137.0
+        },
+        "extra": {
+          "earth_j2": true,
+          "other_planets": true,
+          "first_pn": true,
+          "tide_convention": "none",
+          "love_k2": 0.024116,
+          "earth_j2_value": 0.0010826358699107248
+        },
+        "lunar_degree": 60
+      },
+      "rms_m": 6303.524627450756,
+      "steady_rms_m": 6241.963291866852,
+      "max_m": 9836.830172197815,
+      "final_m": 5657.867169291471,
+      "dv_m_s": 5.072729437442432,
+      "fuel_kg": 1.1742427303578893,
+      "burns": 133,
+      "collision": false,
+      "pid_cpu_s": 0.007297999999977378,
+      "online_cpu_s": 18.88791499999998,
+      "total_cpu_s": 32.470833,
+      "core_status_counts": {
+        "0": 115,
+        "8": 18,
+        "2": 11
+      },
+      "fixes_rejected": 1,
+      "fixes_accepted": 132,
+      "bias_clips": 0
+    },
+    {
+      "case": "P1_oct",
+      "split": "evaluation",
+      "seed": 5102,
+      "faults": true,
+      "configuration": "tau6h_i0.0",
+      "arithmetic": "32",
+      "classification": "synthetic controlled spacecraft on ARTEMIS initial geometry; not historical control validation",
+      "settings": {
+        "interval_s": 1800.0,
+        "response_s": 21600.0,
+        "integral_strength": 0.0,
+        "derivative_filter_s": 1800.0,
+        "max_dv_m_s": 0.15,
+        "integral_limit_m_s": 0.03
+      },
+      "actuator": {
+        "thrust_n": 0.2,
+        "isp_s": 220.0,
+        "dry_mass_kg": 480.0,
+        "reserve_kg": 0.5,
+        "routine_burn_s": 600.0,
+        "emergency_burn_s": 3600.0,
+        "minimum_dv_m_s": 0.0001
+      },
+      "model": {
+        "epoch_jd_tdb": 2455835.5007659993,
+        "parameters": {
+          "gm_moon": 4902799967088.641,
+          "gm_earth": 398600435507022.7,
+          "gm_sun": 1.3271244004127942e+20,
+          "moon_radius_m": 1738000.0,
+          "moon_j2": 0,
+          "area_mass_m2_kg": 0.016,
+          "reflectivity": 1.0,
+          "earth_radius_m": 6378137.0
+        },
+        "extra": {
+          "earth_j2": true,
+          "other_planets": true,
+          "first_pn": true,
+          "tide_convention": "none",
+          "love_k2": 0.024116,
+          "earth_j2_value": 0.0010826358699107248
+        },
+        "lunar_degree": 60
+      },
+      "rms_m": 6306.9162503503885,
+      "steady_rms_m": 6246.098795170881,
+      "max_m": 9849.294761377912,
+      "final_m": 5665.6352376851,
+      "dv_m_s": 5.073963631747176,
+      "fuel_kg": 1.1745280876186825,
+      "burns": 133,
+      "collision": false,
+      "pid_cpu_s": 0.0072849999999533566,
+      "online_cpu_s": 18.88213199999994,
+      "total_cpu_s": 32.43391100000001,
+      "core_status_counts": {
+        "0": 115,
+        "8": 18,
+        "2": 11
+      },
+      "fixes_rejected": 1,
+      "fixes_accepted": 132,
+      "bias_clips": 0
+    },
+    {
+      "case": "P1_oct",
+      "split": "evaluation",
+      "seed": 5102,
+      "faults": true,
+      "configuration": "tau6h_i0.0",
+      "arithmetic": "float64",
+      "classification": "synthetic controlled spacecraft on ARTEMIS initial geometry; not historical control validation",
+      "settings": {
+        "interval_s": 1800.0,
+        "response_s": 21600.0,
+        "integral_strength": 0.0,
+        "derivative_filter_s": 1800.0,
+        "max_dv_m_s": 0.15,
+        "integral_limit_m_s": 0.03
+      },
+      "actuator": {
+        "thrust_n": 0.2,
+        "isp_s": 220.0,
+        "dry_mass_kg": 480.0,
+        "reserve_kg": 0.5,
+        "routine_burn_s": 600.0,
+        "emergency_burn_s": 3600.0,
+        "minimum_dv_m_s": 0.0001
+      },
+      "model": {
+        "epoch_jd_tdb": 2455835.5007659993,
+        "parameters": {
+          "gm_moon": 4902799967088.641,
+          "gm_earth": 398600435507022.7,
+          "gm_sun": 1.3271244004127942e+20,
+          "moon_radius_m": 1738000.0,
+          "moon_j2": 0,
+          "area_mass_m2_kg": 0.016,
+          "reflectivity": 1.0,
+          "earth_radius_m": 6378137.0
+        },
+        "extra": {
+          "earth_j2": true,
+          "other_planets": true,
+          "first_pn": true,
+          "tide_convention": "none",
+          "love_k2": 0.024116,
+          "earth_j2_value": 0.0010826358699107248
+        },
+        "lunar_degree": 60
+      },
+      "rms_m": 6306.928194267529,
+      "steady_rms_m": 6246.113758001426,
+      "max_m": 9849.33682706402,
+      "final_m": 5665.66041272409,
+      "dv_m_s": 5.073968649470885,
+      "fuel_kg": 1.174529247763246,
+      "burns": 133,
+      "collision": false,
+      "pid_cpu_s": 0.004999000000026399,
+      "online_cpu_s": 18.802211000000113,
+      "total_cpu_s": 32.32579299999999,
+      "core_status_counts": {
+        "0": 115,
+        "8": 18,
+        "2": 11
+      },
+      "fixes_rejected": 1,
+      "fixes_accepted": 132,
+      "bias_clips": 0
+    },
+    {
+      "case": "P2_oct",
+      "split": "evaluation",
+      "seed": 5101,
+      "faults": false,
+      "configuration": "tau6h_i0.0",
+      "arithmetic": "16",
+      "classification": "synthetic controlled spacecraft on ARTEMIS initial geometry; not historical control validation",
+      "settings": {
+        "interval_s": 1800.0,
+        "response_s": 21600.0,
+        "integral_strength": 0.0,
+        "derivative_filter_s": 1800.0,
+        "max_dv_m_s": 0.15,
+        "integral_limit_m_s": 0.03
+      },
+      "actuator": {
+        "thrust_n": 0.2,
+        "isp_s": 220.0,
+        "dry_mass_kg": 480.0,
+        "reserve_kg": 0.5,
+        "routine_burn_s": 600.0,
+        "emergency_burn_s": 3600.0,
+        "minimum_dv_m_s": 0.0001
+      },
+      "model": {
+        "epoch_jd_tdb": 2455835.5007659993,
+        "parameters": {
+          "gm_moon": 4902799967088.641,
+          "gm_earth": 398600435507022.7,
+          "gm_sun": 1.3271244004127942e+20,
+          "moon_radius_m": 1738000.0,
+          "moon_j2": 0,
+          "area_mass_m2_kg": 0.016,
+          "reflectivity": 1.0,
+          "earth_radius_m": 6378137.0
+        },
+        "extra": {
+          "earth_j2": true,
+          "other_planets": true,
+          "first_pn": true,
+          "tide_convention": "none",
+          "love_k2": 0.024116,
+          "earth_j2_value": 0.0010826358699107248
+        },
+        "lunar_degree": 60
+      },
+      "rms_m": 304.09826642894257,
+      "steady_rms_m": 317.8194226890646,
+      "max_m": 776.4999848823575,
+      "final_m": 189.2334707676033,
+      "dv_m_s": 0.8625521046959578,
+      "fuel_kg": 0.19985967402993765,
+      "burns": 93,
+      "collision": false,
+      "pid_cpu_s": 0.007626999999999384,
+      "online_cpu_s": 14.043643999999986,
+      "total_cpu_s": 26.36929599999999,
+      "core_status_counts": {
+        "0": 142,
+        "8": 2
+      },
+      "fixes_rejected": 0,
+      "fixes_accepted": 145,
+      "bias_clips": 0
+    },
+    {
+      "case": "P2_oct",
+      "split": "evaluation",
+      "seed": 5101,
+      "faults": false,
+      "configuration": "tau6h_i0.0",
+      "arithmetic": "24",
+      "classification": "synthetic controlled spacecraft on ARTEMIS initial geometry; not historical control validation",
+      "settings": {
+        "interval_s": 1800.0,
+        "response_s": 21600.0,
+        "integral_strength": 0.0,
+        "derivative_filter_s": 1800.0,
+        "max_dv_m_s": 0.15,
+        "integral_limit_m_s": 0.03
+      },
+      "actuator": {
+        "thrust_n": 0.2,
+        "isp_s": 220.0,
+        "dry_mass_kg": 480.0,
+        "reserve_kg": 0.5,
+        "routine_burn_s": 600.0,
+        "emergency_burn_s": 3600.0,
+        "minimum_dv_m_s": 0.0001
+      },
+      "model": {
+        "epoch_jd_tdb": 2455835.5007659993,
+        "parameters": {
+          "gm_moon": 4902799967088.641,
+          "gm_earth": 398600435507022.7,
+          "gm_sun": 1.3271244004127942e+20,
+          "moon_radius_m": 1738000.0,
+          "moon_j2": 0,
+          "area_mass_m2_kg": 0.016,
+          "reflectivity": 1.0,
+          "earth_radius_m": 6378137.0
+        },
+        "extra": {
+          "earth_j2": true,
+          "other_planets": true,
+          "first_pn": true,
+          "tide_convention": "none",
+          "love_k2": 0.024116,
+          "earth_j2_value": 0.0010826358699107248
+        },
+        "lunar_degree": 60
+      },
+      "rms_m": 221.28656289346225,
+      "steady_rms_m": 222.8794178430586,
+      "max_m": 480.8508149318702,
+      "final_m": 166.2221783064292,
+      "dv_m_s": 0.5062943670959982,
+      "fuel_kg": 0.11732181858866397,
+      "burns": 137,
+      "collision": false,
+      "pid_cpu_s": 0.007628000000025281,
+      "online_cpu_s": 15.494367999999923,
+      "total_cpu_s": 28.26342600000001,
+      "core_status_counts": {
+        "0": 143,
+        "8": 1
+      },
+      "fixes_rejected": 0,
+      "fixes_accepted": 145,
+      "bias_clips": 0
+    },
+    {
+      "case": "P2_oct",
+      "split": "evaluation",
+      "seed": 5101,
+      "faults": false,
+      "configuration": "tau6h_i0.0",
+      "arithmetic": "32",
+      "classification": "synthetic controlled spacecraft on ARTEMIS initial geometry; not historical control validation",
+      "settings": {
+        "interval_s": 1800.0,
+        "response_s": 21600.0,
+        "integral_strength": 0.0,
+        "derivative_filter_s": 1800.0,
+        "max_dv_m_s": 0.15,
+        "integral_limit_m_s": 0.03
+      },
+      "actuator": {
+        "thrust_n": 0.2,
+        "isp_s": 220.0,
+        "dry_mass_kg": 480.0,
+        "reserve_kg": 0.5,
+        "routine_burn_s": 600.0,
+        "emergency_burn_s": 3600.0,
+        "minimum_dv_m_s": 0.0001
+      },
+      "model": {
+        "epoch_jd_tdb": 2455835.5007659993,
+        "parameters": {
+          "gm_moon": 4902799967088.641,
+          "gm_earth": 398600435507022.7,
+          "gm_sun": 1.3271244004127942e+20,
+          "moon_radius_m": 1738000.0,
+          "moon_j2": 0,
+          "area_mass_m2_kg": 0.016,
+          "reflectivity": 1.0,
+          "earth_radius_m": 6378137.0
+        },
+        "extra": {
+          "earth_j2": true,
+          "other_planets": true,
+          "first_pn": true,
+          "tide_convention": "none",
+          "love_k2": 0.024116,
+          "earth_j2_value": 0.0010826358699107248
+        },
+        "lunar_degree": 60
+      },
+      "rms_m": 221.16017352192998,
+      "steady_rms_m": 222.73607471658704,
+      "max_m": 480.68923518208794,
+      "final_m": 164.58811486925129,
+      "dv_m_s": 0.5053443228717375,
+      "fuel_kg": 0.11710169395428238,
+      "burns": 137,
+      "collision": false,
+      "pid_cpu_s": 0.007802999999981353,
+      "online_cpu_s": 15.540482999999938,
+      "total_cpu_s": 28.319562999999988,
+      "core_status_counts": {
+        "0": 143,
+        "8": 1
+      },
+      "fixes_rejected": 0,
+      "fixes_accepted": 145,
+      "bias_clips": 0
+    },
+    {
+      "case": "P2_oct",
+      "split": "evaluation",
+      "seed": 5101,
+      "faults": false,
+      "configuration": "tau6h_i0.0",
+      "arithmetic": "float64",
+      "classification": "synthetic controlled spacecraft on ARTEMIS initial geometry; not historical control validation",
+      "settings": {
+        "interval_s": 1800.0,
+        "response_s": 21600.0,
+        "integral_strength": 0.0,
+        "derivative_filter_s": 1800.0,
+        "max_dv_m_s": 0.15,
+        "integral_limit_m_s": 0.03
+      },
+      "actuator": {
+        "thrust_n": 0.2,
+        "isp_s": 220.0,
+        "dry_mass_kg": 480.0,
+        "reserve_kg": 0.5,
+        "routine_burn_s": 600.0,
+        "emergency_burn_s": 3600.0,
+        "minimum_dv_m_s": 0.0001
+      },
+      "model": {
+        "epoch_jd_tdb": 2455835.5007659993,
+        "parameters": {
+          "gm_moon": 4902799967088.641,
+          "gm_earth": 398600435507022.7,
+          "gm_sun": 1.3271244004127942e+20,
+          "moon_radius_m": 1738000.0,
+          "moon_j2": 0,
+          "area_mass_m2_kg": 0.016,
+          "reflectivity": 1.0,
+          "earth_radius_m": 6378137.0
+        },
+        "extra": {
+          "earth_j2": true,
+          "other_planets": true,
+          "first_pn": true,
+          "tide_convention": "none",
+          "love_k2": 0.024116,
+          "earth_j2_value": 0.0010826358699107248
+        },
+        "lunar_degree": 60
+      },
+      "rms_m": 221.1591977008509,
+      "steady_rms_m": 222.7349902587646,
+      "max_m": 480.68746716750366,
+      "final_m": 164.58384380474413,
+      "dv_m_s": 0.5053418273771542,
+      "fuel_kg": 0.11710111574905113,
+      "burns": 137,
+      "collision": false,
+      "pid_cpu_s": 0.005431999999899517,
+      "online_cpu_s": 15.587654000000072,
+      "total_cpu_s": 28.38075599999999,
+      "core_status_counts": {
+        "0": 143,
+        "8": 1
+      },
+      "fixes_rejected": 0,
+      "fixes_accepted": 145,
+      "bias_clips": 0
+    },
+    {
+      "case": "P2_oct",
+      "split": "evaluation",
+      "seed": 5102,
+      "faults": true,
+      "configuration": "tau6h_i0.0",
+      "arithmetic": "16",
+      "classification": "synthetic controlled spacecraft on ARTEMIS initial geometry; not historical control validation",
+      "settings": {
+        "interval_s": 1800.0,
+        "response_s": 21600.0,
+        "integral_strength": 0.0,
+        "derivative_filter_s": 1800.0,
+        "max_dv_m_s": 0.15,
+        "integral_limit_m_s": 0.03
+      },
+      "actuator": {
+        "thrust_n": 0.2,
+        "isp_s": 220.0,
+        "dry_mass_kg": 480.0,
+        "reserve_kg": 0.5,
+        "routine_burn_s": 600.0,
+        "emergency_burn_s": 3600.0,
+        "minimum_dv_m_s": 0.0001
+      },
+      "model": {
+        "epoch_jd_tdb": 2455835.5007659993,
+        "parameters": {
+          "gm_moon": 4902799967088.641,
+          "gm_earth": 398600435507022.7,
+          "gm_sun": 1.3271244004127942e+20,
+          "moon_radius_m": 1738000.0,
+          "moon_j2": 0,
+          "area_mass_m2_kg": 0.016,
+          "reflectivity": 1.0,
+          "earth_radius_m": 6378137.0
+        },
+        "extra": {
+          "earth_j2": true,
+          "other_planets": true,
+          "first_pn": true,
+          "tide_convention": "none",
+          "love_k2": 0.024116,
+          "earth_j2_value": 0.0010826358699107248
+        },
+        "lunar_degree": 60
+      },
+      "rms_m": 429.2334600160133,
+      "steady_rms_m": 413.81934022697135,
+      "max_m": 912.1179913616539,
+      "final_m": 134.8961483382792,
+      "dv_m_s": 0.7539877520444834,
+      "fuel_kg": 0.1747089094901071,
+      "burns": 102,
+      "collision": false,
+      "pid_cpu_s": 0.00751299999984667,
+      "online_cpu_s": 16.33014100000011,
+      "total_cpu_s": 28.909333000000004,
+      "core_status_counts": {
+        "0": 131,
+        "8": 2,
+        "2": 11
+      },
+      "fixes_rejected": 1,
+      "fixes_accepted": 132,
+      "bias_clips": 0
+    },
+    {
+      "case": "P2_oct",
+      "split": "evaluation",
+      "seed": 5102,
+      "faults": true,
+      "configuration": "tau6h_i0.0",
+      "arithmetic": "24",
+      "classification": "synthetic controlled spacecraft on ARTEMIS initial geometry; not historical control validation",
+      "settings": {
+        "interval_s": 1800.0,
+        "response_s": 21600.0,
+        "integral_strength": 0.0,
+        "derivative_filter_s": 1800.0,
+        "max_dv_m_s": 0.15,
+        "integral_limit_m_s": 0.03
+      },
+      "actuator": {
+        "thrust_n": 0.2,
+        "isp_s": 220.0,
+        "dry_mass_kg": 480.0,
+        "reserve_kg": 0.5,
+        "routine_burn_s": 600.0,
+        "emergency_burn_s": 3600.0,
+        "minimum_dv_m_s": 0.0001
+      },
+      "model": {
+        "epoch_jd_tdb": 2455835.5007659993,
+        "parameters": {
+          "gm_moon": 4902799967088.641,
+          "gm_earth": 398600435507022.7,
+          "gm_sun": 1.3271244004127942e+20,
+          "moon_radius_m": 1738000.0,
+          "moon_j2": 0,
+          "area_mass_m2_kg": 0.016,
+          "reflectivity": 1.0,
+          "earth_radius_m": 6378137.0
+        },
+        "extra": {
+          "earth_j2": true,
+          "other_planets": true,
+          "first_pn": true,
+          "tide_convention": "none",
+          "love_k2": 0.024116,
+          "earth_j2_value": 0.0010826358699107248
+        },
+        "lunar_degree": 60
+      },
+      "rms_m": 660.4300114474148,
+      "steady_rms_m": 688.4151920654656,
+      "max_m": 1630.8043006411062,
+      "final_m": 408.0905345021995,
+      "dv_m_s": 0.8419271850279743,
+      "fuel_kg": 0.19508166068033006,
+      "burns": 132,
+      "collision": false,
+      "pid_cpu_s": 0.007361000000145168,
+      "online_cpu_s": 18.055679999999967,
+      "total_cpu_s": 30.948127,
+      "core_status_counts": {
+        "0": 131,
+        "8": 2,
+        "2": 11
+      },
+      "fixes_rejected": 1,
+      "fixes_accepted": 132,
+      "bias_clips": 0
+    },
+    {
+      "case": "P2_oct",
+      "split": "evaluation",
+      "seed": 5102,
+      "faults": true,
+      "configuration": "tau6h_i0.0",
+      "arithmetic": "32",
+      "classification": "synthetic controlled spacecraft on ARTEMIS initial geometry; not historical control validation",
+      "settings": {
+        "interval_s": 1800.0,
+        "response_s": 21600.0,
+        "integral_strength": 0.0,
+        "derivative_filter_s": 1800.0,
+        "max_dv_m_s": 0.15,
+        "integral_limit_m_s": 0.03
+      },
+      "actuator": {
+        "thrust_n": 0.2,
+        "isp_s": 220.0,
+        "dry_mass_kg": 480.0,
+        "reserve_kg": 0.5,
+        "routine_burn_s": 600.0,
+        "emergency_burn_s": 3600.0,
+        "minimum_dv_m_s": 0.0001
+      },
+      "model": {
+        "epoch_jd_tdb": 2455835.5007659993,
+        "parameters": {
+          "gm_moon": 4902799967088.641,
+          "gm_earth": 398600435507022.7,
+          "gm_sun": 1.3271244004127942e+20,
+          "moon_radius_m": 1738000.0,
+          "moon_j2": 0,
+          "area_mass_m2_kg": 0.016,
+          "reflectivity": 1.0,
+          "earth_radius_m": 6378137.0
+        },
+        "extra": {
+          "earth_j2": true,
+          "other_planets": true,
+          "first_pn": true,
+          "tide_convention": "none",
+          "love_k2": 0.024116,
+          "earth_j2_value": 0.0010826358699107248
+        },
+        "lunar_degree": 60
+      },
+      "rms_m": 659.9254865591503,
+      "steady_rms_m": 687.8405194788413,
+      "max_m": 1629.2884052874642,
+      "final_m": 408.8365972993801,
+      "dv_m_s": 0.8417717425139394,
+      "fuel_kg": 0.1950456503584519,
+      "burns": 132,
+      "collision": false,
+      "pid_cpu_s": 0.007083000000051243,
+      "online_cpu_s": 17.782850999999653,
+      "total_cpu_s": 30.45795100000001,
+      "core_status_counts": {
+        "0": 131,
+        "8": 2,
+        "2": 11
+      },
+      "fixes_rejected": 1,
+      "fixes_accepted": 132,
+      "bias_clips": 0
+    },
+    {
+      "case": "P2_oct",
+      "split": "evaluation",
+      "seed": 5102,
+      "faults": true,
+      "configuration": "tau6h_i0.0",
+      "arithmetic": "float64",
+      "classification": "synthetic controlled spacecraft on ARTEMIS initial geometry; not historical control validation",
+      "settings": {
+        "interval_s": 1800.0,
+        "response_s": 21600.0,
+        "integral_strength": 0.0,
+        "derivative_filter_s": 1800.0,
+        "max_dv_m_s": 0.15,
+        "integral_limit_m_s": 0.03
+      },
+      "actuator": {
+        "thrust_n": 0.2,
+        "isp_s": 220.0,
+        "dry_mass_kg": 480.0,
+        "reserve_kg": 0.5,
+        "routine_burn_s": 600.0,
+        "emergency_burn_s": 3600.0,
+        "minimum_dv_m_s": 0.0001
+      },
+      "model": {
+        "epoch_jd_tdb": 2455835.5007659993,
+        "parameters": {
+          "gm_moon": 4902799967088.641,
+          "gm_earth": 398600435507022.7,
+          "gm_sun": 1.3271244004127942e+20,
+          "moon_radius_m": 1738000.0,
+          "moon_j2": 0,
+          "area_mass_m2_kg": 0.016,
+          "reflectivity": 1.0,
+          "earth_radius_m": 6378137.0
+        },
+        "extra": {
+          "earth_j2": true,
+          "other_planets": true,
+          "first_pn": true,
+          "tide_convention": "none",
+          "love_k2": 0.024116,
+          "earth_j2_value": 0.0010826358699107248
+        },
+        "lunar_degree": 60
+      },
+      "rms_m": 659.9237963077013,
+      "steady_rms_m": 687.8386020593164,
+      "max_m": 1629.2833185002437,
+      "final_m": 408.83713930156017,
+      "dv_m_s": 0.8417710013793163,
+      "fuel_kg": 0.19504547866608846,
+      "burns": 132,
+      "collision": false,
+      "pid_cpu_s": 0.005101999999794771,
+      "online_cpu_s": 18.252643000000276,
+      "total_cpu_s": 31.17650400000001,
+      "core_status_counts": {
+        "0": 131,
+        "8": 2,
+        "2": 11
+      },
+      "fixes_rejected": 1,
+      "fixes_accepted": 132,
+      "bias_clips": 0
+    }
+  ],
+  "aggregate": {
+    "float64": {
+      "mean_steady_rms_m": 1892.9506754850127,
+      "mean_dv_m_s": 1.9689168373972201,
+      "worst_sampled_error_m": 9849.33682706402,
+      "arithmetic_range_faults": 0
+    },
+    "16": {
+      "mean_steady_rms_m": 1908.9452313720105,
+      "mean_dv_m_s": 2.0011201373836554,
+      "worst_sampled_error_m": 10728.242061456092,
+      "arithmetic_range_faults": 0
+    },
+    "24": {
+      "mean_steady_rms_m": 1892.1862237503533,
+      "mean_dv_m_s": 1.9691126419119152,
+      "worst_sampled_error_m": 9836.830172197815,
+      "arithmetic_range_faults": 0
+    },
+    "32": {
+      "mean_steady_rms_m": 1892.9480536955048,
+      "mean_dv_m_s": 1.9689169970005578,
+      "worst_sampled_error_m": 9849.294761377912,
+      "arithmetic_range_faults": 0
+    }
+  },
+  "replay": [
+    {
+      "case": "P1_feb",
+      "classification": "Nonzero supplied maneuver codes are event flags; no maneuver impulse is inferred from residuals",
+      "flag_intervals": [
+        {
+          "start_s": 66840.0,
+          "end_s": 67560.0,
+          "code": 2002
+        }
+      ],
+      "first_flag_s": 66840.0,
+      "prefix_duration_h": 18.5,
+      "prefix_rms_m": 21.056469170600185,
+      "prefix_max_m": 46.617681818650915,
+      "endpoint_error_m": {
+        "1": 41558.013207870245,
+        "2": 223521.6469994318,
+        "3": 346969.589899331
+      },
+      "six_hour_m": 4.881149399843956,
+      "twelve_hour_m": 19.56347087088398,
+      "spk_cdf_position_rms_m": 9.92566563908751
+    },
+    {
+      "case": "P1_oct",
+      "classification": "Nonzero supplied maneuver codes are event flags; no maneuver impulse is inferred from residuals",
+      "flag_intervals": [],
+      "first_flag_s": null,
+      "prefix_duration_h": 72.0,
+      "prefix_rms_m": 879.4128875718495,
+      "prefix_max_m": 2034.080218742981,
+      "endpoint_error_m": {
+        "1": 75.4604986016524,
+        "2": 72.9576903525363,
+        "3": 2012.577687692088
+      },
+      "six_hour_m": 13.948855471226889,
+      "twelve_hour_m": 31.85473760756409,
+      "spk_cdf_position_rms_m": 10.352572368376014
+    },
+    {
+      "case": "P1_sep",
+      "classification": "Nonzero supplied maneuver codes are event flags; no maneuver impulse is inferred from residuals",
+      "flag_intervals": [],
+      "first_flag_s": null,
+      "prefix_duration_h": 72.0,
+      "prefix_rms_m": 4868.984941783712,
+      "prefix_max_m": 8335.06696229182,
+      "endpoint_error_m": {
+        "1": 8233.520608539127,
+        "2": 3324.4736473630187,
+        "3": 2696.635064049312
+      },
+      "six_hour_m": 5.605401768777059,
+      "twelve_hour_m": 3192.043953748391,
+      "spk_cdf_position_rms_m": 10.422994357241643
+    },
+    {
+      "case": "P2_feb",
+      "classification": "Nonzero supplied maneuver codes are event flags; no maneuver impulse is inferred from residuals",
+      "flag_intervals": [
+        {
+          "start_s": 7740.0,
+          "end_s": 8160.0,
+          "code": 2002
+        }
+      ],
+      "first_flag_s": 7740.0,
+      "prefix_duration_h": 2.0,
+      "prefix_rms_m": 0.2521455989043647,
+      "prefix_max_m": 0.5106632762240935,
+      "endpoint_error_m": {
+        "1": 18921.63814338267,
+        "2": 9853.58961815257,
+        "3": 15634.273041444258
+      },
+      "six_hour_m": 22682.250794306776,
+      "twelve_hour_m": 19611.220710517628,
+      "spk_cdf_position_rms_m": 9.520384698141415
+    },
+    {
+      "case": "P2_oct",
+      "classification": "Nonzero supplied maneuver codes are event flags; no maneuver impulse is inferred from residuals",
+      "flag_intervals": [
+        {
+          "start_s": 69840.0,
+          "end_s": 72960.0,
+          "code": 2002
+        }
+      ],
+      "first_flag_s": 69840.0,
+      "prefix_duration_h": 19.333333333333332,
+      "prefix_rms_m": 13.689540124512115,
+      "prefix_max_m": 35.39339121031728,
+      "endpoint_error_m": {
+        "1": 515386.56227624405,
+        "2": 9212939.310880104,
+        "3": 9163624.951268379
+      },
+      "six_hour_m": 3.35969527817815,
+      "twelve_hour_m": 13.137990648692922,
+      "spk_cdf_position_rms_m": 10.16892348078921
+    },
+    {
+      "case": "P2_sep",
+      "classification": "Nonzero supplied maneuver codes are event flags; no maneuver impulse is inferred from residuals",
+      "flag_intervals": [
+        {
+          "start_s": 151260.0,
+          "end_s": 154260.0,
+          "code": 2002
+        }
+      ],
+      "first_flag_s": 151260.0,
+      "prefix_duration_h": 42.0,
+      "prefix_rms_m": 736.1055743311349,
+      "prefix_max_m": 1702.2537242089297,
+      "endpoint_error_m": {
+        "1": 794.8957237858051,
+        "2": 685440.6439753714,
+        "3": 7837852.340020329
+      },
+      "six_hour_m": 508.64841878909306,
+      "twelve_hour_m": 649.2800656568077,
+      "spk_cdf_position_rms_m": 9.34551416790738
+    }
+  ],
+  "reference_discontinuities": [
+    {
+      "case": "P1_sep",
+      "left_s": 34229.99998474121,
+      "right_s": 34230.0,
+      "interval_s": 1.52587890625e-05,
+      "position_defect_m": 427.96230818869554,
+      "velocity_step_m_s": 0.003394654106496123
+    },
+    {
+      "case": "P1_oct",
+      "left_s": 172829.9999847412,
+      "right_s": 172830.0,
+      "interval_s": 1.52587890625e-05,
+      "position_defect_m": 618.0462211545338,
+      "velocity_step_m_s": 0.0003030730333033382
+    }
+  ],
+  "receipts": {
+    "download-manifest.json": {
+      "path": "/Users/hendrixx./qrc-artemis-fpga-2026-10-31/download-manifest.json",
+      "sha256": "fabc5bab74a36c64b0c2ecd08781edb216607b879aa844b383b2b611cd6e2db9"
+    },
+    "pid-train.json": {
+      "path": "/Users/hendrixx./qrc-artemis-fpga-2026-10-31/pid-train.json",
+      "sha256": "538976033340cff4f5c0219767c19f6ee438579dbad284d6ec880471dffbf1d4"
+    },
+    "pid-precision.json": {
+      "path": "/Users/hendrixx./qrc-artemis-fpga-2026-10-31/pid-precision.json",
+      "sha256": "e542754848108bf7663e5b85e58844dc84f4a8bcc4039105c045dd43e496e8a1"
+    },
+    "pid-evaluate.json": {
+      "path": "/Users/hendrixx./qrc-artemis-fpga-2026-10-31/pid-evaluate.json",
+      "sha256": "3b6b10d4238115ff7e34fd8e29094245e3ef391b4ad63639ca6008ba6c667985"
+    },
+    "pid-protocol.json": {
+      "path": "/Users/hendrixx./qrc-artemis-fpga-2026-10-31/pid-protocol.json",
+      "sha256": "01037a71285d7e8ffa1774975b2f5dded095d4b415262cb8b7a4068c53114a56"
+    },
+    "pid-input-sha256.json": {
+      "path": "/Users/hendrixx./qrc-artemis-fpga-2026-10-31/pid-input-sha256.json",
+      "sha256": "146ae010b5cc20f7f3c1aabfc4bcacad046eb4ebc51908345be2804e0996f513"
+    },
+    "replay-summary.json": {
+      "path": "/Users/hendrixx./qrc-artemis-fpga-2026-10-31/replay-summary.json",
+      "sha256": "6a353e3101d9d3aab1fe8f322134bd05262c3bc7caa3b31b3f55a57f09281c13"
+    },
+    "replay-event-audit.json": {
+      "path": "/Users/hendrixx./qrc-artemis-fpga-2026-10-31/replay-event-audit.json",
+      "sha256": "49e01629e963e9ed36838cb3cf2178c2e622e3833dc99c8d614c7e3e9ebaa07e"
+    },
+    "reference-jump-refinement.json": {
+      "path": "/Users/hendrixx./qrc-artemis-fpga-2026-10-31/reference-jump-refinement.json",
+      "sha256": "e0bf1d7f4e0523ee50d7100a7ba0c87d4a3888d5346ed68a1c40b6ab16d49ed4"
+    },
+    "pid-accuracy-protocol.json": {
+      "path": "/Users/hendrixx./qrc-artemis-fpga-2026-10-31/pid-accuracy-protocol.json",
+      "sha256": "55958d3092f3ae671402bd7aa2557d0d82570c29fae1ffe286d81b738596d3f7"
+    },
+    "pid-accuracy-precision.json": {
+      "path": "/Users/hendrixx./qrc-artemis-fpga-2026-10-31/pid-accuracy-precision.json",
+      "sha256": "1e2a3b34960bab58323caa6e9bed5e24dcb98d0deccf8681dcf56bbf81f18840"
+    },
+    "pid-accuracy-precision-selection.json": {
+      "path": "/Users/hendrixx./qrc-artemis-fpga-2026-10-31/pid-accuracy-precision-selection.json",
+      "sha256": "9ffe85632a00979a345cb06e9e4ed0dc1f342ddd1af8cf7984cb71d85870849a"
+    },
+    "pid-accuracy-fresh.json": {
+      "path": "/Users/hendrixx./qrc-artemis-fpga-2026-10-31/pid-accuracy-fresh.json",
+      "sha256": "d15b964224dde5b17847f4b0a75b3603da3a689833be6a3e4492219ea5f31b3b"
+    },
+    "pid-accuracy-comparison.json": {
+      "path": "/Users/hendrixx./qrc-artemis-fpga-2026-10-31/pid-accuracy-comparison.json",
+      "sha256": "edd3a2c5a5e9bf3e68027ba683bd5b59e062b7c57b35b49927cc4acf79a7b757"
+    },
+    "fresh-download-manifest.json": {
+      "path": "/Users/hendrixx./qrc-artemis-fpga-2026-10-31/fresh-download-manifest.json",
+      "sha256": "7c0ed766a49a991aa699774978aa274c74555dafc98844d0fd00fd3b40fcd294"
+    }
+  },
+  "refinement": {
+    "reason": "Fuel-first October test failed; select minimum worst training RMS using existing September training results, then fresh November evaluation.",
+    "selected_configuration": "tau1h_i0.0",
+    "selected_bits": 24,
+    "precision_training": {
+      "selected_bits": 24,
+      "configuration": "tau1h_i0.0",
+      "checks": [
+        {
+          "case": "P1_sep",
+          "seed": 4101,
+          "bits": 24,
+          "rms_relative_change": 1.9831942054682195e-05,
+          "dv_relative_change": 5.2136275472625115e-05,
+          "max_error_change_m": 0.0,
+          "passed": true
+        },
+        {
+          "case": "P1_sep",
+          "seed": 4101,
+          "bits": 32,
+          "rms_relative_change": 7.719393313454503e-07,
+          "dv_relative_change": 1.0568964202706255e-06,
+          "max_error_change_m": 0.0,
+          "passed": true
+        },
+        {
+          "case": "P1_sep",
+          "seed": 4102,
+          "bits": 24,
+          "rms_relative_change": 0.0006208637000155726,
+          "dv_relative_change": 4.176123689325628e-05,
+          "max_error_change_m": 0.0,
+          "passed": true
+        },
+        {
+          "case": "P1_sep",
+          "seed": 4102,
+          "bits": 32,
+          "rms_relative_change": 6.159500050006983e-07,
+          "dv_relative_change": 3.075571562760615e-06,
+          "max_error_change_m": 0.0,
+          "passed": true
+        },
+        {
+          "case": "P2_sep",
+          "seed": 4101,
+          "bits": 24,
+          "rms_relative_change": 0.00011857595434539014,
+          "dv_relative_change": 0.00035275851636140665,
+          "max_error_change_m": 0.0,
+          "passed": true
+        },
+        {
+          "case": "P2_sep",
+          "seed": 4101,
+          "bits": 32,
+          "rms_relative_change": 3.0109563065039424e-07,
+          "dv_relative_change": 7.058684231564527e-07,
+          "max_error_change_m": 0.0,
+          "passed": true
+        },
+        {
+          "case": "P2_sep",
+          "seed": 4102,
+          "bits": 24,
+          "rms_relative_change": 0.0004311758567577817,
+          "dv_relative_change": 0.00013133592536462846,
+          "max_error_change_m": 0.0,
+          "passed": true
+        },
+        {
+          "case": "P2_sep",
+          "seed": 4102,
+          "bits": 32,
+          "rms_relative_change": 1.2652060159545897e-06,
+          "dv_relative_change": 7.11176530998614e-07,
+          "max_error_change_m": 0.0,
+          "passed": true
+        }
+      ]
+    },
+    "evaluation": [
+      {
+        "case": "P1_nov",
+        "split": "fresh_evaluation",
+        "seed": 6101,
+        "faults": false,
+        "configuration": "tau1h_i0.0",
+        "arithmetic": "float64",
+        "classification": "synthetic controlled spacecraft on ARTEMIS initial geometry; not historical control validation",
+        "settings": {
+          "interval_s": 1800.0,
+          "response_s": 3600.0,
+          "integral_strength": 0.0,
+          "derivative_filter_s": 1800.0,
+          "max_dv_m_s": 0.15,
+          "integral_limit_m_s": 0.03
+        },
+        "actuator": {
+          "thrust_n": 0.2,
+          "isp_s": 220.0,
+          "dry_mass_kg": 480.0,
+          "reserve_kg": 0.5,
+          "routine_burn_s": 600.0,
+          "emergency_burn_s": 3600.0,
+          "minimum_dv_m_s": 0.0001
+        },
+        "model": {
+          "epoch_jd_tdb": 2455866.500766001,
+          "parameters": {
+            "gm_moon": 4902799967088.641,
+            "gm_earth": 398600435507022.7,
+            "gm_sun": 1.3271244004127942e+20,
+            "moon_radius_m": 1738000.0,
+            "moon_j2": 0,
+            "area_mass_m2_kg": 0.016,
+            "reflectivity": 1.0,
+            "earth_radius_m": 6378137.0
+          },
+          "extra": {
+            "earth_j2": true,
+            "other_planets": true,
+            "first_pn": true,
+            "tide_convention": "none",
+            "love_k2": 0.024116,
+            "earth_j2_value": 0.0010826358699107248
+          },
+          "lunar_degree": 60
+        },
+        "rms_m": 67.83315421464835,
+        "steady_rms_m": 26.38643276071606,
+        "max_m": 515.2964327270755,
+        "final_m": 17.993408239078008,
+        "dv_m_s": 1.095593025381823,
+        "fuel_kg": 0.2538432624187976,
+        "burns": 144,
+        "collision": false,
+        "pid_cpu_s": 0.005413999999971608,
+        "online_cpu_s": 16.192056000000008,
+        "total_cpu_s": 29.600151,
+        "core_status_counts": {
+          "0": 143,
+          "8": 1
+        },
+        "fixes_rejected": 0,
+        "fixes_accepted": 145,
+        "bias_clips": 0
+      },
+      {
+        "case": "P1_nov",
+        "split": "fresh_evaluation",
+        "seed": 6101,
+        "faults": false,
+        "configuration": "tau1h_i0.0",
+        "arithmetic": "24",
+        "classification": "synthetic controlled spacecraft on ARTEMIS initial geometry; not historical control validation",
+        "settings": {
+          "interval_s": 1800.0,
+          "response_s": 3600.0,
+          "integral_strength": 0.0,
+          "derivative_filter_s": 1800.0,
+          "max_dv_m_s": 0.15,
+          "integral_limit_m_s": 0.03
+        },
+        "actuator": {
+          "thrust_n": 0.2,
+          "isp_s": 220.0,
+          "dry_mass_kg": 480.0,
+          "reserve_kg": 0.5,
+          "routine_burn_s": 600.0,
+          "emergency_burn_s": 3600.0,
+          "minimum_dv_m_s": 0.0001
+        },
+        "model": {
+          "epoch_jd_tdb": 2455866.500766001,
+          "parameters": {
+            "gm_moon": 4902799967088.641,
+            "gm_earth": 398600435507022.7,
+            "gm_sun": 1.3271244004127942e+20,
+            "moon_radius_m": 1738000.0,
+            "moon_j2": 0,
+            "area_mass_m2_kg": 0.016,
+            "reflectivity": 1.0,
+            "earth_radius_m": 6378137.0
+          },
+          "extra": {
+            "earth_j2": true,
+            "other_planets": true,
+            "first_pn": true,
+            "tide_convention": "none",
+            "love_k2": 0.024116,
+            "earth_j2_value": 0.0010826358699107248
+          },
+          "lunar_degree": 60
+        },
+        "rms_m": 67.83143219750302,
+        "steady_rms_m": 26.383984042631543,
+        "max_m": 515.2964327270755,
+        "final_m": 17.98781076018254,
+        "dv_m_s": 1.0956351390678816,
+        "fuel_kg": 0.25385301746678124,
+        "burns": 144,
+        "collision": false,
+        "pid_cpu_s": 0.007940999999975773,
+        "online_cpu_s": 16.23124200000001,
+        "total_cpu_s": 29.636097999999997,
+        "core_status_counts": {
+          "0": 143,
+          "8": 1
+        },
+        "fixes_rejected": 0,
+        "fixes_accepted": 145,
+        "bias_clips": 0
+      },
+      {
+        "case": "P1_nov",
+        "split": "fresh_evaluation",
+        "seed": 6102,
+        "faults": true,
+        "configuration": "tau1h_i0.0",
+        "arithmetic": "float64",
+        "classification": "synthetic controlled spacecraft on ARTEMIS initial geometry; not historical control validation",
+        "settings": {
+          "interval_s": 1800.0,
+          "response_s": 3600.0,
+          "integral_strength": 0.0,
+          "derivative_filter_s": 1800.0,
+          "max_dv_m_s": 0.15,
+          "integral_limit_m_s": 0.03
+        },
+        "actuator": {
+          "thrust_n": 0.2,
+          "isp_s": 220.0,
+          "dry_mass_kg": 480.0,
+          "reserve_kg": 0.5,
+          "routine_burn_s": 600.0,
+          "emergency_burn_s": 3600.0,
+          "minimum_dv_m_s": 0.0001
+        },
+        "model": {
+          "epoch_jd_tdb": 2455866.500766001,
+          "parameters": {
+            "gm_moon": 4902799967088.641,
+            "gm_earth": 398600435507022.7,
+            "gm_sun": 1.3271244004127942e+20,
+            "moon_radius_m": 1738000.0,
+            "moon_j2": 0,
+            "area_mass_m2_kg": 0.016,
+            "reflectivity": 1.0,
+            "earth_radius_m": 6378137.0
+          },
+          "extra": {
+            "earth_j2": true,
+            "other_planets": true,
+            "first_pn": true,
+            "tide_convention": "none",
+            "love_k2": 0.024116,
+            "earth_j2_value": 0.0010826358699107248
+          },
+          "lunar_degree": 60
+        },
+        "rms_m": 60.65292822418129,
+        "steady_rms_m": 19.652186237583912,
+        "max_m": 450.97425373980434,
+        "final_m": 24.053118177099016,
+        "dv_m_s": 0.8288306357494315,
+        "fuel_kg": 0.19204766213266566,
+        "burns": 133,
+        "collision": false,
+        "pid_cpu_s": 0.005002999999971891,
+        "online_cpu_s": 18.432985000000023,
+        "total_cpu_s": 31.639724,
+        "core_status_counts": {
+          "0": 133,
+          "2": 11
+        },
+        "fixes_rejected": 1,
+        "fixes_accepted": 132,
+        "bias_clips": 0
+      },
+      {
+        "case": "P1_nov",
+        "split": "fresh_evaluation",
+        "seed": 6102,
+        "faults": true,
+        "configuration": "tau1h_i0.0",
+        "arithmetic": "24",
+        "classification": "synthetic controlled spacecraft on ARTEMIS initial geometry; not historical control validation",
+        "settings": {
+          "interval_s": 1800.0,
+          "response_s": 3600.0,
+          "integral_strength": 0.0,
+          "derivative_filter_s": 1800.0,
+          "max_dv_m_s": 0.15,
+          "integral_limit_m_s": 0.03
+        },
+        "actuator": {
+          "thrust_n": 0.2,
+          "isp_s": 220.0,
+          "dry_mass_kg": 480.0,
+          "reserve_kg": 0.5,
+          "routine_burn_s": 600.0,
+          "emergency_burn_s": 3600.0,
+          "minimum_dv_m_s": 0.0001
+        },
+        "model": {
+          "epoch_jd_tdb": 2455866.500766001,
+          "parameters": {
+            "gm_moon": 4902799967088.641,
+            "gm_earth": 398600435507022.7,
+            "gm_sun": 1.3271244004127942e+20,
+            "moon_radius_m": 1738000.0,
+            "moon_j2": 0,
+            "area_mass_m2_kg": 0.016,
+            "reflectivity": 1.0,
+            "earth_radius_m": 6378137.0
+          },
+          "extra": {
+            "earth_j2": true,
+            "other_planets": true,
+            "first_pn": true,
+            "tide_convention": "none",
+            "love_k2": 0.024116,
+            "earth_j2_value": 0.0010826358699107248
+          },
+          "lunar_degree": 60
+        },
+        "rms_m": 60.64763027783415,
+        "steady_rms_m": 19.641159109453167,
+        "max_m": 450.97425373980434,
+        "final_m": 24.05901328302043,
+        "dv_m_s": 0.8282862788886438,
+        "fuel_kg": 0.19192155386366494,
+        "burns": 133,
+        "collision": false,
+        "pid_cpu_s": 0.007236999999960858,
+        "online_cpu_s": 18.584756999999975,
+        "total_cpu_s": 31.940650000000005,
+        "core_status_counts": {
+          "0": 133,
+          "2": 11
+        },
+        "fixes_rejected": 1,
+        "fixes_accepted": 132,
+        "bias_clips": 0
+      },
+      {
+        "case": "P2_nov",
+        "split": "fresh_evaluation",
+        "seed": 6101,
+        "faults": false,
+        "configuration": "tau1h_i0.0",
+        "arithmetic": "float64",
+        "classification": "synthetic controlled spacecraft on ARTEMIS initial geometry; not historical control validation",
+        "settings": {
+          "interval_s": 1800.0,
+          "response_s": 3600.0,
+          "integral_strength": 0.0,
+          "derivative_filter_s": 1800.0,
+          "max_dv_m_s": 0.15,
+          "integral_limit_m_s": 0.03
+        },
+        "actuator": {
+          "thrust_n": 0.2,
+          "isp_s": 220.0,
+          "dry_mass_kg": 480.0,
+          "reserve_kg": 0.5,
+          "routine_burn_s": 600.0,
+          "emergency_burn_s": 3600.0,
+          "minimum_dv_m_s": 0.0001
+        },
+        "model": {
+          "epoch_jd_tdb": 2455866.500766001,
+          "parameters": {
+            "gm_moon": 4902799967088.641,
+            "gm_earth": 398600435507022.7,
+            "gm_sun": 1.3271244004127942e+20,
+            "moon_radius_m": 1738000.0,
+            "moon_j2": 0,
+            "area_mass_m2_kg": 0.016,
+            "reflectivity": 1.0,
+            "earth_radius_m": 6378137.0
+          },
+          "extra": {
+            "earth_j2": true,
+            "other_planets": true,
+            "first_pn": true,
+            "tide_convention": "none",
+            "love_k2": 0.024116,
+            "earth_j2_value": 0.0010826358699107248
+          },
+          "lunar_degree": 60
+        },
+        "rms_m": 66.67373800212951,
+        "steady_rms_m": 22.65747391393421,
+        "max_m": 515.2964327278573,
+        "final_m": 23.92737949326301,
+        "dv_m_s": 0.6965070971205652,
+        "fuel_kg": 0.16139203322927642,
+        "burns": 144,
+        "collision": false,
+        "pid_cpu_s": 0.0054280000000304085,
+        "online_cpu_s": 16.19213600000007,
+        "total_cpu_s": 29.495393999999997,
+        "core_status_counts": {
+          "0": 144
+        },
+        "fixes_rejected": 0,
+        "fixes_accepted": 145,
+        "bias_clips": 0
+      },
+      {
+        "case": "P2_nov",
+        "split": "fresh_evaluation",
+        "seed": 6101,
+        "faults": false,
+        "configuration": "tau1h_i0.0",
+        "arithmetic": "24",
+        "classification": "synthetic controlled spacecraft on ARTEMIS initial geometry; not historical control validation",
+        "settings": {
+          "interval_s": 1800.0,
+          "response_s": 3600.0,
+          "integral_strength": 0.0,
+          "derivative_filter_s": 1800.0,
+          "max_dv_m_s": 0.15,
+          "integral_limit_m_s": 0.03
+        },
+        "actuator": {
+          "thrust_n": 0.2,
+          "isp_s": 220.0,
+          "dry_mass_kg": 480.0,
+          "reserve_kg": 0.5,
+          "routine_burn_s": 600.0,
+          "emergency_burn_s": 3600.0,
+          "minimum_dv_m_s": 0.0001
+        },
+        "model": {
+          "epoch_jd_tdb": 2455866.500766001,
+          "parameters": {
+            "gm_moon": 4902799967088.641,
+            "gm_earth": 398600435507022.7,
+            "gm_sun": 1.3271244004127942e+20,
+            "moon_radius_m": 1738000.0,
+            "moon_j2": 0,
+            "area_mass_m2_kg": 0.016,
+            "reflectivity": 1.0,
+            "earth_radius_m": 6378137.0
+          },
+          "extra": {
+            "earth_j2": true,
+            "other_planets": true,
+            "first_pn": true,
+            "tide_convention": "none",
+            "love_k2": 0.024116,
+            "earth_j2_value": 0.0010826358699107248
+          },
+          "lunar_degree": 60
+        },
+        "rms_m": 66.67270367486842,
+        "steady_rms_m": 22.65893769636401,
+        "max_m": 515.2964327278573,
+        "final_m": 23.926209624851936,
+        "dv_m_s": 0.6964314928352714,
+        "fuel_kg": 0.1613745173125949,
+        "burns": 144,
+        "collision": false,
+        "pid_cpu_s": 0.007984000000014646,
+        "online_cpu_s": 16.217373999999985,
+        "total_cpu_s": 29.548606,
+        "core_status_counts": {
+          "0": 144
+        },
+        "fixes_rejected": 0,
+        "fixes_accepted": 145,
+        "bias_clips": 0
+      },
+      {
+        "case": "P2_nov",
+        "split": "fresh_evaluation",
+        "seed": 6102,
+        "faults": true,
+        "configuration": "tau1h_i0.0",
+        "arithmetic": "float64",
+        "classification": "synthetic controlled spacecraft on ARTEMIS initial geometry; not historical control validation",
+        "settings": {
+          "interval_s": 1800.0,
+          "response_s": 3600.0,
+          "integral_strength": 0.0,
+          "derivative_filter_s": 1800.0,
+          "max_dv_m_s": 0.15,
+          "integral_limit_m_s": 0.03
+        },
+        "actuator": {
+          "thrust_n": 0.2,
+          "isp_s": 220.0,
+          "dry_mass_kg": 480.0,
+          "reserve_kg": 0.5,
+          "routine_burn_s": 600.0,
+          "emergency_burn_s": 3600.0,
+          "minimum_dv_m_s": 0.0001
+        },
+        "model": {
+          "epoch_jd_tdb": 2455866.500766001,
+          "parameters": {
+            "gm_moon": 4902799967088.641,
+            "gm_earth": 398600435507022.7,
+            "gm_sun": 1.3271244004127942e+20,
+            "moon_radius_m": 1738000.0,
+            "moon_j2": 0,
+            "area_mass_m2_kg": 0.016,
+            "reflectivity": 1.0,
+            "earth_radius_m": 6378137.0
+          },
+          "extra": {
+            "earth_j2": true,
+            "other_planets": true,
+            "first_pn": true,
+            "tide_convention": "none",
+            "love_k2": 0.024116,
+            "earth_j2_value": 0.0010826358699107248
+          },
+          "lunar_degree": 60
+        },
+        "rms_m": 64.01667475773357,
+        "steady_rms_m": 28.848977845091085,
+        "max_m": 450.9742537403536,
+        "final_m": 25.344606023570037,
+        "dv_m_s": 0.7701015438592063,
+        "fuel_kg": 0.17844202130135045,
+        "burns": 133,
+        "collision": false,
+        "pid_cpu_s": 0.005111999999897421,
+        "online_cpu_s": 19.074252999999942,
+        "total_cpu_s": 32.184319,
+        "core_status_counts": {
+          "0": 133,
+          "2": 11
+        },
+        "fixes_rejected": 1,
+        "fixes_accepted": 132,
+        "bias_clips": 0
+      },
+      {
+        "case": "P2_nov",
+        "split": "fresh_evaluation",
+        "seed": 6102,
+        "faults": true,
+        "configuration": "tau1h_i0.0",
+        "arithmetic": "24",
+        "classification": "synthetic controlled spacecraft on ARTEMIS initial geometry; not historical control validation",
+        "settings": {
+          "interval_s": 1800.0,
+          "response_s": 3600.0,
+          "integral_strength": 0.0,
+          "derivative_filter_s": 1800.0,
+          "max_dv_m_s": 0.15,
+          "integral_limit_m_s": 0.03
+        },
+        "actuator": {
+          "thrust_n": 0.2,
+          "isp_s": 220.0,
+          "dry_mass_kg": 480.0,
+          "reserve_kg": 0.5,
+          "routine_burn_s": 600.0,
+          "emergency_burn_s": 3600.0,
+          "minimum_dv_m_s": 0.0001
+        },
+        "model": {
+          "epoch_jd_tdb": 2455866.500766001,
+          "parameters": {
+            "gm_moon": 4902799967088.641,
+            "gm_earth": 398600435507022.7,
+            "gm_sun": 1.3271244004127942e+20,
+            "moon_radius_m": 1738000.0,
+            "moon_j2": 0,
+            "area_mass_m2_kg": 0.016,
+            "reflectivity": 1.0,
+            "earth_radius_m": 6378137.0
+          },
+          "extra": {
+            "earth_j2": true,
+            "other_planets": true,
+            "first_pn": true,
+            "tide_convention": "none",
+            "love_k2": 0.024116,
+            "earth_j2_value": 0.0010826358699107248
+          },
+          "lunar_degree": 60
+        },
+        "rms_m": 64.02810860913759,
+        "steady_rms_m": 28.884909726699586,
+        "max_m": 450.9742537403536,
+        "final_m": 25.347165240040376,
+        "dv_m_s": 0.7699785852335388,
+        "fuel_kg": 0.17841353535692406,
+        "burns": 133,
+        "collision": false,
+        "pid_cpu_s": 0.007357000000027369,
+        "online_cpu_s": 18.989193,
+        "total_cpu_s": 32.09512500000001,
+        "core_status_counts": {
+          "0": 133,
+          "2": 11
+        },
+        "fixes_rejected": 1,
+        "fixes_accepted": 132,
+        "bias_clips": 0
+      }
+    ],
+    "paired_original": [
+      {
+        "case": "P1_nov",
+        "split": "fresh_evaluation",
+        "seed": 6101,
+        "faults": false,
+        "configuration": "tau6h_i0.0",
+        "arithmetic": "float64",
+        "classification": "synthetic controlled spacecraft on ARTEMIS initial geometry; not historical control validation",
+        "settings": {
+          "interval_s": 1800.0,
+          "response_s": 21600.0,
+          "integral_strength": 0.0,
+          "derivative_filter_s": 1800.0,
+          "max_dv_m_s": 0.15,
+          "integral_limit_m_s": 0.03
+        },
+        "actuator": {
+          "thrust_n": 0.2,
+          "isp_s": 220.0,
+          "dry_mass_kg": 480.0,
+          "reserve_kg": 0.5,
+          "routine_burn_s": 600.0,
+          "emergency_burn_s": 3600.0,
+          "minimum_dv_m_s": 0.0001
+        },
+        "model": {
+          "epoch_jd_tdb": 2455866.500766001,
+          "parameters": {
+            "gm_moon": 4902799967088.641,
+            "gm_earth": 398600435507022.7,
+            "gm_sun": 1.3271244004127942e+20,
+            "moon_radius_m": 1738000.0,
+            "moon_j2": 0,
+            "area_mass_m2_kg": 0.016,
+            "reflectivity": 1.0,
+            "earth_radius_m": 6378137.0
+          },
+          "extra": {
+            "earth_j2": true,
+            "other_planets": true,
+            "first_pn": true,
+            "tide_convention": "none",
+            "love_k2": 0.024116,
+            "earth_j2_value": 0.0010826358699107248
+          },
+          "lunar_degree": 60
+        },
+        "rms_m": 1464.2558756209462,
+        "steady_rms_m": 1413.720151206399,
+        "max_m": 3184.436926616385,
+        "final_m": 563.1637333617323,
+        "dv_m_s": 2.4158286022879363,
+        "fuel_kg": 0.5595638348582384,
+        "burns": 144,
+        "collision": false,
+        "pid_cpu_s": 0.005627000000018256,
+        "online_cpu_s": 16.732841999999966,
+        "total_cpu_s": 30.647464,
+        "core_status_counts": {
+          "0": 138,
+          "8": 6
+        },
+        "fixes_rejected": 0,
+        "fixes_accepted": 145,
+        "bias_clips": 0
+      },
+      {
+        "case": "P1_nov",
+        "split": "fresh_evaluation",
+        "seed": 6102,
+        "faults": true,
+        "configuration": "tau6h_i0.0",
+        "arithmetic": "float64",
+        "classification": "synthetic controlled spacecraft on ARTEMIS initial geometry; not historical control validation",
+        "settings": {
+          "interval_s": 1800.0,
+          "response_s": 21600.0,
+          "integral_strength": 0.0,
+          "derivative_filter_s": 1800.0,
+          "max_dv_m_s": 0.15,
+          "integral_limit_m_s": 0.03
+        },
+        "actuator": {
+          "thrust_n": 0.2,
+          "isp_s": 220.0,
+          "dry_mass_kg": 480.0,
+          "reserve_kg": 0.5,
+          "routine_burn_s": 600.0,
+          "emergency_burn_s": 3600.0,
+          "minimum_dv_m_s": 0.0001
+        },
+        "model": {
+          "epoch_jd_tdb": 2455866.500766001,
+          "parameters": {
+            "gm_moon": 4902799967088.641,
+            "gm_earth": 398600435507022.7,
+            "gm_sun": 1.3271244004127942e+20,
+            "moon_radius_m": 1738000.0,
+            "moon_j2": 0,
+            "area_mass_m2_kg": 0.016,
+            "reflectivity": 1.0,
+            "earth_radius_m": 6378137.0
+          },
+          "extra": {
+            "earth_j2": true,
+            "other_planets": true,
+            "first_pn": true,
+            "tide_convention": "none",
+            "love_k2": 0.024116,
+            "earth_j2_value": 0.0010826358699107248
+          },
+          "lunar_degree": 60
+        },
+        "rms_m": 959.6229221588836,
+        "steady_rms_m": 972.8916191304829,
+        "max_m": 1629.5209303672973,
+        "final_m": 1105.489145033102,
+        "dv_m_s": 1.6876435635467915,
+        "fuel_kg": 0.3909646813179961,
+        "burns": 133,
+        "collision": false,
+        "pid_cpu_s": 0.0050639999999742,
+        "online_cpu_s": 19.063111000000013,
+        "total_cpu_s": 32.541506,
+        "core_status_counts": {
+          "0": 127,
+          "8": 6,
+          "2": 11
+        },
+        "fixes_rejected": 1,
+        "fixes_accepted": 132,
+        "bias_clips": 0
+      },
+      {
+        "case": "P2_nov",
+        "split": "fresh_evaluation",
+        "seed": 6101,
+        "faults": false,
+        "configuration": "tau6h_i0.0",
+        "arithmetic": "float64",
+        "classification": "synthetic controlled spacecraft on ARTEMIS initial geometry; not historical control validation",
+        "settings": {
+          "interval_s": 1800.0,
+          "response_s": 21600.0,
+          "integral_strength": 0.0,
+          "derivative_filter_s": 1800.0,
+          "max_dv_m_s": 0.15,
+          "integral_limit_m_s": 0.03
+        },
+        "actuator": {
+          "thrust_n": 0.2,
+          "isp_s": 220.0,
+          "dry_mass_kg": 480.0,
+          "reserve_kg": 0.5,
+          "routine_burn_s": 600.0,
+          "emergency_burn_s": 3600.0,
+          "minimum_dv_m_s": 0.0001
+        },
+        "model": {
+          "epoch_jd_tdb": 2455866.500766001,
+          "parameters": {
+            "gm_moon": 4902799967088.641,
+            "gm_earth": 398600435507022.7,
+            "gm_sun": 1.3271244004127942e+20,
+            "moon_radius_m": 1738000.0,
+            "moon_j2": 0,
+            "area_mass_m2_kg": 0.016,
+            "reflectivity": 1.0,
+            "earth_radius_m": 6378137.0
+          },
+          "extra": {
+            "earth_j2": true,
+            "other_planets": true,
+            "first_pn": true,
+            "tide_convention": "none",
+            "love_k2": 0.024116,
+            "earth_j2_value": 0.0010826358699107248
+          },
+          "lunar_degree": 60
+        },
+        "rms_m": 1032.727677496669,
+        "steady_rms_m": 970.9973085055223,
+        "max_m": 2764.0320586224657,
+        "final_m": 58.09797839758939,
+        "dv_m_s": 1.2941844499062365,
+        "fuel_kg": 0.2998420738061327,
+        "burns": 144,
+        "collision": false,
+        "pid_cpu_s": 0.005150999999990802,
+        "online_cpu_s": 15.763424999999991,
+        "total_cpu_s": 28.667662,
+        "core_status_counts": {
+          "0": 140,
+          "8": 4
+        },
+        "fixes_rejected": 0,
+        "fixes_accepted": 145,
+        "bias_clips": 0
+      },
+      {
+        "case": "P2_nov",
+        "split": "fresh_evaluation",
+        "seed": 6102,
+        "faults": true,
+        "configuration": "tau6h_i0.0",
+        "arithmetic": "float64",
+        "classification": "synthetic controlled spacecraft on ARTEMIS initial geometry; not historical control validation",
+        "settings": {
+          "interval_s": 1800.0,
+          "response_s": 21600.0,
+          "integral_strength": 0.0,
+          "derivative_filter_s": 1800.0,
+          "max_dv_m_s": 0.15,
+          "integral_limit_m_s": 0.03
+        },
+        "actuator": {
+          "thrust_n": 0.2,
+          "isp_s": 220.0,
+          "dry_mass_kg": 480.0,
+          "reserve_kg": 0.5,
+          "routine_burn_s": 600.0,
+          "emergency_burn_s": 3600.0,
+          "minimum_dv_m_s": 0.0001
+        },
+        "model": {
+          "epoch_jd_tdb": 2455866.500766001,
+          "parameters": {
+            "gm_moon": 4902799967088.641,
+            "gm_earth": 398600435507022.7,
+            "gm_sun": 1.3271244004127942e+20,
+            "moon_radius_m": 1738000.0,
+            "moon_j2": 0,
+            "area_mass_m2_kg": 0.016,
+            "reflectivity": 1.0,
+            "earth_radius_m": 6378137.0
+          },
+          "extra": {
+            "earth_j2": true,
+            "other_planets": true,
+            "first_pn": true,
+            "tide_convention": "none",
+            "love_k2": 0.024116,
+            "earth_j2_value": 0.0010826358699107248
+          },
+          "lunar_degree": 60
+        },
+        "rms_m": 489.6167000065079,
+        "steady_rms_m": 462.6484830047014,
+        "max_m": 1192.8814469942583,
+        "final_m": 67.50557538660073,
+        "dv_m_s": 0.6648498584605778,
+        "fuel_kg": 0.1540576658748023,
+        "burns": 133,
+        "collision": false,
+        "pid_cpu_s": 0.004939999999962197,
+        "online_cpu_s": 18.377313,
+        "total_cpu_s": 31.082016999999993,
+        "core_status_counts": {
+          "0": 132,
+          "8": 1,
+          "2": 11
+        },
+        "fixes_rejected": 1,
+        "fixes_accepted": 132,
+        "bias_clips": 0
+      }
+    ],
+    "aggregate": {
+      "original_gain_float64": {
+        "mean_steady_rms_m": 955.0643904617764,
+        "mean_dv_m_s": 1.5156266185503853,
+        "maximum_sampled_error_m": 3184.436926616385,
+        "mean_burns": 138.5
+      },
+      "revised_gain_float64": {
+        "mean_steady_rms_m": 24.386267689331316,
+        "mean_dv_m_s": 0.8477580755277565,
+        "maximum_sampled_error_m": 515.2964327278573,
+        "mean_burns": 138.5
+      },
+      "revised_gain_fixed": {
+        "mean_steady_rms_m": 24.392247643787076,
+        "mean_dv_m_s": 0.8475828740063338,
+        "maximum_sampled_error_m": 515.2964327278573,
+        "mean_burns": 138.5
+      }
+    },
+    "rms_reduction_fraction": 0.9744663627574467,
+    "dv_reduction_fraction": 0.44065506296096124
+  },
+  "fresh_replay": [
+    {
+      "metadata": {
+        "case": {
+          "name": "P1_nov",
+          "probe": 1,
+          "utc": "2011-11-01T00:00:00",
+          "split": "fresh_evaluation"
+        },
+        "classification": "definitive orbit-product replay; reconstructed initial state may depend on later tracking",
+        "frame": "Moon-relative J2000, geometric states, SI; elapsed TDB seconds",
+        "epoch_jd_tdb": 2455866.500766001,
+        "spk": {
+          "path": "/Users/hendrixx./qrc-artemis-fpga-2026-10-31/fresh-data/ARTEMIS_P1_DEF_2009022_2012022.bsp",
+          "sha256": "826f5f0d881e07d6959034f414506b986afcffd43b9e590e42772d8c4ba99fa9"
+        },
+        "segments": [
+          {
+            "start_et": 372850806.1824419,
+            "end_et": 373450506.18252075,
+            "body": -651,
+            "center": 399,
+            "frame": 1,
+            "type": 12
+          },
+          {
+            "start_et": 373450506.18252075,
+            "end_et": 374050206.1826212,
+            "body": -651,
+            "center": 399,
+            "frame": 1,
+            "type": 12
+          }
+        ],
+        "boundary_jumps": [
+          {
+            "time_s": 72840.00001072884,
+            "position_jump_m": 3.091156174229667e-05,
+            "velocity_step_m_s": 2.437395002653049e-05
+          }
+        ],
+        "cdf_crosscheck": {
+          "version": "V02 definitive",
+          "files": [
+            {
+              "path": "/Users/hendrixx./qrc-artemis-fpga-2026-10-31/fresh-data/thb_l1_state_20111101_v02.cdf",
+              "sha256": "3ea85d143ea0d313c0277bd2d64ffdf9a5228e435136c3cacdc95b1c1fa9fd24"
+            },
+            {
+              "path": "/Users/hendrixx./qrc-artemis-fpga-2026-10-31/fresh-data/thb_l1_state_20111102_v02.cdf",
+              "sha256": "84d875cd576121c7b7e08af1569bcead6d4df1506fc449667cc8885be3736c39"
+            },
+            {
+              "path": "/Users/hendrixx./qrc-artemis-fpga-2026-10-31/fresh-data/thb_l1_state_20111103_v02.cdf",
+              "sha256": "d6fcff413775a50f0bfc42cd4c1993d363b54d849d97976022dd32beef19d927"
+            },
+            {
+              "path": "/Users/hendrixx./qrc-artemis-fpga-2026-10-31/fresh-data/thb_l1_state_20111104_v02.cdf",
+              "sha256": "5841829df97699da9f1d89b4f7de2de2a86cf1a8099f0934fdce2509024af17c"
+            }
+          ],
+          "unique_maneuver_flags": [
+            0
+          ],
+          "position_rms_difference_m": 10.244366709240474,
+          "position_max_difference_m": 17.43252704436335,
+          "note": "Crosscheck only; orbit products may share OD inputs; flags and jumps are diagnostics, not a maneuver certificate."
+        }
+      },
+      "model": {
+        "epoch_jd_tdb": 2455866.500766001,
+        "parameters": {
+          "gm_moon": 4902799967088.641,
+          "gm_earth": 398600435507022.7,
+          "gm_sun": 1.3271244004127942e+20,
+          "moon_radius_m": 1738000.0,
+          "moon_j2": 0,
+          "area_mass_m2_kg": 0.016,
+          "reflectivity": 1.0,
+          "earth_radius_m": 6378137.0
+        },
+        "extra": {
+          "earth_j2": true,
+          "other_planets": true,
+          "first_pn": true,
+          "tide_convention": "none",
+          "love_k2": 0.024116,
+          "earth_j2_value": 0.0010826358699107248
+        },
+        "lunar_degree": 60
+      },
+      "cram": 0.016,
+      "cpu_s": 4.029689,
+      "rms_m": 700.6751193816552,
+      "max_m": 1732.85324494519,
+      "endpoint_error_m": {
+        "1": 1312.8040020003773,
+        "2": 344.9646027380908,
+        "3": 438.64077927615944
+      },
+      "initial_state_only": true,
+      "future_spacecraft_samples_in_force": false
+    },
+    {
+      "metadata": {
+        "case": {
+          "name": "P2_nov",
+          "probe": 2,
+          "utc": "2011-11-01T00:00:00",
+          "split": "fresh_evaluation"
+        },
+        "classification": "definitive orbit-product replay; reconstructed initial state may depend on later tracking",
+        "frame": "Moon-relative J2000, geometric states, SI; elapsed TDB seconds",
+        "epoch_jd_tdb": 2455866.500766001,
+        "spk": {
+          "path": "/Users/hendrixx./qrc-artemis-fpga-2026-10-31/fresh-data/ARTEMIS_P2_DEF_2009022_2012022.bsp",
+          "sha256": "5f5043f1c120a95654d4216ebcd88edd15c4fa556d3333cfaaf6b0b899a9a527"
+        },
+        "segments": [
+          {
+            "start_et": 372850806.1824419,
+            "end_et": 373450506.18252075,
+            "body": -652,
+            "center": 399,
+            "frame": 1,
+            "type": 12
+          },
+          {
+            "start_et": 373450506.18252075,
+            "end_et": 374050206.1826212,
+            "body": -652,
+            "center": 399,
+            "frame": 1,
+            "type": 12
+          }
+        ],
+        "boundary_jumps": [
+          {
+            "time_s": 72840.00001072884,
+            "position_jump_m": 2.5231174130935907e-05,
+            "velocity_step_m_s": 1.8683986149158397e-05
+          }
+        ],
+        "cdf_crosscheck": {
+          "version": "V02 definitive",
+          "files": [
+            {
+              "path": "/Users/hendrixx./qrc-artemis-fpga-2026-10-31/fresh-data/thc_l1_state_20111101_v02.cdf",
+              "sha256": "1a55663ac3a214e09b24464a7e539b280f4e4cccda4277bbd63d531ff4757d28"
+            },
+            {
+              "path": "/Users/hendrixx./qrc-artemis-fpga-2026-10-31/fresh-data/thc_l1_state_20111102_v02.cdf",
+              "sha256": "5c334c4bdf24770e92755c59307c4416dc265c576ae175e8153a7ea2602175f9"
+            },
+            {
+              "path": "/Users/hendrixx./qrc-artemis-fpga-2026-10-31/fresh-data/thc_l1_state_20111103_v02.cdf",
+              "sha256": "d685a8c636992970c8a57d5b83a4ec31a179f42f49354db3c4001f781478ced3"
+            },
+            {
+              "path": "/Users/hendrixx./qrc-artemis-fpga-2026-10-31/fresh-data/thc_l1_state_20111104_v02.cdf",
+              "sha256": "a688436cfde0ba202c6be401ebe8b1f597d53d8c2b05247083d7988056621982"
+            }
+          ],
+          "unique_maneuver_flags": [
+            0
+          ],
+          "position_rms_difference_m": 10.136904368982835,
+          "position_max_difference_m": 20.42332607979099,
+          "note": "Crosscheck only; orbit products may share OD inputs; flags and jumps are diagnostics, not a maneuver certificate."
+        }
+      },
+      "model": {
+        "epoch_jd_tdb": 2455866.500766001,
+        "parameters": {
+          "gm_moon": 4902799967088.641,
+          "gm_earth": 398600435507022.7,
+          "gm_sun": 1.3271244004127942e+20,
+          "moon_radius_m": 1738000.0,
+          "moon_j2": 0,
+          "area_mass_m2_kg": 0.016,
+          "reflectivity": 1.0,
+          "earth_radius_m": 6378137.0
+        },
+        "extra": {
+          "earth_j2": true,
+          "other_planets": true,
+          "first_pn": true,
+          "tide_convention": "none",
+          "love_k2": 0.024116,
+          "earth_j2_value": 0.0010826358699107248
+        },
+        "lunar_degree": 60
+      },
+      "cram": 0.016,
+      "cpu_s": 3.8381369999999997,
+      "rms_m": 1775.0148944189916,
+      "max_m": 4106.019498912051,
+      "endpoint_error_m": {
+        "1": 1020.8629093248471,
+        "2": 2129.9647971127147,
+        "3": 3244.745529101867
+      },
+      "initial_state_only": true,
+      "future_spacecraft_samples_in_force": false
+    }
+  ]
+}

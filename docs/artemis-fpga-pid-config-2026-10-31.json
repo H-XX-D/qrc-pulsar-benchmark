@@ -1,0 +1,90 @@
+{
+  "classification": "Portable PID register configuration from frozen training selection; no FPGA implementation or flight qualification",
+  "configuration": "tau1h_i0.0",
+  "settings": {
+    "interval_s": 1800.0,
+    "response_s": 3600.0,
+    "integral_strength": 0.0,
+    "derivative_filter_s": 1800.0,
+    "max_dv_m_s": 0.15,
+    "integral_limit_m_s": 0.03
+  },
+  "format": {
+    "signed": true,
+    "total_bits": 24,
+    "fractional_bits": 16,
+    "rounding": "nearest, ties away from zero at each multiplication",
+    "storage": "int32 C ABI; compile core with matching QRC_PID_BITS and QRC_PID_FRAC"
+  },
+  "normalization": {
+    "position_error_m": 4096,
+    "velocity_error_m_s": 0.25,
+    "feedforward_and_output_dv_m_s": 0.25
+  },
+  "register_order": [
+    "Kp_step",
+    "Kd_step",
+    "Ki_step",
+    "derivative_alpha",
+    "axis_dv_limit",
+    "integral_limit"
+  ],
+  "register_int32": [
+    149131,
+    65536,
+    0,
+    32768,
+    22702,
+    7864
+  ],
+  "decoded_register_values": [
+    2.2755584716796875,
+    1.0,
+    0.0,
+    0.5,
+    0.346405029296875,
+    0.1199951171875
+  ],
+  "initial_state_int32": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "status": {
+    "invalid": 1,
+    "stale": 2,
+    "arithmetic_range_fault": 4,
+    "ordinary_output_limit": 8
+  },
+  "requirements": [
+    "Call at 1800 second cadence with actual-minus-reference errors",
+    "Navigation, force feedforward and actuator allocation are external",
+    "Invalidate routine feedback when last accepted fix is over 3600 seconds old",
+    "No predictive collision-avoidance guarantee"
+  ],
+  "source_receipts": {
+    "pid-accuracy-protocol.json": {
+      "path": "/Users/hendrixx./qrc-artemis-fpga-2026-10-31/pid-accuracy-protocol.json",
+      "sha256": "55958d3092f3ae671402bd7aa2557d0d82570c29fae1ffe286d81b738596d3f7"
+    },
+    "pid-accuracy-precision.json": {
+      "path": "/Users/hendrixx./qrc-artemis-fpga-2026-10-31/pid-accuracy-precision.json",
+      "sha256": "1e2a3b34960bab58323caa6e9bed5e24dcb98d0deccf8681dcf56bbf81f18840"
+    },
+    "pid-accuracy-precision-selection.json": {
+      "path": "/Users/hendrixx./qrc-artemis-fpga-2026-10-31/pid-accuracy-precision-selection.json",
+      "sha256": "9ffe85632a00979a345cb06e9e4ed0dc1f342ddd1af8cf7984cb71d85870849a"
+    },
+    "pid-accuracy-fresh.json": {
+      "path": "/Users/hendrixx./qrc-artemis-fpga-2026-10-31/pid-accuracy-fresh.json",
+      "sha256": "d15b964224dde5b17847f4b0a75b3603da3a689833be6a3e4492219ea5f31b3b"
+    },
+    "pid-accuracy-comparison.json": {
+      "path": "/Users/hendrixx./qrc-artemis-fpga-2026-10-31/pid-accuracy-comparison.json",
+      "sha256": "edd3a2c5a5e9bf3e68027ba683bd5b59e062b7c57b35b49927cc4acf79a7b757"
+    }
+  }
+}
