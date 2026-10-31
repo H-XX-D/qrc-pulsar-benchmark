@@ -113,3 +113,10 @@ from .sample_return import (
     SampleReturnMissionReport,
     plan_jovian_sample_return_mission,
 )
+from .outer_planets import (
+    OuterPlanetSystem,
+    OUTER_PLANET_SYSTEMS,
+    OuterPlanetMissionArchitect,
+    OuterPlanetFleetReport,
+    plan_outer_planet_fleet_mission,
+)
