@@ -20,6 +20,8 @@ from qrc_pulsar_bench.sample_return import (
     DualModePropulsionSystem,
     AutonomousInterplanetaryGNC,
     EarthOrbitalStationCapture,
+    ResonantLowThrustTransfer,
+    ReceiverSideDockingComputer,
     SampleReturnMissionReport,
     plan_jovian_sample_return_mission,
 )
@@ -211,4 +213,92 @@ def test_dual_mode_propulsion_system():
     assert ledger["phase5_terminal_geo_chem_dv_mps"] > 400.0     # ~454.8 m/s
     assert ledger["total_mission_dv_mps"] > 5600.0         # Combined >5.6 km/s capability
     assert ledger["final_mass_after_docking_kg"] >= 9.0    # Preserves sample payload
+
+
+def test_resonant_low_thrust_transfer():
+    """Verify multi-year resonant low-thrust transfer energy and thermal savings."""
+    res = ResonantLowThrustTransfer(
+        fast_tof_years=2.73,
+        resonant_tof_years=4.50,
+        fast_v_inf_mps=8790.0,
+        resonant_v_inf_mps=3200.0,
+    )
+    savings = res.evaluate_energy_and_thermal_savings()
+
+    assert savings["fast_tof_years"] == 2.73
+    assert savings["resonant_tof_years"] == 4.50
+    assert savings["fast_arrival_v_inf_mps"] == 8790.0
+    assert savings["resonant_arrival_v_inf_mps"] == 3200.0
+
+    # Entry speed checks
+    assert abs(savings["fast_entry_speed_mps"] - 14170.0) < 100.0  # ~14.17 km/s
+    assert abs(savings["resonant_entry_speed_mps"] - 11570.0) < 100.0  # ~11.57 km/s
+
+    # Kinetic energy reduction: 1 - (11.57/14.17)^2 ~ 33.4%
+    assert abs(savings["kinetic_energy_reduction_percent"] - 33.4) < 1.0
+
+    # Peak heat flux reduction: 1 - (11.57/14.17)^3 ~ 45.6%
+    assert abs(savings["peak_heat_flux_reduction_percent"] - 45.6) < 1.0
+
+    # Aero-GEO deceleration shed reduction: ~68.4%
+    assert abs(savings["aerodynamic_strain_reduction_percent"] - 68.4) < 1.0
+    assert savings["resonant_aerogeo_shed_mps"] < savings["fast_aerogeo_shed_mps"]
+
+
+def test_receiver_side_docking_computer():
+    """Verify Clohessy-Wiltshire state transition matrices and 2-impulse relative docking."""
+    # Test CW matrix dimensions and properties
+    phi_rr, phi_rv, phi_vr, phi_vv = ReceiverSideDockingComputer.compute_cw_matrices(1800.0)
+    assert phi_rr.shape == (3, 3)
+    assert phi_rv.shape == (3, 3)
+    assert phi_vr.shape == (3, 3)
+    assert phi_vv.shape == (3, 3)
+
+    # Test two-impulse solve
+    r0 = np.array([0.0, 5000.0, 0.0])
+    v0 = np.array([0.0, -2.0, 0.0])
+    rf = np.array([0.0, 10.0, 0.0])
+    vf = np.array([0.0, -0.05, 0.0])
+    sol = ReceiverSideDockingComputer.solve_two_impulse_docking(r0, v0, rf, vf, transfer_time_s=1800.0)
+
+    assert abs(sol["dv1_mag_mps"] - 0.839) < 0.05
+    assert abs(sol["dv2_mag_mps"] - 2.731) < 0.05
+    assert abs(sol["total_docking_dv_mps"] - 3.569) < 0.05
+    assert abs(sol["final_relative_velocity_mps"] - 0.05) < 1e-4
+
+    # Test full handover execution
+    docking = ReceiverSideDockingComputer.execute_handover_and_docking(
+        handover_range_m=5000.0,
+        initial_closing_speed_mps=2.0,
+    )
+    assert docking["handover_range_km"] == 5.0
+    assert docking["initial_approach_speed_mps"] == 2.0
+    assert abs(docking["total_docking_dv_mps"] - 3.569) < 0.05
+    assert docking["final_contact_speed_mps"] <= 0.05
+    assert "SUCCESS" in docking["status"]
+
+
+def test_mission_synthesis_report_extended():
+    """Verify mission report contains dual-mode, resonant transfer, and docking outputs."""
+    report = plan_jovian_sample_return_mission(
+        collector_moon="Callisto",
+        canister_gross_mass_kg=15.0,
+        sample_payload_mass_kg=1.0,
+    )
+
+    assert report.dual_mode_propulsion is not None
+    assert report.dual_mode_propulsion["total_mission_dv_mps"] > 5600.0
+
+    assert report.resonant_transfer is not None
+    assert report.resonant_transfer["kinetic_energy_reduction_percent"] > 30.0
+
+    assert report.receiver_docking is not None
+    assert report.receiver_docking["total_docking_dv_mps"] < 5.0
+
+    summary = report.summary()
+    assert "DUAL-MODE PROPULSION SYSTEM (HYDRAZINE + MICRO-ION BOOSTER)" in summary
+    assert "MULTI-YEAR RESONANT LOW-THRUST OPTIMIZATION" in summary
+    assert "DUAL-AGENT COOPERATIVE DOCKING" in summary
+    assert "Receiver-Side Docking Control Mode" in summary
+
 

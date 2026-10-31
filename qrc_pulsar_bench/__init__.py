@@ -106,6 +106,8 @@ from .sample_return import (
     DualModePropulsionSystem,
     AutonomousInterplanetaryGNC,
     EarthOrbitalStationCapture,
+    ResonantLowThrustTransfer,
+    ReceiverSideDockingComputer,
     SampleReturnMissionReport,
     plan_jovian_sample_return_mission,
 )
