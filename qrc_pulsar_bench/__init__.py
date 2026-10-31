@@ -178,5 +178,12 @@ from .dro_safe_haven import (
     OrbitStabilityComparison,
     DROReinsertionPlan,
 )
+from .mission_event_simulator import (
+    MissionEventSimulator,
+    InjectedEvent,
+    TimelineStepLog,
+    MissionSimulationSummary,
+)
+
 
 
