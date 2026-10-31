@@ -1,25 +1,13 @@
-"""
-=====================================================================================
-QRC-PULSAR-BENCH: Pipelined FPGA Orbit Engine & Hardware Datapath Simulator
-=====================================================================================
-Bit-accurate, cycle-deterministic hardware simulator for space-grade FPGA deployment:
-  1. Fixed Pipelined Symplectic Datapath:
-     - No branch divergence, no adaptive step negotiation.
-     - Fully pipelined with Initiation Interval II = 1.
-  2. Inverse-Cube Datapath:
-     - Replaces transcendental power routines with a fast Reciprocal Square-Root
-       lookup table (LUT) and 2-iteration Newton-Raphson multiplier pipeline.
-  3. Cycle & Resource Accounting:
-     - Tracks clock cycles, pipeline latency, DSP slice requirements, and power
-       estimates for space-grade FPGAs (e.g. AMD XQRKU060 / Microchip RT PolarFire).
-  4. Real-Time Autonomous Orbit Correction:
-     - Evaluates 3-body Jacobi gravitational state updates and Roemer line-of-sight
-       corrections continuously at up to 10+ MHz throughput.
-=====================================================================================
+"""Host numerical model of a proposed FPGA orbit datapath.
+
+Cycle counts, initiation interval, DSP/BRAM use and power are design estimates,
+not synthesis or device measurements. The NumPy inverse-cube approximation is
+not bit-accurate RTL simulation. The original C++ core uses std::sqrt instead.
+The separate native_cislunar bridge provides the tested external-force kernel.
 """
 
 from dataclasses import dataclass
-from typing import Dict, Any, Tuple, List
+from typing import Dict, Any, Tuple, List, Optional
 import numpy as np
 
 from .constants import G, c, M_sun, AU, day_s
@@ -40,7 +28,7 @@ class FPGASpecification:
 
 @dataclass(frozen=True)
 class HardwareCycleReport:
-    """Hardware performance and resource accounting metrics."""
+    """Estimated resource accounting and measured host numerical diagnostics."""
     pipeline_latency_cycles: int
     initiation_interval: int
     clock_frequency_mhz: float
@@ -49,8 +37,9 @@ class HardwareCycleReport:
     estimated_dsp_slices: int
     estimated_bram_blocks: int
     dsp_utilization_pct: float
-    position_error_vs_fp64_m: float
+    position_error_vs_fp64_m: Optional[float]
     energy_error: float
+    hardware_validated: bool = False
 
 
 class PipelinedInvCubeUnit:
@@ -69,7 +58,7 @@ class PipelinedInvCubeUnit:
         self.seed_table = 1.0 / np.sqrt(x_vals)
 
     def evaluate(self, r_sq: np.ndarray) -> np.ndarray:
-        """Bit-accurate evaluation of (r_sq)^(-1.5) via 2-stage Newton-Raphson."""
+        """Host float64 approximation of (r_sq)^(-1.5), not RTL emulation."""
         r_sq = np.asarray(r_sq, dtype=np.float64)
         # Avoid zero division
         r_sq = np.maximum(r_sq, 1e-18)
@@ -91,7 +80,7 @@ class PipelinedInvCubeUnit:
 
         # Newton-Raphson Iteration 1: y1 = y0 * (1.5 - 0.5 * x * y0^2)
         y1 = y0 * (1.5 - 0.5 * mantissa_adj * (y0**2))
-        # Newton-Raphson Iteration 2 (delivers full 53-bit double precision mantissa)
+        # Newton-Raphson Iteration 2 (finite approximation error remains)
         y2 = y1 * (1.5 - 0.5 * mantissa_adj * (y1**2))
 
         # Re-scale exponent: (2^(exp_adj))^(-0.5) = 2^(-exp_adj / 2)
@@ -102,7 +91,7 @@ class PipelinedInvCubeUnit:
 
 class FPGAOrbitEngine:
     """
-    Cycle-accurate FPGA hardware datapath for 3-body Jacobi symplectic time-evolution
+    Host model and estimated accounting for 3-body Cartesian time-evolution
     and line-of-sight Roemer correction.
     """
 
@@ -127,7 +116,7 @@ class FPGAOrbitEngine:
 
     def get_hardware_timing(self) -> Tuple[int, int, float]:
         """
-        Calculates total pipeline latency and throughput.
+        Estimates total pipeline latency and throughput from assumed stage costs.
         
         Returns:
             pipeline_latency: Total clock cycles from input to output.
@@ -157,7 +146,7 @@ class FPGAOrbitEngine:
         line_of_sight: Tuple[float, float, float] = (0.0, 0.0, 1.0)
     ) -> Tuple[np.ndarray, np.ndarray, np.ndarray, HardwareCycleReport]:
         """
-        Executes a bit-accurate simulation of the FPGA hardware pipeline.
+        Executes a NumPy numerical model; no HLS, RTL or physical device is run.
 
         Returns:
             times_days: Timestamps array.
@@ -252,7 +241,7 @@ class FPGAOrbitEngine:
             estimated_dsp_slices=estimated_dsps,
             estimated_bram_blocks=estimated_brams,
             dsp_utilization_pct=(estimated_dsps / self.spec.dsp_slices_total) * 100.0,
-            position_error_vs_fp64_m=0.0,  # Exact fp64 math
+            position_error_vs_fp64_m=None,  # No reference trajectory comparison performed here
             energy_error=float(energy_err)
         )
 

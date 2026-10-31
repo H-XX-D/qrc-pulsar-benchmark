@@ -1,0 +1,79 @@
+{
+  "checked_utc": "2026-10-31",
+  "scope": "Initial vector of each archive independently re-queried; not an audit of every sample or reconstruction uncertainty",
+  "center": "Moon (500@301)",
+  "axes": "ICRF (REF_PLANE=FRAME)",
+  "time_scale": "TDB",
+  "corrections": "NONE (geometric)",
+  "units": "km, km/s",
+  "datasets": [
+    {
+      "file": "capstone_horizons_nrho.npz",
+      "target": "-1176",
+      "jd_tdb": 2459898.5,
+      "frame_error_position_km": 0.0,
+      "frame_error_velocity_km_s": 0.0,
+      "horizons_state": [
+        -19459.45343239076,
+        14398.02202047003,
+        -36121.31505949376,
+        -0.03248355163950906,
+        0.1775970488672567,
+        -0.2779552777043456
+      ],
+      "verification_query_url": "https://ssd.jpl.nasa.gov/api/horizons.api?format=json&COMMAND=%27-1176%27&OBJ_DATA=%27NO%27&EPHEM_TYPE=%27VECTORS%27&CENTER=%27500%40301%27&TLIST=%272459898.500000000%27&REF_PLANE=%27FRAME%27&REF_SYSTEM=%27ICRF%27&TIME_TYPE=%27TDB%27&VEC_TABLE=%272%27&VEC_CORR=%27NONE%27&OUT_UNITS=%27KM-S%27&CSV_FORMAT=%27YES%27",
+      "sha256": "75b4c4e5bd17f4313359407ef743ab4a10e2305446bceeb55e72d368066eb7db"
+    },
+    {
+      "file": "artemis1_nov2022_dro.npz",
+      "target": "-1023",
+      "jd_tdb": 2459908.5,
+      "frame_error_position_km": 0.0,
+      "frame_error_velocity_km_s": 0.0,
+      "horizons_state": [
+        91360.74437933002,
+        -11555.05997698638,
+        -12311.21806849807,
+        0.06604222401745274,
+        0.01819824093847691,
+        0.00298003584174375
+      ],
+      "verification_query_url": "https://ssd.jpl.nasa.gov/api/horizons.api?format=json&COMMAND=%27-1023%27&OBJ_DATA=%27NO%27&EPHEM_TYPE=%27VECTORS%27&CENTER=%27500%40301%27&TLIST=%272459908.500000000%27&REF_PLANE=%27FRAME%27&REF_SYSTEM=%27ICRF%27&TIME_TYPE=%27TDB%27&VEC_TABLE=%272%27&VEC_CORR=%27NONE%27&OUT_UNITS=%27KM-S%27&CSV_FORMAT=%27YES%27",
+      "sha256": "70cd084c70c83344ba1422a0c0da40d6544a433f5565196730a0b151028d453f"
+    },
+    {
+      "file": "capstone_feb2023_out_of_sample.npz",
+      "target": "-1176",
+      "jd_tdb": 2459976.5,
+      "frame_error_position_km": 0.0,
+      "frame_error_velocity_km_s": 0.0,
+      "horizons_state": [
+        -15638.14294898052,
+        12820.4103598744,
+        -14456.4279217694,
+        -0.1341043976329669,
+        0.2949416529099337,
+        -0.4261072599574189
+      ],
+      "verification_query_url": "https://ssd.jpl.nasa.gov/api/horizons.api?format=json&COMMAND=-1176&OBJ_DATA=NO&EPHEM_TYPE=VECTORS&CENTER=500%40301&TLIST=2459976.5&REF_PLANE=FRAME&REF_SYSTEM=ICRF&TIME_TYPE=TDB&VEC_TABLE=2&VEC_CORR=NONE&OUT_UNITS=KM-S&CSV_FORMAT=YES",
+      "sha256": "ebddf438baa5647fcddb8a2618563068746b0a94b3dcf664d265a03911a9c23e"
+    },
+    {
+      "file": "lro_jan2023_low_orbit.npz",
+      "target": "-85",
+      "jd_tdb": 2459945.5,
+      "frame_error_position_km": 0.0,
+      "frame_error_velocity_km_s": 0.0,
+      "horizons_state": [
+        -1480.590606863768,
+        806.1833642095013,
+        -711.8428448198017,
+        -0.8720726804798803,
+        -0.4301760647431218,
+        1.316464712810237
+      ],
+      "verification_query_url": "https://ssd.jpl.nasa.gov/api/horizons.api?format=json&COMMAND=-85&OBJ_DATA=NO&EPHEM_TYPE=VECTORS&CENTER=500%40301&TLIST=2459945.5&REF_PLANE=FRAME&REF_SYSTEM=ICRF&TIME_TYPE=TDB&VEC_TABLE=2&VEC_CORR=NONE&OUT_UNITS=KM-S&CSV_FORMAT=YES",
+      "sha256": "1b8f939a1eeaf4024fff356d43e918ac744e35dde125e4fa0f3f70782956759a"
+    }
+  ]
+}

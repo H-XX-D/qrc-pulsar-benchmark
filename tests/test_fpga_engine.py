@@ -60,5 +60,7 @@ def test_fpga_orbit_simulation_energy_and_dsp_budget():
     # DSP budget check: uses ~72 DSPs (< 3% of XQRKU060's 2,760 DSPs)
     assert report.estimated_dsp_slices < 100
     assert report.dsp_utilization_pct < 5.0
+    assert report.hardware_validated is False
+    assert report.position_error_vs_fp64_m is None
     # Roemer delays should be in the tens-of-seconds range for J0337
     assert np.max(np.abs(roemer)) > 1.0

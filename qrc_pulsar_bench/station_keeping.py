@@ -7,7 +7,7 @@ Closed-loop Guidance, Navigation, and Control (GNC) for cislunar multi-body spac
      - Earth-Moon barycentric rotating frame with collinear Lagrange point L2.
   2. Non-Conservative Disturbance Forces ("The Force Gap"):
      - Solar Radiation Pressure (SRP) with synodic rotating Sun geometry.
-     - Lunar oblateness and mascon perturbations (J2).
+     - Axisymmetric lunar oblateness (J2); spatial mascons are not modeled.
   3. Symplectic Monodromy & Invariant Manifold Structure:
      - Exact periodic Lyapunov reference orbit via half-period symmetric shooting.
      - Symplectic eigenvalue analysis verifying unstable manifold lambda_u > 1.
@@ -24,6 +24,7 @@ from typing import Dict, Any, Tuple, List, Optional
 import numpy as np
 from scipy.integrate import solve_ivp
 from scipy.optimize import root_scalar
+from .cislunar_forces import j2_acceleration
 
 
 @dataclass(frozen=True)
@@ -91,9 +92,10 @@ class EarthMoonCR3BP:
 
     def compute_disturbances(self, t: float, r: np.ndarray, srp_mps2: float = 1.5e-7) -> np.ndarray:
         """
-        Evaluates non-Hamiltonian environmental perturbations ("The Force Gap"):
-          - Solar Radiation Pressure (SRP) in synodic rotating frame.
-          - Lunar J2 oblateness anomaly.
+        Synthetic CR3BP perturbations: prescribed SRP and conservative lunar J2.
+
+        The Moon pole is approximated by rotating-frame +z. This experiment has
+        no solar gravity; use cislunar_forces for ephemeris-driven mission replay.
         """
         # SRP
         a_srp_norm = srp_mps2 / self.consts.accel_star_mps2
@@ -102,11 +104,8 @@ class EarthMoonCR3BP:
 
         # Lunar J2
         r2_vec = r - np.array([1.0 - self.mu, 0.0, 0.0])
-        dist2 = np.linalg.norm(r2_vec)
-        j2_coeff = 1.5 * self.consts.j2_moon * self.mu * (self.consts.r_moon_norm**2) / (dist2**4 + 1e-14)
-        a_mascon = - j2_coeff * r2_vec
-
-        return a_srp + a_mascon
+        a_j2 = j2_acceleration(r2_vec, self.mu, self.consts.r_moon_norm, self.consts.j2_moon)
+        return a_srp + a_j2
 
     def equations_of_motion(
         self,

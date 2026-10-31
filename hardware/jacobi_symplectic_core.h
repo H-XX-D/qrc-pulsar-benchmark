@@ -3,15 +3,16 @@
 
 /**
  * =====================================================================================
- * QRC-PULSAR-BENCH: Space-Grade FPGA HLS Synthesizable Core
+ * QRC-PULSAR-BENCH: Three-body HLS candidate (hardware implementation unverified)
  * =====================================================================================
  * Target: AMD/Xilinx Kintex UltraScale XQRKU060 / Microchip RT PolarFire
  * Toolchain: Vivado HLS / Vitis HLS / Intel HLS Compiler
  * 
  * Computes:
- *   1. 4th-order Palindromic Yoshida Symplectic Step for 3-body Jacobi system.
+ *   1. 4th-order Yoshida step for three barycentric Cartesian point masses.
  *   2. Instantaneous line-of-sight Roemer timing delay for autonomous pulsar navigation.
- *   3. Hardware watchdog check on conserved energy.
+ * This API has no external forces or energy watchdog. For lunar J2, Earth/Sun
+ * tides and configured SRP, see the separate cislunar_force_core.h API.
  * =====================================================================================
  */
 

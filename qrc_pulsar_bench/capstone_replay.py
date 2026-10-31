@@ -1,36 +1,27 @@
-"""
-=====================================================================================
-QRC-PULSAR-BENCH: Multi-Dataset Flight Telemetry Replay & Causal GNC Engine
-=====================================================================================
-Ingests real reconstructed telemetry from multiple NASA lunar missions:
-  1. NASA CAPSTONE Baseline (Nov 15 - Dec 15, 2022, 361 epochs, NRHO).
-  2. NASA CAPSTONE Out-of-Sample Window 2 (Feb 1 - Mar 1, 2023, 337 epochs, NRHO).
-  3. NASA Artemis 1 Orion Flight (Nov 25 - Dec 5, 2022, 121 epochs, Distant Retrograde Orbit).
-  4. NASA Lunar Reconnaissance Orbiter (Jan 1 - Jan 4, 2023, 2,161 epochs, Low Lunar Orbit).
+"""Initial-state propagation and explicitly labelled offline flight comparisons.
 
-Strict Epistemic Protocol (Zero Hardcoding & Causal Integrity):
-  - Injects true empirical disturbances at the exact physical timestamp t.
-  - Forward guidance operates strictly causally: zero prior knowledge of future disturbances.
-  - Accounts for full 3-body dynamics (Moon + Earth dynamic tides) separating
-    gravitational field forces from true non-conservative disturbances (SRP, mascons).
-  - Demonstrates closed-loop autonomous station-keeping without ground connection or DSN.
-=====================================================================================
+Bundled Horizons vectors are interpreted as geometric Moon-centred ICRF states
+at JD TDB epochs (km, km/s). Planetary ephemerides drive physical forces. Sampled
+spacecraft residuals are diagnostics only and are NEVER fed into propagation.
+The legacy controller uses interpolated reference truth: it is an ideal-feedback
+experiment, not an onboard estimator or proof of autonomous flight capability.
 """
 
 import os
 from dataclasses import dataclass
 from typing import Dict, Any, Tuple, List, Optional
 import numpy as np
-from astropy.coordinates import get_body_barycentric
-from astropy.time import Time
-
-GM_MOON = 4.9048695e12    # m^3 / s^2
-GM_EARTH = 3.986004418e14 # m^3 / s^2
+from scipy.integrate import solve_ivp
+from scipy.interpolate import CubicHermiteSpline
+from .cislunar_forces import (
+    GM_MOON, GM_EARTH, CislunarForceParameters, PlanetaryEphemeris,
+    cislunar_acceleration, third_body_tide,
+)
 
 
 @dataclass(frozen=True)
 class FlightReplayReport:
-    """Performance metrics of autonomous station-keeping under real flight disturbances."""
+    """Metrics for offline reference-feedback experiments, not flight certification."""
     dataset_name: str
     duration_days: float
     total_delta_v_mps: float
@@ -42,8 +33,9 @@ class FlightReplayReport:
     mean_disturbance_mps2: float
     median_disturbance_mps2: float
     causal_integrity_verified: bool
-    control_mode: str = "onboard_autonomous"
-    ground_connection_required: bool = False
+    control_mode: str = "offline_reference_feedback"
+    ground_connection_required: Optional[bool] = None
+    uses_reference_feedback: bool = True
 
 
 # Backward compatibility alias
@@ -51,7 +43,7 @@ CapstoneReplayReport = FlightReplayReport
 
 
 class MultiDatasetFlightReplay:
-    """Engine for replaying multiple real NASA flight datasets under causal GNC."""
+    """Physical propagation with reference data isolated from force evaluation."""
 
     DATASET_FILES = {
         "capstone_nov2022": "capstone_horizons_nrho.npz",
@@ -63,7 +55,11 @@ class MultiDatasetFlightReplay:
     def __init__(
         self,
         dataset_name: str = "capstone_nov2022",
-        dataset_path: Optional[str] = None
+        dataset_path: Optional[str] = None,
+        *,
+        parameters: CislunarForceParameters = CislunarForceParameters(),
+        ephemeris: str = "builtin",
+        environment=None,
     ):
         self.dataset_name = dataset_name
         module_dir = os.path.dirname(__file__)
@@ -81,129 +77,171 @@ class MultiDatasetFlightReplay:
         if not os.path.exists(filepath):
             raise FileNotFoundError(f"Dataset file {filepath} not found!")
 
-        data = np.load(filepath)
-        self.times_jd = data['times_jd']
-        self.pos_km = data['positions_km']
-        self.vel_km_s = data['velocities_km_s']
-
+        with np.load(filepath, allow_pickle=False) as data:
+            self.times_jd = np.array(data['times_jd'], dtype=float)
+            self.pos_km = np.array(data['positions_km'], dtype=float)
+            self.vel_km_s = np.array(data['velocities_km_s'], dtype=float)
+        n = len(self.times_jd)
+        if (self.times_jd.ndim != 1 or n < 3
+                or self.pos_km.shape != (n, 3) or self.vel_km_s.shape != (n, 3)
+                or not all(np.all(np.isfinite(x)) for x in (self.times_jd, self.pos_km, self.vel_km_s))
+                or np.any(np.diff(self.times_jd) <= 0)):
+            raise ValueError("Expected finite, strictly increasing epochs and Nx3 states")
         self.pos_m = self.pos_km * 1e3
         self.vel_m_s = self.vel_km_s * 1e3
         self.times_s = (self.times_jd - self.times_jd[0]) * 86400.0
         self.total_duration_s = float(self.times_s[-1])
-        self.total_duration_days = float(self.total_duration_s / 86400.0)
-        self.n_epochs = len(self.times_s)
-        self.dt_nominal = float(self.times_s[1] - self.times_s[0])
+        self.total_duration_days = self.total_duration_s / 86400.0
+        self.n_epochs = n
+        self.dt_nominal = float(np.median(np.diff(self.times_s)))
+        self.parameters = parameters
+        self.initial_state = np.r_[self.pos_m[0], self.vel_m_s[0]].copy()
+        self.initial_state.setflags(write=False)
+        self.environment = environment if environment is not None else PlanetaryEphemeris(
+            self.times_jd[0], self.total_duration_s, ephemeris=ephemeris)
+        self.ephemeris_source = getattr(self.environment, "source", "caller-supplied")
+        self._reference = CubicHermiteSpline(self.times_s, self.pos_m, self.vel_m_s, extrapolate=False)
+        self._diagnostics = None
 
-        # Precompute Earth-Moon barycentric relative vectors r_em = p_earth - p_moon
-        t_astro = Time(self.times_jd, format='jd')
-        p_moon = get_body_barycentric('moon', t_astro).xyz.to('m').value.T
-        p_earth = get_body_barycentric('earth', t_astro).xyz.to('m').value.T
-        self.r_em_arr = p_earth - p_moon
+    def _get_r_em(self, t_s):
+        return self.environment(t_s)[0]
 
-        # Extract empirical non-Keplerian disturbances under 3-body dynamic model
-        self._extract_causal_disturbances()
+    @property
+    def parameters(self):
+        return self._parameters
 
-    def _get_r_em(self, t_s: float) -> np.ndarray:
-        """Interpolates Moon-to-Earth vector r_em at timestamp t_s."""
-        t_clamped = min(max(t_s, 0.0), self.total_duration_s)
-        return np.array([
-            np.interp(t_clamped, self.times_s, self.r_em_arr[:, 0]),
-            np.interp(t_clamped, self.times_s, self.r_em_arr[:, 1]),
-            np.interp(t_clamped, self.times_s, self.r_em_arr[:, 2]),
-        ])
+    @parameters.setter
+    def parameters(self, value):
+        if not isinstance(value, CislunarForceParameters):
+            raise TypeError("Expected CislunarForceParameters")
+        self._parameters = value
+        self._diagnostics = None
 
-    def eval_earth_tide(self, r: np.ndarray, t_s: float) -> np.ndarray:
+    def eval_earth_tide(self, r, t_s):
+        return third_body_tide(r, self._get_r_em(t_s), self.parameters.gm_earth)
+
+    def eval_total_acceleration(self, r, t_s):
+        """Moon monopole/J2, differential Earth/Sun gravity, configured SRP only."""
+        return cislunar_acceleration(r, *self.environment(t_s), self.parameters)
+
+    @staticmethod
+    def _differentiate(times, velocities, width):
+        # Local polynomial weights use actual (possibly nonuniform) times.
+        out = np.empty_like(velocities)
+        for i, time in enumerate(times):
+            start = min(max(0, i - width // 2), len(times) - width)
+            sl = slice(start, start + width)
+            offsets = times[sl] - time
+            scale = np.max(np.abs(offsets))
+            x = offsets / scale
+            rhs = np.zeros(width)
+            rhs[1] = 1.0 / scale
+            weights = np.linalg.solve(np.vander(x, width, increasing=True).T, rhs)
+            out[i] = weights @ velocities[sl]
+        return out
+
+    def residual_diagnostics(self):
+        """Offline finite-difference residuals, not identified physical forces.
+
+        5-point versus 3-point disagreement diagnoses sampling sensitivity; it is
+        not an uncertainty bound. Maneuvers, frame/state errors, differentiation
+        error and omitted forces can all contribute. Endpoints are one-sided.
         """
-        Dynamically evaluates Earth tidal gravitational acceleration on spacecraft at pos r and epoch t_s:
-            a_tide = - GM_EARTH * [ (r - r_em) / ||r - r_em||^3 + r_em / ||r_em||^3 ]
+        if self._diagnostics is None:
+            low = self._differentiate(self.times_s, self.vel_m_s, 3)
+            high = self._differentiate(self.times_s, self.vel_m_s, min(5, self.n_epochs))
+            modeled = np.array([self.eval_total_acceleration(r, t)
+                                for r, t in zip(self.pos_m, self.times_s)])
+            self._diagnostics = {
+                "residual_mps2": high - modeled,
+                "differencing_disagreement_mps2": high - low,
+                "modeled_acceleration_mps2": modeled,
+                "interpretation": "offline sampled residual; force attribution unverified",
+                "used_by_propagator": False,
+            }
+        return self._diagnostics
+
+    @property
+    def a_dist_flight(self):
+        """Legacy diagnostic alias; not an acceleration supplied to the solver."""
+        return self.residual_diagnostics()["residual_mps2"]
+
+    @property
+    def mean_disturbance(self):
+        return float(np.mean(np.linalg.norm(self.a_dist_flight, axis=1)))
+
+    @property
+    def median_disturbance(self):
+        return float(np.median(np.linalg.norm(self.a_dist_flight, axis=1)))
+
+    def eval_disturbance_at_timestamp(self, t_s):
+        """Offline diagnostic interpolation ONLY. Never called by propagation."""
+        if not 0 <= t_s <= self.total_duration_s:
+            raise ValueError("Diagnostic epoch outside reference coverage")
+        return np.array([np.interp(t_s, self.times_s, x) for x in self.a_dist_flight.T])
+
+    def propagate(self, initial_state, times_s, *, max_step_s=120.0, rtol=1e-11):
+        """Integrate supplied state at times_s[0], using no spacecraft observations.
+
+        DOP853 error control separates integration error from missing-force error.
+        External Earth/Sun ephemerides may be preloaded onboard. This is not an
+        isolated four-body integration or an onboard state estimator.
         """
-        r_em = self._get_r_em(t_s)
-        r_sc_earth = r - r_em
-        d_sc_earth = float(np.linalg.norm(r_sc_earth))
-        d_em = float(np.linalg.norm(r_em))
-        return - GM_EARTH * (r_sc_earth / (d_sc_earth**3) + r_em / (d_em**3))
+        times = np.asarray(times_s, dtype=float)
+        state = np.asarray(initial_state, dtype=float)
+        if (times.ndim != 1 or len(times) < 2 or not np.all(np.isfinite(times))
+                or np.any(np.diff(times) <= 0) or times[0] < 0 or times[-1] > self.total_duration_s
+                or state.shape != (6,) or not np.all(np.isfinite(state))
+                or not np.isfinite(max_step_s) or max_step_s <= 0 or not np.isfinite(rtol) or rtol <= 0):
+            raise ValueError("Invalid initial state, propagation times or solver settings")
+        if np.linalg.norm(state[:3]) <= self.parameters.moon_radius_m:
+            raise ValueError("Initial state intersects Moon")
+        def rhs(t, y):
+            return np.r_[y[3:], self.eval_total_acceleration(y[:3], t)]
+        def impact(t, y):
+            return np.linalg.norm(y[:3]) - self.parameters.moon_radius_m
+        impact.terminal = True
+        impact.direction = -1
+        solution = solve_ivp(rhs, (times[0], times[-1]), state, t_eval=times,
+                             method="DOP853", rtol=rtol, atol=np.r_[[1e-4]*3, [1e-7]*3],
+                             max_step=max_step_s, events=impact)
+        if not solution.success or solution.y.shape[1] != len(times):
+            raise RuntimeError("Propagation stopped: lunar impact or integration failure: " + solution.message)
+        return solution.y.T
 
-    def _extract_causal_disturbances(self) -> None:
-        """Extracts acceleration residuals at exact historical timestamps."""
-        n = self.n_epochs
-        dt = self.dt_nominal
-        acc_obs = np.zeros_like(self.pos_m)
+    def run_forward(self, duration_days=None, *, max_step_s=120.0, rtol=1e-11):
+        """Initial-only forecast scored against later archived spacecraft epochs.
 
-        for i in range(1, n - 1):
-            acc_obs[i] = (self.vel_m_s[i + 1] - self.vel_m_s[i - 1]) / (2.0 * dt)
-        # 2nd-order boundary differencing
-        acc_obs[0] = (-3.0 * self.vel_m_s[0] + 4.0 * self.vel_m_s[1] - self.vel_m_s[2]) / (2.0 * dt)
-        acc_obs[-1] = (3.0 * self.vel_m_s[-1] - 4.0 * self.vel_m_s[-2] + self.vel_m_s[-3]) / (2.0 * dt)
-
-        # Baseline gravitational model: Moon point-mass + dynamic Earth tides
-        self.a_dist_flight = np.zeros_like(self.pos_m)
-        for i in range(n):
-            r = self.pos_m[i]
-            rn = float(np.linalg.norm(r))
-            a_moon = - GM_MOON * r / (rn**3)
-            a_tide = self.eval_earth_tide(r, self.times_s[i])
-            self.a_dist_flight[i] = acc_obs[i] - (a_moon + a_tide)
-
-        dist_mag = np.linalg.norm(self.a_dist_flight, axis=1)
-        self.mean_disturbance = float(np.mean(dist_mag))
-        self.median_disturbance = float(np.median(dist_mag))
-        self.max_disturbance = float(np.max(dist_mag))
-
-    def eval_disturbance_at_timestamp(self, t_s: float) -> np.ndarray:
-        """Exact temporal interpolation of flight disturbances at instantaneous timestamp t_s."""
-        t_clamped = min(max(t_s, 0.0), self.total_duration_s)
-        return np.array([
-            np.interp(t_clamped, self.times_s, self.a_dist_flight[:, 0]),
-            np.interp(t_clamped, self.times_s, self.a_dist_flight[:, 1]),
-            np.interp(t_clamped, self.times_s, self.a_dist_flight[:, 2])
-        ])
-
-    def eval_total_acceleration(self, r: np.ndarray, t_s: float) -> np.ndarray:
-        """Computes true instantaneous physical acceleration: Moon + Earth tide + flight disturbance."""
-        rn = float(np.linalg.norm(r))
-        a_moon = - GM_MOON * r / (rn**3)
-        a_tide = self.eval_earth_tide(r, t_s)
-        a_dist = self.eval_disturbance_at_timestamp(t_s)
-        return a_moon + a_tide + a_dist
+        The reconstructed initial state and planetary ephemeris are inputs. Held
+        out spacecraft states are read only AFTER propagation, for scoring.
+        """
+        duration = self.total_duration_s if duration_days is None else duration_days * 86400.0
+        if not np.isfinite(duration) or not 0 < duration <= self.total_duration_s:
+            raise ValueError("Duration must lie within reference coverage")
+        times = self.times_s[self.times_s <= duration]
+        if len(times) < 2:
+            raise ValueError("Duration must include at least one held-out epoch")
+        predicted = self.propagate(self.initial_state, times, max_step_s=max_step_s, rtol=rtol)
+        errors = np.linalg.norm(predicted[1:, :3] - self.pos_m[1:len(times)], axis=1)
+        return {
+            "dataset": self.dataset_name, "times_s": times, "states_si": predicted,
+            "position_error_m": errors, "rms_position_error_m": float(np.sqrt(np.mean(errors**2))),
+            "max_position_error_m": float(np.max(errors)), "final_position_error_m": float(errors[-1]),
+            "ephemeris_source": self.ephemeris_source, "uses_reference_feedback": False,
+            "uses_trajectory_derived_forces": False,
+            "srp_enabled": bool(self.parameters.srp_acceleration_1au),
+        }
 
     def get_reference_state(self, t_s: float) -> Tuple[np.ndarray, np.ndarray]:
         """Interpolates target reference state [pos (m), vel (m/s)] at timestamp t_s."""
-        t_c = min(max(t_s, 0.0), self.total_duration_s)
-        p = np.array([
-            np.interp(t_c, self.times_s, self.pos_m[:, 0]),
-            np.interp(t_c, self.times_s, self.pos_m[:, 1]),
-            np.interp(t_c, self.times_s, self.pos_m[:, 2])
-        ])
-        v = np.array([
-            np.interp(t_c, self.times_s, self.vel_m_s[:, 0]),
-            np.interp(t_c, self.times_s, self.vel_m_s[:, 1]),
-            np.interp(t_c, self.times_s, self.vel_m_s[:, 2])
-        ])
-        return p, v
+        if not np.isfinite(t_s) or not 0 <= t_s <= self.total_duration_s:
+            raise ValueError("Reference epoch outside coverage")
+        return self._reference(t_s), self._reference(t_s, 1)
 
-    def advance_step(
-        self,
-        r: np.ndarray,
-        v: np.ndarray,
-        t_start: float,
-        t_end: float,
-        dt_sub: float = 120.0
-    ) -> Tuple[np.ndarray, np.ndarray]:
-        """Advances state using symplectic Leapfrog with synchronous disturbance injection."""
-        t_sub = t_start
-        curr_pos = r.copy()
-        curr_vel = v.copy()
-
-        while t_sub < t_end:
-            h = min(dt_sub, t_end - t_sub)
-            a_1 = self.eval_total_acceleration(curr_pos, t_sub)
-            v_half = curr_vel + 0.5 * h * a_1
-            curr_pos = curr_pos + h * v_half
-            a_2 = self.eval_total_acceleration(curr_pos, t_sub + h)
-            curr_vel = v_half + 0.5 * h * a_2
-            t_sub += h
-
-        return curr_pos, curr_vel
+    def advance_step(self, r, v, t_start, t_end, dt_sub=120.0):
+        """Error-controlled physical propagation; no sampled residual injection."""
+        state = self.propagate(np.r_[r, v], [t_start, t_end], max_step_s=dt_sub)[-1]
+        return state[:3].copy(), state[3:].copy()
 
     def run_causal_replay(
         self,
@@ -212,30 +250,30 @@ class MultiDatasetFlightReplay:
         duration_days: Optional[float] = None,
         autonomous: bool = True
     ) -> FlightReplayReport:
-        """
-        Executes strict time-causal simulation injecting real disturbances synchronously.
+        """Legacy API for offline ideal-state feedback, not a causal flight test.
 
-        Strict Causal Integrity:
-          - Disturbances injected at the exact timestamp t they occurred in flight telemetry.
-          - Guidance decision evaluated at discrete check intervals using only instantaneous state error.
-          - Zero forward knowledge of future disturbances.
+        The controller reads an interpolated archived reference. Only run_forward
+        is an initial-only forecast. No trajectory-derived force is injected here.
         """
         sim_duration_days = duration_days if duration_days is not None else self.total_duration_days
         sim_duration_s = sim_duration_days * 86400.0
 
+        if (not np.all(np.isfinite([sim_duration_s, check_interval_h, deadband_km]))
+                or not 0 < sim_duration_s <= self.total_duration_s or check_interval_h <= 0 or deadband_km < 0):
+            raise ValueError("Invalid replay interval, duration or deadband")
         dt_step = check_interval_h * 3600.0
-        n_steps = int(sim_duration_s / dt_step)
+        n_steps = int(np.ceil(sim_duration_s / dt_step))
 
-        curr_pos, curr_vel = self.get_reference_state(0.0)
+        curr_pos, curr_vel = self.initial_state[:3].copy(), self.initial_state[3:].copy()
         curr_t = 0.0
 
         burns_dv: List[float] = []
         tracking_errors_km: List[float] = []
 
         # Characteristic orbital period for frequency tuning
-        max_r_km = float(np.max(self.pos_km))
-        is_nrho = max_r_km > 50000.0
-        is_low_orbit = max_r_km < 3000.0
+        initial_radius_km = float(np.linalg.norm(curr_pos) / 1e3)
+        is_nrho = self.dataset_name.startswith("capstone_")
+        is_low_orbit = initial_radius_km < 3000.0
 
         if is_low_orbit:
             omega_orbit = 2.0 * np.pi / (118.0 * 60.0)
@@ -249,11 +287,11 @@ class MultiDatasetFlightReplay:
         for step in range(n_steps):
             t_next = min(curr_t + dt_step, sim_duration_s)
 
-            # Advance state using symplectic Leapfrog with full 3-body dynamic model
+            # Propagate the configured physical force model
             curr_pos, curr_vel = self.advance_step(curr_pos, curr_vel, curr_t, t_next, dt_sub=dt_sub)
             curr_t = t_next
 
-            # Strictly causal state observation at current epoch curr_t
+            # Offline reference truth, not a simulated onboard sensor observation
             ref_p, ref_v = self.get_reference_state(curr_t)
             err_r = curr_pos - ref_p
             err_v = curr_vel - ref_v
@@ -296,16 +334,17 @@ class MultiDatasetFlightReplay:
             rms_tracking_error_km=rms_err,
             mean_disturbance_mps2=self.mean_disturbance,
             median_disturbance_mps2=self.median_disturbance,
-            causal_integrity_verified=True,
-            control_mode="onboard_autonomous" if autonomous else "uncontrolled_drift",
-            ground_connection_required=not autonomous
+            causal_integrity_verified=False,
+            control_mode="offline_reference_feedback" if autonomous else "uncontrolled_drift",
+            ground_connection_required=None,
+            uses_reference_feedback=autonomous
         )
 
 
 class CapstoneFlightReplay(MultiDatasetFlightReplay):
     """Backward compatibility wrapper for CAPSTONE replay."""
-    def __init__(self, dataset_path: Optional[str] = None):
-        super().__init__(dataset_name="capstone_nov2022", dataset_path=dataset_path)
+    def __init__(self, dataset_path: Optional[str] = None, **kwargs):
+        super().__init__(dataset_name="capstone_nov2022", dataset_path=dataset_path, **kwargs)
 
     def run_replay(
         self,

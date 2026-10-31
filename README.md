@@ -11,6 +11,11 @@ Earth–Moon spacecraft**. The [cislunar benchmark specification](docs/cislunar-
 defines the measurement, uncertainty and computation comparisons needed to test
 that application; it is not an executed flight-navigation result.
 
+The [cislunar force repair and validation guide](docs/cislunar-force-validation.md)
+documents the physical Moon/Earth/Sun force model, initial-only archive comparisons,
+and native C++ bridge. Sampled spacecraft residuals are diagnostics, never force
+inputs. Optional planetary ephemerides require `pip install '.[navigation]'`.
+
 The binary calculators implement leading-order GR relations using supplied masses
 and orbital elements. The triple calculator estimates perturbation scales for
 near-circular, tightly hierarchical systems. The geometric shape map describes

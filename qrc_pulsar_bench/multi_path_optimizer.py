@@ -24,8 +24,7 @@ from enum import Enum
 from typing import Dict, Any, Tuple, List, Optional
 import numpy as np
 
-GM_MOON = 4.9048695e12 # m^3 / s^2
-R_MOON = 1737.4e3      # Lunar radius (m)
+from .cislunar_forces import GM_MOON, R_MOON, point_mass_acceleration
 
 
 class FlightSafetyState(Enum):
@@ -65,8 +64,11 @@ class MultiPathTrajectoryOptimizer:
     to compute minimum-fuel burns with deterministic safety fallback.
     """
 
-    def __init__(self, safety: SafetyThresholds = SafetyThresholds()):
+    def __init__(self, safety: SafetyThresholds = SafetyThresholds(), acceleration=None):
         self.safety = safety
+        # Supply replay.eval_total_acceleration for the same physical force model
+        # as the plant. The default remains an explicitly Moon-only toy rollout.
+        self.acceleration = acceleration or (lambda r, t: point_mass_acceleration(r, GM_MOON))
 
     def evaluate_candidate_path(
         self,
@@ -75,7 +77,8 @@ class MultiPathTrajectoryOptimizer:
         candidate_dv: np.ndarray,
         target_pos_at_horizon: np.ndarray,
         horizon_s: float = 86400.0,
-        dt_sub: float = 300.0
+        dt_sub: float = 300.0,
+        start_time_s: float = 0.0,
     ) -> Tuple[float, float, bool]:
         """
         Fast symplectic rollout of a candidate impulse.
@@ -84,6 +87,8 @@ class MultiPathTrajectoryOptimizer:
             min_r_observed: Closest approach to Moon center.
             is_safe: Whether flight safety invariants were preserved throughout.
         """
+        if not np.all(np.isfinite([horizon_s, dt_sub, start_time_s])) or horizon_s <= 0 or dt_sub <= 0:
+            raise ValueError("Positive finite rollout horizon and step required")
         r = r0.copy()
         v = v0 + candidate_dv
         t = 0.0
@@ -100,11 +105,14 @@ class MultiPathTrajectoryOptimizer:
                 return float("inf"), min_r, False
 
             # Symplectic Leapfrog step
-            a = - GM_MOON * r / (r_norm**3)
+            a = self.acceleration(r, start_time_s + t)
             v_half = v + 0.5 * h * a
             r = r + h * v_half
             r_norm_new = np.linalg.norm(r)
-            a_new = - GM_MOON * r / (r_norm_new**3)
+            min_r = min(min_r, r_norm_new)
+            if min_r < (R_MOON + self.safety.min_perilune_altitude_m):
+                return float("inf"), min_r, False
+            a_new = self.acceleration(r, start_time_s + t + h)
             v = v_half + 0.5 * h * a_new
             t += h
 
@@ -118,7 +126,8 @@ class MultiPathTrajectoryOptimizer:
         current_vel: np.ndarray,
         target_pos: np.ndarray,
         target_vel: np.ndarray,
-        n_candidates: int = 64
+        n_candidates: int = 64,
+        start_time_s: float = 0.0,
     ) -> Tuple[np.ndarray, FlightSafetyState]:
         """
         Evaluates an ensemble of candidate impulse vectors across candidate directions
@@ -160,10 +169,10 @@ class MultiPathTrajectoryOptimizer:
         while t_sub < horizon_s:
             step = min(dt_sub, horizon_s - t_sub)
             rn = np.linalg.norm(r_targ)
-            a_targ = - GM_MOON * r_targ / (rn**3)
+            a_targ = self.acceleration(r_targ, start_time_s + t_sub)
             vh = v_targ + 0.5 * step * a_targ
             r_targ += step * vh
-            ann = - GM_MOON * r_targ / (np.linalg.norm(r_targ)**3)
+            ann = self.acceleration(r_targ, start_time_s + t_sub + step)
             v_targ = vh + 0.5 * step * ann
             t_sub += step
 
@@ -186,7 +195,8 @@ class MultiPathTrajectoryOptimizer:
         for cand_dv in candidate_dvs:
             dv_mag = np.linalg.norm(cand_dv)
             proj_err_m, min_r, is_safe = self.evaluate_candidate_path(
-                current_pos, current_vel, cand_dv, target_pos_horizon, horizon_s=horizon_s, dt_sub=300.0
+                current_pos, current_vel, cand_dv, target_pos_horizon, horizon_s=horizon_s,
+                dt_sub=300.0, start_time_s=start_time_s
             )
             if not is_safe:
                 continue
