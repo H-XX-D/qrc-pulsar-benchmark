@@ -151,3 +151,8 @@ from .surface_relay_network import (
     SurfaceObservationPost,
     SurfaceRelayNetworkArchitect,
 )
+from .full_program_science import (
+    FullProgramScienceConstants,
+    ScientificBreakthrough,
+    FullProgramScienceArchitect,
+)
