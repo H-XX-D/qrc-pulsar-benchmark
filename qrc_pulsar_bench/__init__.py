@@ -130,3 +130,10 @@ from .asteroid_pathfinder import (
     PathfinderMissionReport,
     plan_argonaut_pathfinder_mission,
 )
+from .scientific_value import (
+    ScienceConstants,
+    AstrobiologyBiosignatureEvaluator,
+    LaboratoryVsInSituComparison,
+    PlanetaryScienceValuationEngine,
+    synthesize_project_argonaut_scientific_value,
+)

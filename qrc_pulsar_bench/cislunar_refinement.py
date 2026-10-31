@@ -83,7 +83,7 @@ def save_forecast(replay, label, days, output, **settings):
     return row, result
 
 
-def synthetic_navigation(replay, output):
+def synthetic_navigation(replay, output, *, seed=20261031):
     """Four idealized unambiguous directions; first four hours sensed, then coast.
 
     Reference states generate *synthetic* noisy measurements only as their epoch
@@ -95,13 +95,14 @@ def synthetic_navigation(replay, output):
     if times[-1] < 6 * 3600 - 1e-3:
         raise ValueError("Synthetic navigation experiment requires six hours of reference")
     directions = np.array([[1,1,1], [1,-1,-1], [-1,1,-1], [-1,-1,1]]) / np.sqrt(3)
-    seed, sigma, bias, drift, last_sensor = 20261031, 300.0, 6000.0, 0.03, 4 * 3600
+    sigma, bias, drift, last_sensor = 300.0, 6000.0, 0.03, 4 * 3600
     perturbation = np.array([1000., -1000., 500., .5, -.5, .2])
     initial = replay.initial_state + perturbation
     # Assumptions specified before scoring; no tuning against held-out errors.
     covariance = np.diag(np.square([2000.,2000.,2000.,2.,2.,2.,10000.,.1]))
     estimator = OrbitClockEKF(np.r_[initial,0.,0.], covariance, replay.eval_total_acceleration,
-                             acceleration_noise_psd=1e-10, clock_drift_noise_psd=1e-8)
+                             acceleration_noise_psd=1e-10, clock_drift_noise_psd=1e-8,
+                             state_acceleration=replay.eval_state_acceleration if replay.additional_acceleration is not None else None)
     rng = np.random.default_rng(seed)
     states, covariances, innovations, used = [], [], [], []
     started = time.perf_counter()
@@ -130,6 +131,7 @@ def synthetic_navigation(replay, output):
         "classification": "Synthetic idealized pseudorange observations generated from reconstructed LRO positions; not flight sensor data",
         "measurement_equation": "z = direction dot r + clock_bias + independent Gaussian noise",
         "seed": seed, "directions_icrf": directions.tolist(), "noise_sigma_m": sigma,
+        "state_dependent_extra_forces":replay.additional_acceleration is not None,
         "true_clock_bias_m": bias, "true_clock_drift_m_s": drift,
         "initial_orbit_error_si": perturbation.tolist(), "initial_covariance": covariance.tolist(),
         "acceleration_noise_psd_m2_s3": 1e-10, "clock_drift_noise_psd_m2_s3": 1e-8,

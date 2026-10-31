@@ -42,6 +42,7 @@ def test_future_spacecraft_values_cannot_change_force_or_prediction(tmp_path,har
                 a=t/1e5
                 return np.array([[np.cos(a),-np.sin(a),0],[np.sin(a),np.cos(a),0],[0,0,1]])
         original.lunar_gravity=changed.lunar_gravity=InertialLunarGravity(field,Orientation())
+        original.additional_acceleration=changed.additional_acceleration=lambda r,v,t:1e-12*np.sin(t/1000)*v
     for t in [0, 3600, 7200]:
         np.testing.assert_array_equal(original.eval_total_acceleration(original.initial_state[:3],t),
                                       changed.eval_total_acceleration(changed.initial_state[:3],t))
