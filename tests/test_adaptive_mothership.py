@@ -31,7 +31,7 @@ def test_adaptive_mothership_constants_and_roles():
 
     eval_res = AdaptiveMothershipArchitect.evaluate_mothership_architecture()
     roles = eval_res["mothership_roles"]
-    assert "role_1_return_vehicle" in roles
+    assert "role_1_canister_return_launcher" in roles
     assert "role_2_outpost_colonizer" in roles
     assert "role_3_adaptive_supply_chain" in roles
 

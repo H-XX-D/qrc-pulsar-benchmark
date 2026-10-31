@@ -213,10 +213,10 @@ class AdaptiveMothershipArchitect:
         return {
             "concept_name": "Project ARGONAUT: Adaptive Mothership, Outpost Colonizer & Resupply Architecture",
             "mothership_roles": {
-                "role_1_return_vehicle": (
-                    "Acts as the master return vehicle carrying the central 15.0 kg cryogenic vault. "
-                    "Consolidates physical samples from all 5 planetary systems and executes a high-mass "
-                    "aero-braking capture directly into Earth Geosynchronous Orbit (GEO) quarantine."
+                "role_1_canister_return_launcher": (
+                    "Acts as the orbital staging and launch platform that prepares, encapsulates, "
+                    "and launches the autonomous sample return canisters (Return Vehicles) toward Earth. "
+                    "The Mothership itself remains deployed in the outer solar system as an Outpost Colonizer."
                 ),
                 "role_2_outpost_colonizer": (
                     "Precursor infrastructure seeder: establishes permanent, self-sustaining robotic outposts "
