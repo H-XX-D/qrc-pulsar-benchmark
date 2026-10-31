@@ -254,17 +254,21 @@ class JacobiPredictiveController:
         self.last_burn_s = -np.inf
         self._transition_cache = {}
 
+    def _linearization(self, t, h):
+        middle = t + h/2
+        x = self.model.to_moon(self.reference(middle), middle)
+        a = np.zeros((6, 6)); a[:3, 3:] = np.eye(3)
+        for j in range(6):
+            delta = np.zeros(6); delta[j] = 10. if j < 3 else .001
+            plus, minus = x+delta, x-delta
+            a[3:, j] = (self.model.acceleration(plus[:3], plus[3:], middle)
+                        -self.model.acceleration(minus[:3], minus[3:], middle))/(2*delta[j])
+        return a
+
     def _transition(self, t, h):
         key = (float(t), float(h))
         if key not in self._transition_cache:
-            middle = t + h/2
-            x = self.model.to_moon(self.reference(middle), middle)
-            a = np.zeros((6, 6)); a[:3, 3:] = np.eye(3)
-            for j in range(6):
-                delta = np.zeros(6); delta[j] = 10. if j < 3 else .001
-                plus, minus = x+delta, x-delta
-                a[3:, j] = (self.model.acceleration(plus[:3], plus[3:], middle)
-                            -self.model.acceleration(minus[:3], minus[3:], middle))/(2*delta[j])
+            a = self._linearization(t, h)
             # Includes velocity-dependent forces. Frozen-gradient approximation
             # is used only to propose burns, then the first burn is checked.
             self._transition_cache[key] = expm(h*a)
@@ -315,6 +319,16 @@ class JacobiPredictiveController:
              -error[:3]/s.response_time_s**2-2*error[3:]/s.response_time_s)
         return s.decision_interval_s*a
 
+    def _candidate_burns(self, estimate, mass, end):
+        """Planner seam shared by matched predictive and damped baselines."""
+        try:
+            times, schedule = self._plan(estimate, mass, end)
+            candidates = [(schedule[0], "PREDICTIVE_BURN"), (self._damped_dv(estimate), "DAMPED_BURN")]
+        except (RuntimeError, np.linalg.LinAlgError):
+            times, schedule = np.empty(0), np.empty((0, 3))
+            candidates = [(self._damped_dv(estimate), "DAMPED_FALLBACK")]
+        return times, schedule, candidates
+
     def _cost(self, rollout, start, end, burn):
         s = self.settings
         if not rollout.completed:
@@ -360,12 +374,7 @@ class JacobiPredictiveController:
         if self.actuator.capacity(mass, interval_s=end-t) < self.actuator.minimum_dv_m_s:
             return ControlDecision("ROUTINE_AUTHORITY_EXHAUSTED", "Thrust/fuel unavailable or emergency reserve reached",
                                    predicted_clearance_m=coast.min_clearance_m, candidates_evaluated=1)
-        try:
-            times, schedule = self._plan(estimate, mass, end)
-            candidates = [(schedule[0], "PREDICTIVE_BURN"), (self._damped_dv(estimate), "DAMPED_BURN")]
-        except (RuntimeError, np.linalg.LinAlgError):
-            times, schedule = np.empty(0), np.empty((0, 3))
-            candidates = [(self._damped_dv(estimate), "DAMPED_FALLBACK")]
+        times, schedule, candidates = self._candidate_burns(estimate, mass, end)
         best = ControlDecision("COAST", "No candidate improves validated tracking/fuel cost", None,
                                times, schedule, coast.min_clearance_m, 1)
         cost = self._cost(coast, t, end, None)
