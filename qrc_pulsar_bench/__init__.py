@@ -77,3 +77,9 @@ from .capstone_replay import (
     CapstoneFlightReplay,
     CapstoneReplayReport,
 )
+from .multi_path_optimizer import (
+    FlightSafetyState,
+    SafetyThresholds,
+    MultiPathReport,
+    MultiPathTrajectoryOptimizer,
+)
