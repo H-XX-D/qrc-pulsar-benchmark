@@ -162,3 +162,8 @@ from .adaptive_mothership import (
     AdaptiveResupplyManifest,
     AdaptiveMothershipArchitect,
 )
+from .drone_autonomy_logistics import (
+    DroneAutonomyConstants,
+    HavenAugmentationMission,
+    DroneAutonomyLogisticsArchitect,
+)
