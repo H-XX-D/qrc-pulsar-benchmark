@@ -100,3 +100,11 @@ from .jovian_tour import (
     JovianTourReport,
     JovianTourPlanner,
 )
+from .sample_return import (
+    SampleReturnConstants,
+    StationaryCollectorLauncher,
+    AutonomousInterplanetaryGNC,
+    EarthOrbitalStationCapture,
+    SampleReturnMissionReport,
+    plan_jovian_sample_return_mission,
+)
