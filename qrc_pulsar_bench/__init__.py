@@ -92,3 +92,11 @@ from .interbody_transfer import (
     InterBodyDynamics,
     AutonomousInterBodyPlanner,
 )
+from .jovian_tour import (
+    MoonData,
+    JovianSystemConstants,
+    JovianRadiationModel,
+    JovianMoonFlyby,
+    JovianTourReport,
+    JovianTourPlanner,
+)
