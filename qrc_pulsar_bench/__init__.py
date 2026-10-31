@@ -142,3 +142,7 @@ from .mobile_station import (
     GrandTourLeg,
     MobileStationGrandTourArchitect,
 )
+from .commercial_spinoffs import (
+    CommercialPillar,
+    CommercialTechnologyArchitect,
+)
