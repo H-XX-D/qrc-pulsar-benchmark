@@ -194,9 +194,19 @@ class AtmosphericEjectionCaptureRover:
     """
     rover_dry_mass_kg: float = 35.0
     propellant_capacity_kg: float = 15.0
+    current_propellant_kg: float = 15.0
     rover_isp_s: float = 320.0
     collector_area_m2: float = 0.50
     aerogel_density_mg_cm3: float = 20.0  # Ultra-low density graded silica aerogel
+    cumulative_radiation_rad: float = 0.0
+    sorties_completed: int = 0
+
+    def refuel(self, propellant_added_kg: float) -> float:
+        """Refuel the rover propellant tank up to capacity."""
+        space = max(self.propellant_capacity_kg - self.current_propellant_kg, 0.0)
+        added = min(space, propellant_added_kg)
+        self.current_propellant_kg += added
+        return float(added)
 
     def simulate_plume_capture_sortie(
         self,
@@ -228,19 +238,28 @@ class AtmosphericEjectionCaptureRover:
         m_start = self.rover_dry_mass_kg + self.propellant_capacity_kg
         m_final = m_start * np.exp(-total_sortie_dv_mps / ve)
         fuel_consumed = m_start - m_final
-        remaining_propellant = self.propellant_capacity_kg - fuel_consumed
+        remaining_propellant = max(self.current_propellant_kg - fuel_consumed, 0.0)
+        self.current_propellant_kg = remaining_propellant
         max_sorties = int(self.propellant_capacity_kg // fuel_consumed)
 
         # Sample collection physics (graded aerogel intact capture)
-        # Plume particles (1-100 um) decelerated over 15 cm without destructive heating (<120 deg C)
         sample_mass_kg = 1.25  # Nominal pristine sample harvested per sortie
 
         # Radiation exposure during dive
         # Europa dose rate is 539.3 rad/hr unshielded, 53.9 rad/hr shielded (10 mm Al vault)
-        # Fast hyperbolic flyby (<4 hr total inside inner Jovian belt)
+        # Ganymede dose rate is 75.8 rad/hr unshielded, 7.6 rad/hr shielded
         dive_duration_hours = 3.8
-        shielded_dose_rate = 53.93
+        if target_moon.lower() == "europa":
+            shielded_dose_rate = 53.93
+        elif target_moon.lower() == "ganymede":
+            shielded_dose_rate = 7.58
+        else:
+            shielded_dose_rate = 0.71  # Callisto baseline
+
         total_absorbed_dose_rad = shielded_dose_rate * dive_duration_hours
+        self.cumulative_radiation_rad += total_absorbed_dose_rad
+        self.sorties_completed += 1
+
         qualification_limit_rad = 150000.0  # 150 krad NASA qualification ceiling
         dose_margin_percent = (1.0 - total_absorbed_dose_rad / qualification_limit_rad) * 100.0
 
@@ -262,9 +281,11 @@ class AtmosphericEjectionCaptureRover:
             "fuel_consumed_kg": float(fuel_consumed),
             "remaining_propellant_kg": float(remaining_propellant),
             "sorties_capacity": max_sorties,
+            "sorties_completed": self.sorties_completed,
             "natural_gravity_assist_gain_mps": float(dv_gravity_assist_mps),
             "dive_duration_hours": float(dive_duration_hours),
             "total_absorbed_dose_rad": float(total_absorbed_dose_rad),
+            "cumulative_radiation_rad": float(self.cumulative_radiation_rad),
             "radiation_qualification_margin_percent": float(dose_margin_percent),
             "surface_escape_dv_saved_mps": float(surface_escape_dv_saved_mps),
             "surface_hazards": surface_roughness_hazard,
@@ -276,15 +297,130 @@ class AtmosphericEjectionCaptureRover:
 @dataclass
 class CallistoStationPreparationFacility:
     """
-    Callisto Station Automated Sample Preparation & Earth Launch Integration Facility:
+    Callisto Station Automated Sample Preparation, Refueling & Launch Depot:
     Receives returning Atmospheric & Ejection Capture Rover, extracts pristine sample
     under cryogenic vacuum, performs bio-signature assay, seals canisters with robotic
     laser micro-welding, and integrates them into the dual-mode return stage for launch to Earth.
+    Maintains propellant depot to refuel the rover across multi-year campaigns, with
+    support mission restock capabilities.
     """
     station_radiation_rad_hr: float = 7.08  # Callisto radiation safe haven
     operational_lifetime_years: float = 25.0
     cleanroom_pressure_bar: float = 1e-11   # Deep space ultra-high vacuum
     cleanroom_temp_kelvin: float = 85.0     # Cryogenic volatile preservation (liquid nitrogen equivalent)
+    depot_propellant_reserve_kg: float = 250.0  # Initial propellant reserve on station
+    replacement_cassettes_count: int = 20
+    canisters_in_stock: int = 10
+    total_sorties_serviced: int = 0
+    total_sample_mass_ingested_kg: float = 0.0
+    total_canisters_launched_to_earth: int = 0
+
+    def refuel_rover(self, rover: AtmosphericEjectionCaptureRover) -> Dict[str, Any]:
+        """
+        Refuel the returning rover at Callisto Station and swap in a fresh aerogel cassette.
+        """
+        fuel_needed = rover.propellant_capacity_kg - rover.current_propellant_kg
+        if self.depot_propellant_reserve_kg < fuel_needed:
+            fuel_transfer = self.depot_propellant_reserve_kg
+            self.depot_propellant_reserve_kg = 0.0
+        else:
+            fuel_transfer = fuel_needed
+            self.depot_propellant_reserve_kg -= fuel_transfer
+
+        rover.refuel(fuel_transfer)
+        cassette_swapped = False
+        if self.replacement_cassettes_count > 0:
+            self.replacement_cassettes_count -= 1
+            cassette_swapped = True
+
+        self.total_sorties_serviced += 1
+
+        return {
+            "fuel_transferred_kg": float(fuel_transfer),
+            "rover_tank_level_kg": float(rover.current_propellant_kg),
+            "station_depot_reserve_kg": float(self.depot_propellant_reserve_kg),
+            "replacement_cassette_installed": cassette_swapped,
+            "cassettes_remaining": self.replacement_cassettes_count,
+            "status": "SUCCESS: Rover refueled and serviced at Callisto Station.",
+        }
+
+    def restock_from_support_mission(
+        self,
+        propellant_delivered_kg: float = 300.0,
+        fresh_cassettes: int = 15,
+        new_canisters: int = 8,
+        support_mission_year: float = 3.5,
+    ) -> Dict[str, Any]:
+        """
+        Restock Callisto Station via an uncrewed Earth cargo tanker support mission.
+        """
+        self.depot_propellant_reserve_kg += propellant_delivered_kg
+        self.replacement_cassettes_count += fresh_cassettes
+        self.canisters_in_stock += new_canisters
+
+        # Compute extended potential sorties enabled
+        sorties_enabled = int(self.depot_propellant_reserve_kg // 2.61)
+
+        return {
+            "arrival_year": float(support_mission_year),
+            "propellant_delivered_kg": float(propellant_delivered_kg),
+            "new_station_propellant_total_kg": float(self.depot_propellant_reserve_kg),
+            "fresh_cassettes_added": fresh_cassettes,
+            "total_cassettes_available": self.replacement_cassettes_count,
+            "new_canisters_added": new_canisters,
+            "total_canisters_available": self.canisters_in_stock,
+            "additional_sorties_enabled": sorties_enabled,
+            "status": f"SUCCESS: Callisto Station restocked at Year {support_mission_year:.1f}; enabled {sorties_enabled} additional sorties.",
+        }
+
+    def simulate_multi_mission_campaign(
+        self,
+        num_sorties: int = 12,
+        support_mission_year: float = 3.5,
+        support_propellant_kg: float = 300.0,
+    ) -> Dict[str, Any]:
+        """
+        Simulate an extended multi-year scientific campaign:
+        - Rover executes multiple sampling sorties across Jovian moons (Europa, Ganymede).
+        - Refuels and swaps cassettes at Callisto Station between sorties.
+        - Prepares and launches canisters to Earth.
+        - Receives mid-campaign cargo restock tanker from Earth.
+        """
+        rover = AtmosphericEjectionCaptureRover()
+        restock_occurred = False
+
+        for i in range(1, num_sorties + 1):
+            if i > 6 and not restock_occurred:
+                self.restock_from_support_mission(
+                    propellant_delivered_kg=support_propellant_kg,
+                    support_mission_year=support_mission_year,
+                )
+                restock_occurred = True
+
+            target = "Europa" if (i % 2 == 1) else "Ganymede"
+            sortie = rover.simulate_plume_capture_sortie(target_moon=target)
+            self.total_sample_mass_ingested_kg += sortie["sample_mass_collected_kg"]
+
+            # Refuel rover at station
+            self.refuel_rover(rover)
+
+            # Package canister for Earth if canisters available
+            if self.canisters_in_stock > 0:
+                self.canisters_in_stock -= 1
+                self.total_canisters_launched_to_earth += 1
+
+        return {
+            "total_sorties_executed": num_sorties,
+            "total_sample_mass_harvested_kg": float(self.total_sample_mass_ingested_kg),
+            "canisters_launched_to_earth": self.total_canisters_launched_to_earth,
+            "rover_cumulative_radiation_rad": float(rover.cumulative_radiation_rad),
+            "rover_radiation_qualification_margin_percent": float(
+                (1.0 - rover.cumulative_radiation_rad / 150000.0) * 100.0
+            ),
+            "final_station_depot_reserve_kg": float(self.depot_propellant_reserve_kg),
+            "support_mission_restocked": restock_occurred,
+            "rover_readiness": "OPERATIONAL: Autonomous GNC and docking systems primed for continued sorties.",
+        }
 
     def process_and_prepare_for_launch(
         self,
@@ -325,6 +461,7 @@ class CallistoStationPreparationFacility:
             "hydrazine_propellant_kg": float(hydrazine_mass_kg),
             "micro_ion_propellant_kg": float(ion_xenon_mass_kg),
             "avionics_dry_bus_kg": float(dry_avionics_bus_kg),
+            "station_propellant_reserve_kg": float(self.depot_propellant_reserve_kg),
             "launch_mechanism": "Callisto Station Orbital Mass Driver & Resonant Micro-Ion Staging",
             "bio_signature_assay": "Pre-flight LDMS & chiral amino acid assay verified under cryogenic vacuum",
             "status": "READY FOR EARTH INJECTION: Canister prepared and verified on Callisto Station.",

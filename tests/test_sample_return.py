@@ -374,4 +374,62 @@ def test_callisto_station_preparation_facility():
     assert "READY FOR EARTH INJECTION" in prep["status"]
 
 
+def test_callisto_station_rover_refueling_and_depot_restock():
+    """Verify rover refueling at Callisto station, cargo tanker restocking, and multi-sortie campaign."""
+    facility = CallistoStationPreparationFacility(
+        depot_propellant_reserve_kg=250.0,
+        replacement_cassettes_count=20,
+        canisters_in_stock=10,
+    )
+    rover = AtmosphericEjectionCaptureRover()
+
+    # Sortie 1 consumes propellant
+    sortie = rover.simulate_plume_capture_sortie(target_moon="Europa")
+    assert abs(sortie["fuel_consumed_kg"] - 2.61) < 0.1
+    assert rover.current_propellant_kg < 13.0
+    assert rover.sorties_completed == 1
+
+    # Refuel rover at Callisto station
+    refuel = facility.refuel_rover(rover)
+    assert abs(refuel["fuel_transferred_kg"] - 2.61) < 0.1
+    assert rover.current_propellant_kg == 15.0  # Fully topped off
+    assert abs(facility.depot_propellant_reserve_kg - (250.0 - 2.61)) < 0.1
+    assert refuel["replacement_cassette_installed"] is True
+    assert facility.replacement_cassettes_count == 19
+    assert "SUCCESS" in refuel["status"]
+
+    # Support mission restock at Year 3.5
+    restock = facility.restock_from_support_mission(
+        propellant_delivered_kg=300.0,
+        fresh_cassettes=15,
+        new_canisters=8,
+        support_mission_year=3.5,
+    )
+    assert restock["arrival_year"] == 3.5
+    assert restock["propellant_delivered_kg"] == 300.0
+    assert facility.depot_propellant_reserve_kg > 540.0
+    assert facility.replacement_cassettes_count == 34
+    assert facility.canisters_in_stock == 18
+    assert restock["additional_sorties_enabled"] > 200
+    assert "SUCCESS" in restock["status"]
+
+    # Multi-mission scientific campaign simulation
+    fresh_facility = CallistoStationPreparationFacility()
+    campaign = fresh_facility.simulate_multi_mission_campaign(
+        num_sorties=12,
+        support_mission_year=3.5,
+        support_propellant_kg=300.0,
+    )
+
+    assert campaign["total_sorties_executed"] == 12
+    assert campaign["total_sample_mass_harvested_kg"] == 15.0  # 12 * 1.25 kg
+    assert campaign["canisters_launched_to_earth"] == 12       # 12 canisters filled and launched (10 initial + 8 restocked)
+    assert campaign["support_mission_restocked"] is True
+    assert campaign["final_station_depot_reserve_kg"] > 500.0
+    assert campaign["rover_cumulative_radiation_rad"] < 2000.0 # < 2.0 krad after 12 sorties!
+    assert campaign["rover_radiation_qualification_margin_percent"] > 98.0
+    assert "OPERATIONAL" in campaign["rover_readiness"]
+
+
+
 
