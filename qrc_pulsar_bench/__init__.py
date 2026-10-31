@@ -184,6 +184,13 @@ from .mission_event_simulator import (
     TimelineStepLog,
     MissionSimulationSummary,
 )
+from .asteroid_industrial_zone import (
+    AsteroidIndustrialZoneArchitect,
+    AsteroidResourceProfile,
+    IndustrialEnergyAdvantage,
+    ManufacturingProcessSpec,
+)
+
 
 
 
