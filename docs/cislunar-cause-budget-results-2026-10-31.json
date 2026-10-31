@@ -1,0 +1,3206 @@
+{
+  "classification": "Cause accounting with an explicitly unclosed physical/measurement uncertainty budget; matched-error implementation benchmarks",
+  "evidence_directory": "/Users/hendrixx./qrc-cause-budget-2026-10-31",
+  "datasets": {
+    "lro_jan2023": {
+      "dataset": "lro_jan2023",
+      "days": 3.0,
+      "max_step_s": 30.0,
+      "rtol": 2e-12,
+      "protocol": "First reconstructed spacecraft state only; preloaded planetary states; no reference-derived forces or fitted parameters",
+      "initial_state_caveat": "Reconstructed initial state may itself use later OD observations; this is propagation replay, not a strictly operational blind forecast",
+      "physics_inputs": [
+        {
+          "file": "gggrx_0900c_sha.tab",
+          "url": "https://pds-geosciences.wustl.edu/grail/grail-l-lgrs-5-rdr-v1/grail_1001/shadr/gggrx_0900c_sha.tab",
+          "sha256": "dab6ab06e0d3d7cbc594ea4bd03151a65534ed5fdf4f147ae38662428c04454e",
+          "bytes": 49574944
+        },
+        {
+          "file": "gggrx_0900c_sha.lbl",
+          "url": "https://pds-geosciences.wustl.edu/grail/grail-l-lgrs-5-rdr-v1/grail_1001/shadr/gggrx_0900c_sha.lbl",
+          "sha256": "acc623e4b42a19f8feba1e7bda5189e984aa907491db12dede64bd426a1681c0",
+          "bytes": 10828
+        },
+        {
+          "file": "moon_pa_de421_1900-2050.bpc",
+          "url": "https://naif.jpl.nasa.gov/pub/naif/generic_kernels/pck/moon_pa_de421_1900-2050.bpc",
+          "sha256": "656f90616403d75a75f0cd6c8830fc5b44f8cb4facb5ccb8915e752b397520cf",
+          "bytes": 1770496
+        },
+        {
+          "file": "moon_080317.tf",
+          "url": "https://naif.jpl.nasa.gov/pub/naif/generic_kernels/fk/satellites/moon_080317.tf",
+          "sha256": "78732477b96f9863e7b0d65bcee3c22b8707ca5ed0db56d1173319cb2e8c7993",
+          "bytes": 21437
+        }
+      ],
+      "models": {
+        "harmonics_only": {
+          "earth_j2": false,
+          "other_planets": false,
+          "first_pn": false,
+          "tide_convention": "none",
+          "love_k2": 0.024116,
+          "earth_j2_value": 0.0010826358699107248
+        },
+        "plus_earth_j2": {
+          "earth_j2": true,
+          "other_planets": false,
+          "first_pn": false,
+          "tide_convention": "none",
+          "love_k2": 0.024116,
+          "earth_j2_value": 0.0010826358699107248
+        },
+        "plus_other_planets": {
+          "earth_j2": false,
+          "other_planets": true,
+          "first_pn": false,
+          "tide_convention": "none",
+          "love_k2": 0.024116,
+          "earth_j2_value": 0.0010826358699107248
+        },
+        "plus_first_pn": {
+          "earth_j2": false,
+          "other_planets": false,
+          "first_pn": true,
+          "tide_convention": "none",
+          "love_k2": 0.024116,
+          "earth_j2_value": 0.0010826358699107248
+        },
+        "all_no_tide": {
+          "earth_j2": true,
+          "other_planets": true,
+          "first_pn": true,
+          "tide_convention": "none",
+          "love_k2": 0.024116,
+          "earth_j2_value": 0.0010826358699107248
+        },
+        "all_full_elastic_tide": {
+          "earth_j2": true,
+          "other_planets": true,
+          "first_pn": true,
+          "tide_convention": "full_elastic",
+          "love_k2": 0.024116,
+          "earth_j2_value": 0.0010826358699107248
+        },
+        "all_epoch_subtracted_tide": {
+          "earth_j2": true,
+          "other_planets": true,
+          "first_pn": true,
+          "tide_convention": "epoch_subtracted",
+          "love_k2": 0.024116,
+          "earth_j2_value": 0.0010826358699107248
+        }
+      },
+      "results": [
+        {
+          "dataset": "lro_jan2023",
+          "rms_position_error_m": 459.78050467681334,
+          "max_position_error_m": 948.096529018305,
+          "final_position_error_m": 940.4076906370249,
+          "ephemeris_source": "/Users/hendrixx./qrc-cislunar-data-2026-10-30/de440s.bsp",
+          "uses_reference_feedback": false,
+          "uses_trajectory_derived_forces": false,
+          "additional_state_dependent_forces": false,
+          "srp_enabled": false,
+          "commanded_burn_count": 0,
+          "retrospective_commands_allowed": false,
+          "maneuver_screening": "no_event_in_supplied_catalog",
+          "maneuver_catalog_complete": false,
+          "maneuver_evidence_sources": [],
+          "gravity_model": "https://pds-geosciences.wustl.edu/grail/grail-l-lgrs-5-rdr-v1/grail_1001/shadr/gggrx_0900c_sha.tab",
+          "model": "harmonics_only",
+          "wall_seconds": 17.318556334008463,
+          "max_change_from_harmonics_m": 0.0,
+          "rms_change_from_harmonics_m": 0.0,
+          "sampled_acceleration_max_m_s2": {}
+        },
+        {
+          "dataset": "lro_jan2023",
+          "rms_position_error_m": 459.7851900522997,
+          "max_position_error_m": 948.1047634026293,
+          "final_position_error_m": 940.4158666333549,
+          "ephemeris_source": "/Users/hendrixx./qrc-cislunar-data-2026-10-30/de440s.bsp",
+          "uses_reference_feedback": false,
+          "uses_trajectory_derived_forces": false,
+          "additional_state_dependent_forces": true,
+          "srp_enabled": false,
+          "commanded_burn_count": 0,
+          "retrospective_commands_allowed": false,
+          "maneuver_screening": "no_event_in_supplied_catalog",
+          "maneuver_catalog_complete": false,
+          "maneuver_evidence_sources": [],
+          "gravity_model": "https://pds-geosciences.wustl.edu/grail/grail-l-lgrs-5-rdr-v1/grail_1001/shadr/gggrx_0900c_sha.tab",
+          "model": "plus_earth_j2",
+          "wall_seconds": 19.19001625000965,
+          "max_change_from_harmonics_m": 0.008297325143299422,
+          "rms_change_from_harmonics_m": 0.004766997722267549,
+          "sampled_acceleration_max_m_s2": {
+            "earth_j2": 1.677033473715867e-11
+          }
+        },
+        {
+          "dataset": "lro_jan2023",
+          "rms_position_error_m": 459.78054393485644,
+          "max_position_error_m": 948.0965989280224,
+          "final_position_error_m": 940.4077642698247,
+          "ephemeris_source": "/Users/hendrixx./qrc-cislunar-data-2026-10-30/de440s.bsp",
+          "uses_reference_feedback": false,
+          "uses_trajectory_derived_forces": false,
+          "additional_state_dependent_forces": true,
+          "srp_enabled": false,
+          "commanded_burn_count": 0,
+          "retrospective_commands_allowed": false,
+          "maneuver_screening": "no_event_in_supplied_catalog",
+          "maneuver_catalog_complete": false,
+          "maneuver_evidence_sources": [],
+          "gravity_model": "https://pds-geosciences.wustl.edu/grail/grail-l-lgrs-5-rdr-v1/grail_1001/shadr/gggrx_0900c_sha.tab",
+          "model": "plus_other_planets",
+          "wall_seconds": 17.120388040988473,
+          "max_change_from_harmonics_m": 8.664735851331848e-05,
+          "rms_change_from_harmonics_m": 4.396951669820773e-05,
+          "sampled_acceleration_max_m_s2": {
+            "other_planets": 9.982513970516002e-13
+          }
+        },
+        {
+          "dataset": "lro_jan2023",
+          "rms_position_error_m": 427.0407403442333,
+          "max_position_error_m": 890.3821193913376,
+          "final_position_error_m": 882.5675790922363,
+          "ephemeris_source": "/Users/hendrixx./qrc-cislunar-data-2026-10-30/de440s.bsp",
+          "uses_reference_feedback": false,
+          "uses_trajectory_derived_forces": false,
+          "additional_state_dependent_forces": true,
+          "srp_enabled": false,
+          "commanded_burn_count": 0,
+          "retrospective_commands_allowed": false,
+          "maneuver_screening": "no_event_in_supplied_catalog",
+          "maneuver_catalog_complete": false,
+          "maneuver_evidence_sources": [],
+          "gravity_model": "https://pds-geosciences.wustl.edu/grail/grail-l-lgrs-5-rdr-v1/grail_1001/shadr/gggrx_0900c_sha.tab",
+          "model": "plus_first_pn",
+          "wall_seconds": 24.603595499997027,
+          "max_change_from_harmonics_m": 57.880218158731886,
+          "rms_change_from_harmonics_m": 33.25961027316483,
+          "sampled_acceleration_max_m_s2": {
+            "first_pn": 1.0870974633796326e-07
+          }
+        },
+        {
+          "dataset": "lro_jan2023",
+          "rms_position_error_m": 427.0454781937439,
+          "max_position_error_m": 890.3904723875123,
+          "final_position_error_m": 882.5758756469871,
+          "ephemeris_source": "/Users/hendrixx./qrc-cislunar-data-2026-10-30/de440s.bsp",
+          "uses_reference_feedback": false,
+          "uses_trajectory_derived_forces": false,
+          "additional_state_dependent_forces": true,
+          "srp_enabled": false,
+          "commanded_burn_count": 0,
+          "retrospective_commands_allowed": false,
+          "maneuver_screening": "no_event_in_supplied_catalog",
+          "maneuver_catalog_complete": false,
+          "maneuver_evidence_sources": [],
+          "gravity_model": "https://pds-geosciences.wustl.edu/grail/grail-l-lgrs-5-rdr-v1/grail_1001/shadr/gggrx_0900c_sha.tab",
+          "model": "all_no_tide",
+          "wall_seconds": 29.014027374971192,
+          "max_change_from_harmonics_m": 57.87191054233641,
+          "rms_change_from_harmonics_m": 33.254814281139666,
+          "sampled_acceleration_max_m_s2": {
+            "earth_j2": 1.6770335035495522e-11,
+            "other_planets": 9.982513696123464e-13,
+            "first_pn": 1.0870974634413239e-07
+          }
+        },
+        {
+          "dataset": "lro_jan2023",
+          "rms_position_error_m": 367.7019043479717,
+          "max_position_error_m": 773.0978074881004,
+          "final_position_error_m": 765.5934296517951,
+          "ephemeris_source": "/Users/hendrixx./qrc-cislunar-data-2026-10-30/de440s.bsp",
+          "uses_reference_feedback": false,
+          "uses_trajectory_derived_forces": false,
+          "additional_state_dependent_forces": true,
+          "srp_enabled": false,
+          "commanded_burn_count": 0,
+          "retrospective_commands_allowed": false,
+          "maneuver_screening": "no_event_in_supplied_catalog",
+          "maneuver_catalog_complete": false,
+          "maneuver_evidence_sources": [],
+          "gravity_model": "https://pds-geosciences.wustl.edu/grail/grail-l-lgrs-5-rdr-v1/grail_1001/shadr/gggrx_0900c_sha.tab",
+          "model": "all_full_elastic_tide",
+          "wall_seconds": 34.73001395800384,
+          "max_change_from_harmonics_m": 179.79466931998763,
+          "rms_change_from_harmonics_m": 95.29410412906968,
+          "max_change_from_all_no_tide_m": 123.33103949913544,
+          "sampled_acceleration_max_m_s2": {
+            "earth_j2": 1.6770337039131932e-11,
+            "other_planets": 9.982513256673597e-13,
+            "first_pn": 1.0870971879575894e-07,
+            "lunar_elastic_tide": 3.5995671311405875e-07
+          }
+        },
+        {
+          "dataset": "lro_jan2023",
+          "rms_position_error_m": 430.53393095969227,
+          "max_position_error_m": 898.0504860624337,
+          "final_position_error_m": 890.1941778250695,
+          "ephemeris_source": "/Users/hendrixx./qrc-cislunar-data-2026-10-30/de440s.bsp",
+          "uses_reference_feedback": false,
+          "uses_trajectory_derived_forces": false,
+          "additional_state_dependent_forces": true,
+          "srp_enabled": false,
+          "commanded_burn_count": 0,
+          "retrospective_commands_allowed": false,
+          "maneuver_screening": "no_event_in_supplied_catalog",
+          "maneuver_catalog_complete": false,
+          "maneuver_evidence_sources": [],
+          "gravity_model": "https://pds-geosciences.wustl.edu/grail/grail-l-lgrs-5-rdr-v1/grail_1001/shadr/gggrx_0900c_sha.tab",
+          "model": "all_epoch_subtracted_tide",
+          "wall_seconds": 37.1120245839993,
+          "max_change_from_harmonics_m": 50.24790680715488,
+          "rms_change_from_harmonics_m": 29.898605880533875,
+          "max_change_from_all_no_tide_m": 8.427711450414382,
+          "sampled_acceleration_max_m_s2": {
+            "earth_j2": 1.677033502948441e-11,
+            "other_planets": 9.982513715843886e-13,
+            "first_pn": 1.0870974639651708e-07,
+            "lunar_elastic_tide": 6.130526112442032e-08
+          }
+        }
+      ],
+      "source_sha256": {
+        "cislunar_perturbations.py": "b605cf95ced0473375335b2b18ca0b22888c6555b708aee57eb79eb4e60debc8",
+        "capstone_replay.py": "10865b1d72a1e51f258889403fb9d354453e8207a6447d176e82a4d8f7accee4",
+        "cislunar_error_budget.py": "731d4a60bfdd012c6159a2cadaf79a8e14f4007d10bc07c70c8e8afd0d535485"
+      },
+      "gm_kernel_sha256": "924ddf4fb9ead9fe8a1aa55780bcabde40b09d00065d58226e24b68d8092f140",
+      "planetary_gm_m3_s2": [
+        4902800118457.55,
+        398600435507022.7,
+        1.3271244004127942e+20,
+        22031868551400.004,
+        324858592000000.0,
+        42828375815756.1,
+        1.2671276409999998e+17,
+        3.79405848418e+16,
+        5794556399999999.0,
+        6836527100580399.0,
+        975500000000.0
+      ],
+      "initial_state_sensitivity": {
+        "classification": "Illustrative one-axis perturbations; not a calibrated covariance or probability bound",
+        "cases": [
+          {
+            "kind": "position",
+            "axis": 0,
+            "magnitude_si": 100.0,
+            "max_position_change_m": 56461.45825125063,
+            "final_position_change_m": 56452.11713579074
+          },
+          {
+            "kind": "position",
+            "axis": 1,
+            "magnitude_si": 100.0,
+            "max_position_change_m": 30795.79995098177,
+            "final_position_change_m": 30795.79995098177
+          },
+          {
+            "kind": "position",
+            "axis": 2,
+            "magnitude_si": 100.0,
+            "max_position_change_m": 27239.170720258666,
+            "final_position_change_m": 27239.170720258666
+          },
+          {
+            "kind": "velocity",
+            "axis": 0,
+            "magnitude_si": 0.001,
+            "max_position_change_m": 418.0580854166784,
+            "final_position_change_m": 417.0336044135168
+          },
+          {
+            "kind": "velocity",
+            "axis": 1,
+            "magnitude_si": 0.001,
+            "max_position_change_m": 205.24833590822445,
+            "final_position_change_m": 205.24833590822445
+          },
+          {
+            "kind": "velocity",
+            "axis": 2,
+            "magnitude_si": 0.001,
+            "max_position_change_m": 629.1094300424527,
+            "final_position_change_m": 629.0156770400489
+          }
+        ]
+      }
+    },
+    "artemis1_nov2022": {
+      "dataset": "artemis1_nov2022",
+      "days": 3.0,
+      "max_step_s": 300.0,
+      "rtol": 2e-12,
+      "protocol": "First reconstructed spacecraft state only; preloaded planetary states; no reference-derived forces or fitted parameters",
+      "initial_state_caveat": "Reconstructed initial state may itself use later OD observations; this is propagation replay, not a strictly operational blind forecast",
+      "physics_inputs": [
+        {
+          "file": "gggrx_0900c_sha.tab",
+          "url": "https://pds-geosciences.wustl.edu/grail/grail-l-lgrs-5-rdr-v1/grail_1001/shadr/gggrx_0900c_sha.tab",
+          "sha256": "dab6ab06e0d3d7cbc594ea4bd03151a65534ed5fdf4f147ae38662428c04454e",
+          "bytes": 49574944
+        },
+        {
+          "file": "gggrx_0900c_sha.lbl",
+          "url": "https://pds-geosciences.wustl.edu/grail/grail-l-lgrs-5-rdr-v1/grail_1001/shadr/gggrx_0900c_sha.lbl",
+          "sha256": "acc623e4b42a19f8feba1e7bda5189e984aa907491db12dede64bd426a1681c0",
+          "bytes": 10828
+        },
+        {
+          "file": "moon_pa_de421_1900-2050.bpc",
+          "url": "https://naif.jpl.nasa.gov/pub/naif/generic_kernels/pck/moon_pa_de421_1900-2050.bpc",
+          "sha256": "656f90616403d75a75f0cd6c8830fc5b44f8cb4facb5ccb8915e752b397520cf",
+          "bytes": 1770496
+        },
+        {
+          "file": "moon_080317.tf",
+          "url": "https://naif.jpl.nasa.gov/pub/naif/generic_kernels/fk/satellites/moon_080317.tf",
+          "sha256": "78732477b96f9863e7b0d65bcee3c22b8707ca5ed0db56d1173319cb2e8c7993",
+          "bytes": 21437
+        }
+      ],
+      "models": {
+        "harmonics_only": {
+          "earth_j2": false,
+          "other_planets": false,
+          "first_pn": false,
+          "tide_convention": "none",
+          "love_k2": 0.024116,
+          "earth_j2_value": 0.0010826358699107248
+        },
+        "plus_earth_j2": {
+          "earth_j2": true,
+          "other_planets": false,
+          "first_pn": false,
+          "tide_convention": "none",
+          "love_k2": 0.024116,
+          "earth_j2_value": 0.0010826358699107248
+        },
+        "plus_other_planets": {
+          "earth_j2": false,
+          "other_planets": true,
+          "first_pn": false,
+          "tide_convention": "none",
+          "love_k2": 0.024116,
+          "earth_j2_value": 0.0010826358699107248
+        },
+        "plus_first_pn": {
+          "earth_j2": false,
+          "other_planets": false,
+          "first_pn": true,
+          "tide_convention": "none",
+          "love_k2": 0.024116,
+          "earth_j2_value": 0.0010826358699107248
+        },
+        "all_no_tide": {
+          "earth_j2": true,
+          "other_planets": true,
+          "first_pn": true,
+          "tide_convention": "none",
+          "love_k2": 0.024116,
+          "earth_j2_value": 0.0010826358699107248
+        },
+        "all_full_elastic_tide": {
+          "earth_j2": true,
+          "other_planets": true,
+          "first_pn": true,
+          "tide_convention": "full_elastic",
+          "love_k2": 0.024116,
+          "earth_j2_value": 0.0010826358699107248
+        },
+        "all_epoch_subtracted_tide": {
+          "earth_j2": true,
+          "other_planets": true,
+          "first_pn": true,
+          "tide_convention": "epoch_subtracted",
+          "love_k2": 0.024116,
+          "earth_j2_value": 0.0010826358699107248
+        }
+      },
+      "results": [
+        {
+          "dataset": "artemis1_nov2022",
+          "rms_position_error_m": 9733713.438747708,
+          "max_position_error_m": 19316632.554704163,
+          "final_position_error_m": 19316632.554704163,
+          "ephemeris_source": "/Users/hendrixx./qrc-cislunar-data-2026-10-30/de440s.bsp",
+          "uses_reference_feedback": false,
+          "uses_trajectory_derived_forces": false,
+          "additional_state_dependent_forces": false,
+          "srp_enabled": false,
+          "commanded_burn_count": 0,
+          "retrospective_commands_allowed": false,
+          "maneuver_screening": "known_event_in_interval",
+          "maneuver_catalog_complete": false,
+          "maneuver_evidence_sources": [
+            "https://www.nasa.gov/blogs/missions/2022/11/25/artemis-i-flight-day-10-orion-enters-distant-retrograde-orbit/"
+          ],
+          "gravity_model": "https://pds-geosciences.wustl.edu/grail/grail-l-lgrs-5-rdr-v1/grail_1001/shadr/gggrx_0900c_sha.tab",
+          "model": "harmonics_only",
+          "wall_seconds": 1.851285833021393,
+          "max_change_from_harmonics_m": 0.0,
+          "rms_change_from_harmonics_m": 0.0,
+          "sampled_acceleration_max_m_s2": {}
+        },
+        {
+          "dataset": "artemis1_nov2022",
+          "rms_position_error_m": 9733711.50136077,
+          "max_position_error_m": 19316628.29084214,
+          "final_position_error_m": 19316628.29084214,
+          "ephemeris_source": "/Users/hendrixx./qrc-cislunar-data-2026-10-30/de440s.bsp",
+          "uses_reference_feedback": false,
+          "uses_trajectory_derived_forces": false,
+          "additional_state_dependent_forces": true,
+          "srp_enabled": false,
+          "commanded_burn_count": 0,
+          "retrospective_commands_allowed": false,
+          "maneuver_screening": "known_event_in_interval",
+          "maneuver_catalog_complete": false,
+          "maneuver_evidence_sources": [
+            "https://www.nasa.gov/blogs/missions/2022/11/25/artemis-i-flight-day-10-orion-enters-distant-retrograde-orbit/"
+          ],
+          "gravity_model": "https://pds-geosciences.wustl.edu/grail/grail-l-lgrs-5-rdr-v1/grail_1001/shadr/gggrx_0900c_sha.tab",
+          "model": "plus_earth_j2",
+          "wall_seconds": 2.3132387090008706,
+          "max_change_from_harmonics_m": 10.559685471111656,
+          "rms_change_from_harmonics_m": 4.525932304321645,
+          "sampled_acceleration_max_m_s2": {
+            "earth_j2": 6.003112210131182e-10
+          }
+        },
+        {
+          "dataset": "artemis1_nov2022",
+          "rms_position_error_m": 9733713.93879091,
+          "max_position_error_m": 19316633.58762702,
+          "final_position_error_m": 19316633.58762702,
+          "ephemeris_source": "/Users/hendrixx./qrc-cislunar-data-2026-10-30/de440s.bsp",
+          "uses_reference_feedback": false,
+          "uses_trajectory_derived_forces": false,
+          "additional_state_dependent_forces": true,
+          "srp_enabled": false,
+          "commanded_burn_count": 0,
+          "retrospective_commands_allowed": false,
+          "maneuver_screening": "known_event_in_interval",
+          "maneuver_catalog_complete": false,
+          "maneuver_evidence_sources": [
+            "https://www.nasa.gov/blogs/missions/2022/11/25/artemis-i-flight-day-10-orion-enters-distant-retrograde-orbit/"
+          ],
+          "gravity_model": "https://pds-geosciences.wustl.edu/grail/grail-l-lgrs-5-rdr-v1/grail_1001/shadr/gggrx_0900c_sha.tab",
+          "model": "plus_other_planets",
+          "wall_seconds": 2.4639978329942096,
+          "max_change_from_harmonics_m": 2.5091300330786894,
+          "rms_change_from_harmonics_m": 1.1491022310226482,
+          "sampled_acceleration_max_m_s2": {
+            "other_planets": 7.298624391233194e-11
+          }
+        },
+        {
+          "dataset": "artemis1_nov2022",
+          "rms_position_error_m": 9733714.079942388,
+          "max_position_error_m": 19316633.973828677,
+          "final_position_error_m": 19316633.973828677,
+          "ephemeris_source": "/Users/hendrixx./qrc-cislunar-data-2026-10-30/de440s.bsp",
+          "uses_reference_feedback": false,
+          "uses_trajectory_derived_forces": false,
+          "additional_state_dependent_forces": true,
+          "srp_enabled": false,
+          "commanded_burn_count": 0,
+          "retrospective_commands_allowed": false,
+          "maneuver_screening": "known_event_in_interval",
+          "maneuver_catalog_complete": false,
+          "maneuver_evidence_sources": [
+            "https://www.nasa.gov/blogs/missions/2022/11/25/artemis-i-flight-day-10-orion-enters-distant-retrograde-orbit/"
+          ],
+          "gravity_model": "https://pds-geosciences.wustl.edu/grail/grail-l-lgrs-5-rdr-v1/grail_1001/shadr/gggrx_0900c_sha.tab",
+          "model": "plus_first_pn",
+          "wall_seconds": 2.6328969579772092,
+          "max_change_from_harmonics_m": 2.822932854513768,
+          "rms_change_from_harmonics_m": 1.304673921692831,
+          "sampled_acceleration_max_m_s2": {
+            "first_pn": 8.696255776895816e-11
+          }
+        },
+        {
+          "dataset": "artemis1_nov2022",
+          "rms_position_error_m": 9733712.642599203,
+          "max_position_error_m": 19316630.74289064,
+          "final_position_error_m": 19316630.74289064,
+          "ephemeris_source": "/Users/hendrixx./qrc-cislunar-data-2026-10-30/de440s.bsp",
+          "uses_reference_feedback": false,
+          "uses_trajectory_derived_forces": false,
+          "additional_state_dependent_forces": true,
+          "srp_enabled": false,
+          "commanded_burn_count": 0,
+          "retrospective_commands_allowed": false,
+          "maneuver_screening": "known_event_in_interval",
+          "maneuver_catalog_complete": false,
+          "maneuver_evidence_sources": [
+            "https://www.nasa.gov/blogs/missions/2022/11/25/artemis-i-flight-day-10-orion-enters-distant-retrograde-orbit/"
+          ],
+          "gravity_model": "https://pds-geosciences.wustl.edu/grail/grail-l-lgrs-5-rdr-v1/grail_1001/shadr/gggrx_0900c_sha.tab",
+          "model": "all_no_tide",
+          "wall_seconds": 3.0309248749981634,
+          "max_change_from_harmonics_m": 11.926333835068354,
+          "rms_change_from_harmonics_m": 5.18879074753363,
+          "sampled_acceleration_max_m_s2": {
+            "earth_j2": 6.003112427867795e-10,
+            "other_planets": 7.298624397444635e-11,
+            "first_pn": 8.696255776895816e-11
+          }
+        },
+        {
+          "dataset": "artemis1_nov2022",
+          "rms_position_error_m": 9733712.642512355,
+          "max_position_error_m": 19316630.74240574,
+          "final_position_error_m": 19316630.74240574,
+          "ephemeris_source": "/Users/hendrixx./qrc-cislunar-data-2026-10-30/de440s.bsp",
+          "uses_reference_feedback": false,
+          "uses_trajectory_derived_forces": false,
+          "additional_state_dependent_forces": true,
+          "srp_enabled": false,
+          "commanded_burn_count": 0,
+          "retrospective_commands_allowed": false,
+          "maneuver_screening": "known_event_in_interval",
+          "maneuver_catalog_complete": false,
+          "maneuver_evidence_sources": [
+            "https://www.nasa.gov/blogs/missions/2022/11/25/artemis-i-flight-day-10-orion-enters-distant-retrograde-orbit/"
+          ],
+          "gravity_model": "https://pds-geosciences.wustl.edu/grail/grail-l-lgrs-5-rdr-v1/grail_1001/shadr/gggrx_0900c_sha.tab",
+          "model": "all_full_elastic_tide",
+          "wall_seconds": 3.5591682080121245,
+          "max_change_from_harmonics_m": 11.927699990661932,
+          "rms_change_from_harmonics_m": 5.1894379098864345,
+          "max_change_from_all_no_tide_m": 0.0020939427652868748,
+          "sampled_acceleration_max_m_s2": {
+            "earth_j2": 6.003112428005794e-10,
+            "other_planets": 7.298624397444185e-11,
+            "first_pn": 8.696255776895816e-11,
+            "lunar_elastic_tide": 1.8644995049234498e-13
+          }
+        },
+        {
+          "dataset": "artemis1_nov2022",
+          "rms_position_error_m": 9733712.642549634,
+          "max_position_error_m": 19316630.74276462,
+          "final_position_error_m": 19316630.74276462,
+          "ephemeris_source": "/Users/hendrixx./qrc-cislunar-data-2026-10-30/de440s.bsp",
+          "uses_reference_feedback": false,
+          "uses_trajectory_derived_forces": false,
+          "additional_state_dependent_forces": true,
+          "srp_enabled": false,
+          "commanded_burn_count": 0,
+          "retrospective_commands_allowed": false,
+          "maneuver_screening": "known_event_in_interval",
+          "maneuver_catalog_complete": false,
+          "maneuver_evidence_sources": [
+            "https://www.nasa.gov/blogs/missions/2022/11/25/artemis-i-flight-day-10-orion-enters-distant-retrograde-orbit/"
+          ],
+          "gravity_model": "https://pds-geosciences.wustl.edu/grail/grail-l-lgrs-5-rdr-v1/grail_1001/shadr/gggrx_0900c_sha.tab",
+          "model": "all_epoch_subtracted_tide",
+          "wall_seconds": 3.934269542020047,
+          "max_change_from_harmonics_m": 11.926312129143538,
+          "rms_change_from_harmonics_m": 5.188788206019509,
+          "max_change_from_all_no_tide_m": 0.00016491702526243008,
+          "sampled_acceleration_max_m_s2": {
+            "earth_j2": 6.003112427864933e-10,
+            "other_planets": 7.298624397444639e-11,
+            "first_pn": 8.696255776895816e-11,
+            "lunar_elastic_tide": 3.97322532007457e-14
+          }
+        }
+      ],
+      "source_sha256": {
+        "cislunar_perturbations.py": "b605cf95ced0473375335b2b18ca0b22888c6555b708aee57eb79eb4e60debc8",
+        "capstone_replay.py": "10865b1d72a1e51f258889403fb9d354453e8207a6447d176e82a4d8f7accee4",
+        "cislunar_error_budget.py": "731d4a60bfdd012c6159a2cadaf79a8e14f4007d10bc07c70c8e8afd0d535485"
+      },
+      "gm_kernel_sha256": "924ddf4fb9ead9fe8a1aa55780bcabde40b09d00065d58226e24b68d8092f140",
+      "planetary_gm_m3_s2": [
+        4902800118457.55,
+        398600435507022.7,
+        1.3271244004127942e+20,
+        22031868551400.004,
+        324858592000000.0,
+        42828375815756.1,
+        1.2671276409999998e+17,
+        3.79405848418e+16,
+        5794556399999999.0,
+        6836527100580399.0,
+        975500000000.0
+      ]
+    },
+    "capstone_nov2022": {
+      "dataset": "capstone_nov2022",
+      "days": 3.0,
+      "max_step_s": 300.0,
+      "rtol": 2e-12,
+      "protocol": "First reconstructed spacecraft state only; preloaded planetary states; no reference-derived forces or fitted parameters",
+      "initial_state_caveat": "Reconstructed initial state may itself use later OD observations; this is propagation replay, not a strictly operational blind forecast",
+      "physics_inputs": [
+        {
+          "file": "gggrx_0900c_sha.tab",
+          "url": "https://pds-geosciences.wustl.edu/grail/grail-l-lgrs-5-rdr-v1/grail_1001/shadr/gggrx_0900c_sha.tab",
+          "sha256": "dab6ab06e0d3d7cbc594ea4bd03151a65534ed5fdf4f147ae38662428c04454e",
+          "bytes": 49574944
+        },
+        {
+          "file": "gggrx_0900c_sha.lbl",
+          "url": "https://pds-geosciences.wustl.edu/grail/grail-l-lgrs-5-rdr-v1/grail_1001/shadr/gggrx_0900c_sha.lbl",
+          "sha256": "acc623e4b42a19f8feba1e7bda5189e984aa907491db12dede64bd426a1681c0",
+          "bytes": 10828
+        },
+        {
+          "file": "moon_pa_de421_1900-2050.bpc",
+          "url": "https://naif.jpl.nasa.gov/pub/naif/generic_kernels/pck/moon_pa_de421_1900-2050.bpc",
+          "sha256": "656f90616403d75a75f0cd6c8830fc5b44f8cb4facb5ccb8915e752b397520cf",
+          "bytes": 1770496
+        },
+        {
+          "file": "moon_080317.tf",
+          "url": "https://naif.jpl.nasa.gov/pub/naif/generic_kernels/fk/satellites/moon_080317.tf",
+          "sha256": "78732477b96f9863e7b0d65bcee3c22b8707ca5ed0db56d1173319cb2e8c7993",
+          "bytes": 21437
+        }
+      ],
+      "models": {
+        "harmonics_only": {
+          "earth_j2": false,
+          "other_planets": false,
+          "first_pn": false,
+          "tide_convention": "none",
+          "love_k2": 0.024116,
+          "earth_j2_value": 0.0010826358699107248
+        },
+        "plus_earth_j2": {
+          "earth_j2": true,
+          "other_planets": false,
+          "first_pn": false,
+          "tide_convention": "none",
+          "love_k2": 0.024116,
+          "earth_j2_value": 0.0010826358699107248
+        },
+        "plus_other_planets": {
+          "earth_j2": false,
+          "other_planets": true,
+          "first_pn": false,
+          "tide_convention": "none",
+          "love_k2": 0.024116,
+          "earth_j2_value": 0.0010826358699107248
+        },
+        "plus_first_pn": {
+          "earth_j2": false,
+          "other_planets": false,
+          "first_pn": true,
+          "tide_convention": "none",
+          "love_k2": 0.024116,
+          "earth_j2_value": 0.0010826358699107248
+        },
+        "all_no_tide": {
+          "earth_j2": true,
+          "other_planets": true,
+          "first_pn": true,
+          "tide_convention": "none",
+          "love_k2": 0.024116,
+          "earth_j2_value": 0.0010826358699107248
+        },
+        "all_full_elastic_tide": {
+          "earth_j2": true,
+          "other_planets": true,
+          "first_pn": true,
+          "tide_convention": "full_elastic",
+          "love_k2": 0.024116,
+          "earth_j2_value": 0.0010826358699107248
+        },
+        "all_epoch_subtracted_tide": {
+          "earth_j2": true,
+          "other_planets": true,
+          "first_pn": true,
+          "tide_convention": "epoch_subtracted",
+          "love_k2": 0.024116,
+          "earth_j2_value": 0.0010826358699107248
+        }
+      },
+      "results": [
+        {
+          "dataset": "capstone_nov2022",
+          "rms_position_error_m": 341754.08101609605,
+          "max_position_error_m": 704097.0048700067,
+          "final_position_error_m": 704097.0048700067,
+          "ephemeris_source": "/Users/hendrixx./qrc-cislunar-data-2026-10-30/de440s.bsp",
+          "uses_reference_feedback": false,
+          "uses_trajectory_derived_forces": false,
+          "additional_state_dependent_forces": false,
+          "srp_enabled": false,
+          "commanded_burn_count": 0,
+          "retrospective_commands_allowed": false,
+          "maneuver_screening": "known_event_in_interval",
+          "maneuver_catalog_complete": false,
+          "maneuver_evidence_sources": [
+            "https://www.nasa.gov/news-release/capstone-forges-new-path-for-nasas-future-artemis-moon-missions/"
+          ],
+          "gravity_model": "https://pds-geosciences.wustl.edu/grail/grail-l-lgrs-5-rdr-v1/grail_1001/shadr/gggrx_0900c_sha.tab",
+          "model": "harmonics_only",
+          "wall_seconds": 1.8406079999986105,
+          "max_change_from_harmonics_m": 0.0,
+          "rms_change_from_harmonics_m": 0.0,
+          "sampled_acceleration_max_m_s2": {}
+        },
+        {
+          "dataset": "capstone_nov2022",
+          "rms_position_error_m": 341756.1362476664,
+          "max_position_error_m": 704101.2522144379,
+          "final_position_error_m": 704101.2522144379,
+          "ephemeris_source": "/Users/hendrixx./qrc-cislunar-data-2026-10-30/de440s.bsp",
+          "uses_reference_feedback": false,
+          "uses_trajectory_derived_forces": false,
+          "additional_state_dependent_forces": true,
+          "srp_enabled": false,
+          "commanded_burn_count": 0,
+          "retrospective_commands_allowed": false,
+          "maneuver_screening": "known_event_in_interval",
+          "maneuver_catalog_complete": false,
+          "maneuver_evidence_sources": [
+            "https://www.nasa.gov/news-release/capstone-forges-new-path-for-nasas-future-artemis-moon-missions/"
+          ],
+          "gravity_model": "https://pds-geosciences.wustl.edu/grail/grail-l-lgrs-5-rdr-v1/grail_1001/shadr/gggrx_0900c_sha.tab",
+          "model": "plus_earth_j2",
+          "wall_seconds": 2.2990223329979926,
+          "max_change_from_harmonics_m": 16.083219581271635,
+          "rms_change_from_harmonics_m": 7.127256703867027,
+          "sampled_acceleration_max_m_s2": {
+            "earth_j2": 4.693023627875337e-10
+          }
+        },
+        {
+          "dataset": "capstone_nov2022",
+          "rms_position_error_m": 341753.8639868987,
+          "max_position_error_m": 704096.5688602326,
+          "final_position_error_m": 704096.5688602326,
+          "ephemeris_source": "/Users/hendrixx./qrc-cislunar-data-2026-10-30/de440s.bsp",
+          "uses_reference_feedback": false,
+          "uses_trajectory_derived_forces": false,
+          "additional_state_dependent_forces": true,
+          "srp_enabled": false,
+          "commanded_burn_count": 0,
+          "retrospective_commands_allowed": false,
+          "maneuver_screening": "known_event_in_interval",
+          "maneuver_catalog_complete": false,
+          "maneuver_evidence_sources": [
+            "https://www.nasa.gov/news-release/capstone-forges-new-path-for-nasas-future-artemis-moon-missions/"
+          ],
+          "gravity_model": "https://pds-geosciences.wustl.edu/grail/grail-l-lgrs-5-rdr-v1/grail_1001/shadr/gggrx_0900c_sha.tab",
+          "model": "plus_other_planets",
+          "wall_seconds": 2.4546124589978717,
+          "max_change_from_harmonics_m": 1.2731513722888315,
+          "rms_change_from_harmonics_m": 0.5689745697977637,
+          "sampled_acceleration_max_m_s2": {
+            "other_planets": 4.147875191929355e-11
+          }
+        },
+        {
+          "dataset": "capstone_nov2022",
+          "rms_position_error_m": 341754.0583484808,
+          "max_position_error_m": 704096.8811839592,
+          "final_position_error_m": 704096.8811839592,
+          "ephemeris_source": "/Users/hendrixx./qrc-cislunar-data-2026-10-30/de440s.bsp",
+          "uses_reference_feedback": false,
+          "uses_trajectory_derived_forces": false,
+          "additional_state_dependent_forces": true,
+          "srp_enabled": false,
+          "commanded_burn_count": 0,
+          "retrospective_commands_allowed": false,
+          "maneuver_screening": "known_event_in_interval",
+          "maneuver_catalog_complete": false,
+          "maneuver_evidence_sources": [
+            "https://www.nasa.gov/news-release/capstone-forges-new-path-for-nasas-future-artemis-moon-missions/"
+          ],
+          "gravity_model": "https://pds-geosciences.wustl.edu/grail/grail-l-lgrs-5-rdr-v1/grail_1001/shadr/gggrx_0900c_sha.tab",
+          "model": "plus_first_pn",
+          "wall_seconds": 2.656244957994204,
+          "max_change_from_harmonics_m": 4.451505996667234,
+          "rms_change_from_harmonics_m": 2.0650100189216376,
+          "sampled_acceleration_max_m_s2": {
+            "first_pn": 1.7838999595556997e-10
+          }
+        },
+        {
+          "dataset": "capstone_nov2022",
+          "rms_position_error_m": 341755.8965161141,
+          "max_position_error_m": 704100.6924372168,
+          "final_position_error_m": 704100.6924372168,
+          "ephemeris_source": "/Users/hendrixx./qrc-cislunar-data-2026-10-30/de440s.bsp",
+          "uses_reference_feedback": false,
+          "uses_trajectory_derived_forces": false,
+          "additional_state_dependent_forces": true,
+          "srp_enabled": false,
+          "commanded_burn_count": 0,
+          "retrospective_commands_allowed": false,
+          "maneuver_screening": "known_event_in_interval",
+          "maneuver_catalog_complete": false,
+          "maneuver_evidence_sources": [
+            "https://www.nasa.gov/news-release/capstone-forges-new-path-for-nasas-future-artemis-moon-missions/"
+          ],
+          "gravity_model": "https://pds-geosciences.wustl.edu/grail/grail-l-lgrs-5-rdr-v1/grail_1001/shadr/gggrx_0900c_sha.tab",
+          "model": "all_no_tide",
+          "wall_seconds": 3.0241015829960816,
+          "max_change_from_harmonics_m": 12.677862733132594,
+          "rms_change_from_harmonics_m": 5.534549279959946,
+          "sampled_acceleration_max_m_s2": {
+            "earth_j2": 4.693023717589267e-10,
+            "other_planets": 4.147874866075994e-11,
+            "first_pn": 1.7838999595556997e-10
+          }
+        },
+        {
+          "dataset": "capstone_nov2022",
+          "rms_position_error_m": 341755.89385687694,
+          "max_position_error_m": 704100.6868096038,
+          "final_position_error_m": 704100.6868096038,
+          "ephemeris_source": "/Users/hendrixx./qrc-cislunar-data-2026-10-30/de440s.bsp",
+          "uses_reference_feedback": false,
+          "uses_trajectory_derived_forces": false,
+          "additional_state_dependent_forces": true,
+          "srp_enabled": false,
+          "commanded_burn_count": 0,
+          "retrospective_commands_allowed": false,
+          "maneuver_screening": "known_event_in_interval",
+          "maneuver_catalog_complete": false,
+          "maneuver_evidence_sources": [
+            "https://www.nasa.gov/news-release/capstone-forges-new-path-for-nasas-future-artemis-moon-missions/"
+          ],
+          "gravity_model": "https://pds-geosciences.wustl.edu/grail/grail-l-lgrs-5-rdr-v1/grail_1001/shadr/gggrx_0900c_sha.tab",
+          "model": "all_full_elastic_tide",
+          "wall_seconds": 3.55243154100026,
+          "max_change_from_harmonics_m": 12.66432677465906,
+          "rms_change_from_harmonics_m": 5.528005715451542,
+          "max_change_from_all_no_tide_m": 0.013653128397277647,
+          "sampled_acceleration_max_m_s2": {
+            "earth_j2": 4.693023717892068e-10,
+            "other_planets": 4.147874866523848e-11,
+            "first_pn": 1.7838999595556997e-10,
+            "lunar_elastic_tide": 9.481601753120425e-13
+          }
+        },
+        {
+          "dataset": "capstone_nov2022",
+          "rms_position_error_m": 341755.8965199402,
+          "max_position_error_m": 704100.6924256701,
+          "final_position_error_m": 704100.6924256701,
+          "ephemeris_source": "/Users/hendrixx./qrc-cislunar-data-2026-10-30/de440s.bsp",
+          "uses_reference_feedback": false,
+          "uses_trajectory_derived_forces": false,
+          "additional_state_dependent_forces": true,
+          "srp_enabled": false,
+          "commanded_burn_count": 0,
+          "retrospective_commands_allowed": false,
+          "maneuver_screening": "known_event_in_interval",
+          "maneuver_catalog_complete": false,
+          "maneuver_evidence_sources": [
+            "https://www.nasa.gov/news-release/capstone-forges-new-path-for-nasas-future-artemis-moon-missions/"
+          ],
+          "gravity_model": "https://pds-geosciences.wustl.edu/grail/grail-l-lgrs-5-rdr-v1/grail_1001/shadr/gggrx_0900c_sha.tab",
+          "model": "all_epoch_subtracted_tide",
+          "wall_seconds": 3.9302318330155686,
+          "max_change_from_harmonics_m": 12.677753331570111,
+          "rms_change_from_harmonics_m": 5.534504567884368,
+          "max_change_from_all_no_tide_m": 0.00011750593993066704,
+          "sampled_acceleration_max_m_s2": {
+            "earth_j2": 4.693023717592006e-10,
+            "other_planets": 4.147874866079291e-11,
+            "first_pn": 1.7838999595556997e-10,
+            "lunar_elastic_tide": 1.1240932857864414e-14
+          }
+        }
+      ],
+      "source_sha256": {
+        "cislunar_perturbations.py": "b605cf95ced0473375335b2b18ca0b22888c6555b708aee57eb79eb4e60debc8",
+        "capstone_replay.py": "10865b1d72a1e51f258889403fb9d354453e8207a6447d176e82a4d8f7accee4",
+        "cislunar_error_budget.py": "731d4a60bfdd012c6159a2cadaf79a8e14f4007d10bc07c70c8e8afd0d535485"
+      },
+      "gm_kernel_sha256": "924ddf4fb9ead9fe8a1aa55780bcabde40b09d00065d58226e24b68d8092f140",
+      "planetary_gm_m3_s2": [
+        4902800118457.55,
+        398600435507022.7,
+        1.3271244004127942e+20,
+        22031868551400.004,
+        324858592000000.0,
+        42828375815756.1,
+        1.2671276409999998e+17,
+        3.79405848418e+16,
+        5794556399999999.0,
+        6836527100580399.0,
+        975500000000.0
+      ]
+    },
+    "capstone_feb2023": {
+      "dataset": "capstone_feb2023",
+      "days": 3.0,
+      "max_step_s": 300.0,
+      "rtol": 2e-12,
+      "protocol": "First reconstructed spacecraft state only; preloaded planetary states; no reference-derived forces or fitted parameters",
+      "initial_state_caveat": "Reconstructed initial state may itself use later OD observations; this is propagation replay, not a strictly operational blind forecast",
+      "physics_inputs": [
+        {
+          "file": "gggrx_0900c_sha.tab",
+          "url": "https://pds-geosciences.wustl.edu/grail/grail-l-lgrs-5-rdr-v1/grail_1001/shadr/gggrx_0900c_sha.tab",
+          "sha256": "dab6ab06e0d3d7cbc594ea4bd03151a65534ed5fdf4f147ae38662428c04454e",
+          "bytes": 49574944
+        },
+        {
+          "file": "gggrx_0900c_sha.lbl",
+          "url": "https://pds-geosciences.wustl.edu/grail/grail-l-lgrs-5-rdr-v1/grail_1001/shadr/gggrx_0900c_sha.lbl",
+          "sha256": "acc623e4b42a19f8feba1e7bda5189e984aa907491db12dede64bd426a1681c0",
+          "bytes": 10828
+        },
+        {
+          "file": "moon_pa_de421_1900-2050.bpc",
+          "url": "https://naif.jpl.nasa.gov/pub/naif/generic_kernels/pck/moon_pa_de421_1900-2050.bpc",
+          "sha256": "656f90616403d75a75f0cd6c8830fc5b44f8cb4facb5ccb8915e752b397520cf",
+          "bytes": 1770496
+        },
+        {
+          "file": "moon_080317.tf",
+          "url": "https://naif.jpl.nasa.gov/pub/naif/generic_kernels/fk/satellites/moon_080317.tf",
+          "sha256": "78732477b96f9863e7b0d65bcee3c22b8707ca5ed0db56d1173319cb2e8c7993",
+          "bytes": 21437
+        }
+      ],
+      "models": {
+        "harmonics_only": {
+          "earth_j2": false,
+          "other_planets": false,
+          "first_pn": false,
+          "tide_convention": "none",
+          "love_k2": 0.024116,
+          "earth_j2_value": 0.0010826358699107248
+        },
+        "plus_earth_j2": {
+          "earth_j2": true,
+          "other_planets": false,
+          "first_pn": false,
+          "tide_convention": "none",
+          "love_k2": 0.024116,
+          "earth_j2_value": 0.0010826358699107248
+        },
+        "plus_other_planets": {
+          "earth_j2": false,
+          "other_planets": true,
+          "first_pn": false,
+          "tide_convention": "none",
+          "love_k2": 0.024116,
+          "earth_j2_value": 0.0010826358699107248
+        },
+        "plus_first_pn": {
+          "earth_j2": false,
+          "other_planets": false,
+          "first_pn": true,
+          "tide_convention": "none",
+          "love_k2": 0.024116,
+          "earth_j2_value": 0.0010826358699107248
+        },
+        "all_no_tide": {
+          "earth_j2": true,
+          "other_planets": true,
+          "first_pn": true,
+          "tide_convention": "none",
+          "love_k2": 0.024116,
+          "earth_j2_value": 0.0010826358699107248
+        },
+        "all_full_elastic_tide": {
+          "earth_j2": true,
+          "other_planets": true,
+          "first_pn": true,
+          "tide_convention": "full_elastic",
+          "love_k2": 0.024116,
+          "earth_j2_value": 0.0010826358699107248
+        },
+        "all_epoch_subtracted_tide": {
+          "earth_j2": true,
+          "other_planets": true,
+          "first_pn": true,
+          "tide_convention": "epoch_subtracted",
+          "love_k2": 0.024116,
+          "earth_j2_value": 0.0010826358699107248
+        }
+      },
+      "results": [
+        {
+          "dataset": "capstone_feb2023",
+          "rms_position_error_m": 1910.591535397352,
+          "max_position_error_m": 4123.389083259345,
+          "final_position_error_m": 4123.389083259345,
+          "ephemeris_source": "/Users/hendrixx./qrc-cislunar-data-2026-10-30/de440s.bsp",
+          "uses_reference_feedback": false,
+          "uses_trajectory_derived_forces": false,
+          "additional_state_dependent_forces": false,
+          "srp_enabled": false,
+          "commanded_burn_count": 0,
+          "retrospective_commands_allowed": false,
+          "maneuver_screening": "no_event_in_supplied_catalog",
+          "maneuver_catalog_complete": false,
+          "maneuver_evidence_sources": [],
+          "gravity_model": "https://pds-geosciences.wustl.edu/grail/grail-l-lgrs-5-rdr-v1/grail_1001/shadr/gggrx_0900c_sha.tab",
+          "model": "harmonics_only",
+          "wall_seconds": 1.8391592080006376,
+          "max_change_from_harmonics_m": 0.0,
+          "rms_change_from_harmonics_m": 0.0,
+          "sampled_acceleration_max_m_s2": {}
+        },
+        {
+          "dataset": "capstone_feb2023",
+          "rms_position_error_m": 1914.3768716703353,
+          "max_position_error_m": 4132.525322855748,
+          "final_position_error_m": 4132.525322855748,
+          "ephemeris_source": "/Users/hendrixx./qrc-cislunar-data-2026-10-30/de440s.bsp",
+          "uses_reference_feedback": false,
+          "uses_trajectory_derived_forces": false,
+          "additional_state_dependent_forces": true,
+          "srp_enabled": false,
+          "commanded_burn_count": 0,
+          "retrospective_commands_allowed": false,
+          "maneuver_screening": "no_event_in_supplied_catalog",
+          "maneuver_catalog_complete": false,
+          "maneuver_evidence_sources": [],
+          "gravity_model": "https://pds-geosciences.wustl.edu/grail/grail-l-lgrs-5-rdr-v1/grail_1001/shadr/gggrx_0900c_sha.tab",
+          "model": "plus_earth_j2",
+          "wall_seconds": 2.3044452499889303,
+          "max_change_from_harmonics_m": 13.610617090652733,
+          "rms_change_from_harmonics_m": 5.827638280400704,
+          "sampled_acceleration_max_m_s2": {
+            "earth_j2": 5.030158867161299e-10
+          }
+        },
+        {
+          "dataset": "capstone_feb2023",
+          "rms_position_error_m": 1910.5915008112959,
+          "max_position_error_m": 4123.422342527367,
+          "final_position_error_m": 4123.422342527367,
+          "ephemeris_source": "/Users/hendrixx./qrc-cislunar-data-2026-10-30/de440s.bsp",
+          "uses_reference_feedback": false,
+          "uses_trajectory_derived_forces": false,
+          "additional_state_dependent_forces": true,
+          "srp_enabled": false,
+          "commanded_burn_count": 0,
+          "retrospective_commands_allowed": false,
+          "maneuver_screening": "no_event_in_supplied_catalog",
+          "maneuver_catalog_complete": false,
+          "maneuver_evidence_sources": [],
+          "gravity_model": "https://pds-geosciences.wustl.edu/grail/grail-l-lgrs-5-rdr-v1/grail_1001/shadr/gggrx_0900c_sha.tab",
+          "model": "plus_other_planets",
+          "wall_seconds": 2.4864475000067614,
+          "max_change_from_harmonics_m": 0.5425199345992661,
+          "rms_change_from_harmonics_m": 0.2373121595206203,
+          "sampled_acceleration_max_m_s2": {
+            "other_planets": 2.0689782453202088e-11
+          }
+        },
+        {
+          "dataset": "capstone_feb2023",
+          "rms_position_error_m": 1908.7048205294413,
+          "max_position_error_m": 4119.44950886091,
+          "final_position_error_m": 4119.44950886091,
+          "ephemeris_source": "/Users/hendrixx./qrc-cislunar-data-2026-10-30/de440s.bsp",
+          "uses_reference_feedback": false,
+          "uses_trajectory_derived_forces": false,
+          "additional_state_dependent_forces": true,
+          "srp_enabled": false,
+          "commanded_burn_count": 0,
+          "retrospective_commands_allowed": false,
+          "maneuver_screening": "no_event_in_supplied_catalog",
+          "maneuver_catalog_complete": false,
+          "maneuver_evidence_sources": [],
+          "gravity_model": "https://pds-geosciences.wustl.edu/grail/grail-l-lgrs-5-rdr-v1/grail_1001/shadr/gggrx_0900c_sha.tab",
+          "model": "plus_first_pn",
+          "wall_seconds": 2.6080320419860072,
+          "max_change_from_harmonics_m": 7.690692424719712,
+          "rms_change_from_harmonics_m": 3.6973534280831113,
+          "sampled_acceleration_max_m_s2": {
+            "first_pn": 5.056743456882179e-10
+          }
+        },
+        {
+          "dataset": "capstone_feb2023",
+          "rms_position_error_m": 1912.484726242642,
+          "max_position_error_m": 4128.606245844125,
+          "final_position_error_m": 4128.606245844125,
+          "ephemeris_source": "/Users/hendrixx./qrc-cislunar-data-2026-10-30/de440s.bsp",
+          "uses_reference_feedback": false,
+          "uses_trajectory_derived_forces": false,
+          "additional_state_dependent_forces": true,
+          "srp_enabled": false,
+          "commanded_burn_count": 0,
+          "retrospective_commands_allowed": false,
+          "maneuver_screening": "no_event_in_supplied_catalog",
+          "maneuver_catalog_complete": false,
+          "maneuver_evidence_sources": [],
+          "gravity_model": "https://pds-geosciences.wustl.edu/grail/grail-l-lgrs-5-rdr-v1/grail_1001/shadr/gggrx_0900c_sha.tab",
+          "model": "all_no_tide",
+          "wall_seconds": 2.9987365000124555,
+          "max_change_from_harmonics_m": 8.226395191786812,
+          "rms_change_from_harmonics_m": 3.5728135479698144,
+          "sampled_acceleration_max_m_s2": {
+            "earth_j2": 5.030159160102664e-10,
+            "other_planets": 2.068978172680752e-11,
+            "first_pn": 5.056743456882179e-10
+          }
+        },
+        {
+          "dataset": "capstone_feb2023",
+          "rms_position_error_m": 1912.4634333053114,
+          "max_position_error_m": 4128.563801415341,
+          "final_position_error_m": 4128.563801415341,
+          "ephemeris_source": "/Users/hendrixx./qrc-cislunar-data-2026-10-30/de440s.bsp",
+          "uses_reference_feedback": false,
+          "uses_trajectory_derived_forces": false,
+          "additional_state_dependent_forces": true,
+          "srp_enabled": false,
+          "commanded_burn_count": 0,
+          "retrospective_commands_allowed": false,
+          "maneuver_screening": "no_event_in_supplied_catalog",
+          "maneuver_catalog_complete": false,
+          "maneuver_evidence_sources": [],
+          "gravity_model": "https://pds-geosciences.wustl.edu/grail/grail-l-lgrs-5-rdr-v1/grail_1001/shadr/gggrx_0900c_sha.tab",
+          "model": "all_full_elastic_tide",
+          "wall_seconds": 3.518879665993154,
+          "max_change_from_harmonics_m": 8.182390079154489,
+          "rms_change_from_harmonics_m": 3.5567204944519046,
+          "max_change_from_all_no_tide_m": 0.06459778710082285,
+          "sampled_acceleration_max_m_s2": {
+            "earth_j2": 5.030159162464685e-10,
+            "other_planets": 2.0689781742774555e-11,
+            "first_pn": 5.056743456882179e-10,
+            "lunar_elastic_tide": 9.159972355123305e-12
+          }
+        },
+        {
+          "dataset": "capstone_feb2023",
+          "rms_position_error_m": 1912.4849579227985,
+          "max_position_error_m": 4128.6067183780815,
+          "final_position_error_m": 4128.6067183780815,
+          "ephemeris_source": "/Users/hendrixx./qrc-cislunar-data-2026-10-30/de440s.bsp",
+          "uses_reference_feedback": false,
+          "uses_trajectory_derived_forces": false,
+          "additional_state_dependent_forces": true,
+          "srp_enabled": false,
+          "commanded_burn_count": 0,
+          "retrospective_commands_allowed": false,
+          "maneuver_screening": "no_event_in_supplied_catalog",
+          "maneuver_catalog_complete": false,
+          "maneuver_evidence_sources": [],
+          "gravity_model": "https://pds-geosciences.wustl.edu/grail/grail-l-lgrs-5-rdr-v1/grail_1001/shadr/gggrx_0900c_sha.tab",
+          "model": "all_epoch_subtracted_tide",
+          "wall_seconds": 3.880041208001785,
+          "max_change_from_harmonics_m": 8.22684954795535,
+          "rms_change_from_harmonics_m": 3.573060933061483,
+          "max_change_from_all_no_tide_m": 0.0006695242223255948,
+          "sampled_acceleration_max_m_s2": {
+            "earth_j2": 5.030159160118802e-10,
+            "other_planets": 2.068978172682999e-11,
+            "first_pn": 5.056743456882179e-10,
+            "lunar_elastic_tide": 3.5300418668440643e-14
+          }
+        }
+      ],
+      "source_sha256": {
+        "cislunar_perturbations.py": "b605cf95ced0473375335b2b18ca0b22888c6555b708aee57eb79eb4e60debc8",
+        "capstone_replay.py": "10865b1d72a1e51f258889403fb9d354453e8207a6447d176e82a4d8f7accee4",
+        "cislunar_error_budget.py": "731d4a60bfdd012c6159a2cadaf79a8e14f4007d10bc07c70c8e8afd0d535485"
+      },
+      "gm_kernel_sha256": "924ddf4fb9ead9fe8a1aa55780bcabde40b09d00065d58226e24b68d8092f140",
+      "planetary_gm_m3_s2": [
+        4902800118457.55,
+        398600435507022.7,
+        1.3271244004127942e+20,
+        22031868551400.004,
+        324858592000000.0,
+        42828375815756.1,
+        1.2671276409999998e+17,
+        3.79405848418e+16,
+        5794556399999999.0,
+        6836527100580399.0,
+        975500000000.0
+      ],
+      "initial_state_sensitivity": {
+        "classification": "Illustrative one-axis perturbations; not a calibrated covariance or probability bound",
+        "cases": [
+          {
+            "kind": "position",
+            "axis": 0,
+            "magnitude_si": 100.0,
+            "max_position_change_m": 388.6495566707663,
+            "final_position_change_m": 388.6495566707663
+          },
+          {
+            "kind": "position",
+            "axis": 1,
+            "magnitude_si": 100.0,
+            "max_position_change_m": 381.9448254633219,
+            "final_position_change_m": 381.9448254633219
+          },
+          {
+            "kind": "position",
+            "axis": 2,
+            "magnitude_si": 100.0,
+            "max_position_change_m": 450.9221845367544,
+            "final_position_change_m": 450.9221845367544
+          },
+          {
+            "kind": "velocity",
+            "axis": 0,
+            "magnitude_si": 0.001,
+            "max_position_change_m": 235.1849102679902,
+            "final_position_change_m": 235.1849102679902
+          },
+          {
+            "kind": "velocity",
+            "axis": 1,
+            "magnitude_si": 0.001,
+            "max_position_change_m": 319.44544868299886,
+            "final_position_change_m": 319.44544868299886
+          },
+          {
+            "kind": "velocity",
+            "axis": 2,
+            "magnitude_si": 0.001,
+            "max_position_change_m": 350.4356372136585,
+            "final_position_change_m": 350.4356372136585
+          }
+        ]
+      }
+    }
+  },
+  "coordinate_benchmarks": {
+    "capstone": {
+      "dataset": "capstone_feb2023",
+      "duration_s": 259200,
+      "force_model": "Same isolated Newtonian Earth-Moon-test-particle model in all solvers",
+      "reference": "Conventional barycentric Cartesian DOP853; independently refined maximum step",
+      "reference_refinement_max_change_m": 2.789225129450529e-06,
+      "output_epochs": 1001,
+      "caveat": "Finite tolerance sweep measures these implementations on this CPU; not a theoretical optimum or full-force flight/FPGA benchmark",
+      "state_dimension_note": "Spatial shape retains scale, quaternion, shape/rotation rates and an unused clock:14; Jacobi12; full Cartesian18. Removing unused clock gives13, still not a two-state system.",
+      "platform": "macOS-26.0.1-arm64-arm-64bit-Mach-O",
+      "processor": "arm64",
+      "python": "3.13.9",
+      "source_sha256": {
+        "dynamics.py": "7279350d06da696cdb23657ede16ddc58138134760f5005201ef2880cd5413ea",
+        "shape_dynamics.py": "36ff3195de59f66229a45aa960b439b84ca591c0131e14393a03a9357d3878f6",
+        "coordinate_benchmark.py": "948e12b92f449aabc54d5d3719fe6cd9912f0e596b31017a1729ed7cee2e26a2"
+      },
+      "trials": [
+        {
+          "model": "cartesian",
+          "rtol": 1e-08,
+          "repeat": 0,
+          "success": true,
+          "wall_seconds": 0.004979040997568518,
+          "cpu_seconds": 0.004979000000000067,
+          "nfev": 212,
+          "ode_dimension": 18,
+          "accepted_steps": 14,
+          "max_position_error_m": 0.2569605338602514,
+          "max_velocity_error_m_s": 3.279170485155578e-06,
+          "minimum_chart_v": null
+        },
+        {
+          "model": "jacobi",
+          "rtol": 1e-08,
+          "repeat": 0,
+          "success": true,
+          "wall_seconds": 0.0036708339757751673,
+          "cpu_seconds": 0.003654000000000046,
+          "nfev": 212,
+          "ode_dimension": 12,
+          "accepted_steps": 14,
+          "max_position_error_m": 0.2149273611840004,
+          "max_velocity_error_m_s": 2.7448902465068617e-06,
+          "minimum_chart_v": null
+        },
+        {
+          "model": "shape",
+          "rtol": 1e-08,
+          "repeat": 0,
+          "success": true,
+          "wall_seconds": 0.03284699999494478,
+          "cpu_seconds": 0.03255499999999989,
+          "nfev": 257,
+          "ode_dimension": 14,
+          "accepted_steps": 17,
+          "max_position_error_m": 0.05894368100951525,
+          "max_velocity_error_m_s": 8.073019910499252e-07,
+          "minimum_chart_v": 0.06162682064150775
+        },
+        {
+          "model": "cartesian",
+          "rtol": 1e-10,
+          "repeat": 0,
+          "success": true,
+          "wall_seconds": 0.004957333003403619,
+          "cpu_seconds": 0.004952999999999985,
+          "nfev": 287,
+          "ode_dimension": 18,
+          "accepted_steps": 19,
+          "max_position_error_m": 0.004886799635486422,
+          "max_velocity_error_m_s": 5.655757117156193e-08,
+          "minimum_chart_v": null
+        },
+        {
+          "model": "jacobi",
+          "rtol": 1e-10,
+          "repeat": 0,
+          "success": true,
+          "wall_seconds": 0.0047847499954514205,
+          "cpu_seconds": 0.004785000000000039,
+          "nfev": 302,
+          "ode_dimension": 12,
+          "accepted_steps": 20,
+          "max_position_error_m": 0.004932691597283412,
+          "max_velocity_error_m_s": 4.731639993861112e-08,
+          "minimum_chart_v": null
+        },
+        {
+          "model": "shape",
+          "rtol": 1e-10,
+          "repeat": 0,
+          "success": true,
+          "wall_seconds": 0.04383541698916815,
+          "cpu_seconds": 0.043709999999999916,
+          "nfev": 362,
+          "ode_dimension": 14,
+          "accepted_steps": 24,
+          "max_position_error_m": 0.0010954891215136182,
+          "max_velocity_error_m_s": 1.2465611201466486e-08,
+          "minimum_chart_v": 0.06162682064150775
+        },
+        {
+          "model": "cartesian",
+          "rtol": 1e-12,
+          "repeat": 0,
+          "success": true,
+          "wall_seconds": 0.007433417020365596,
+          "cpu_seconds": 0.0074230000000001795,
+          "nfev": 437,
+          "ode_dimension": 18,
+          "accepted_steps": 29,
+          "max_position_error_m": 9.421866121581647e-05,
+          "max_velocity_error_m_s": 7.989849262580689e-10,
+          "minimum_chart_v": null
+        },
+        {
+          "model": "jacobi",
+          "rtol": 1e-12,
+          "repeat": 0,
+          "success": true,
+          "wall_seconds": 0.0072670410154387355,
+          "cpu_seconds": 0.007241999999999749,
+          "nfev": 452,
+          "ode_dimension": 12,
+          "accepted_steps": 30,
+          "max_position_error_m": 8.774382731519182e-05,
+          "max_velocity_error_m_s": 6.570401327020231e-10,
+          "minimum_chart_v": null
+        },
+        {
+          "model": "shape",
+          "rtol": 1e-12,
+          "repeat": 0,
+          "success": true,
+          "wall_seconds": 0.06879912500153296,
+          "cpu_seconds": 0.06863299999999972,
+          "nfev": 572,
+          "ode_dimension": 14,
+          "accepted_steps": 38,
+          "max_position_error_m": 1.7928022939551404e-05,
+          "max_velocity_error_m_s": 1.6341592186548808e-10,
+          "minimum_chart_v": 0.06162682064150775
+        },
+        {
+          "model": "shape",
+          "rtol": 1e-12,
+          "repeat": 1,
+          "success": true,
+          "wall_seconds": 0.06924304101266898,
+          "cpu_seconds": 0.068905,
+          "nfev": 572,
+          "ode_dimension": 14,
+          "accepted_steps": 38,
+          "max_position_error_m": 1.7928022939551404e-05,
+          "max_velocity_error_m_s": 1.6341592186548808e-10,
+          "minimum_chart_v": 0.06162682064150775
+        },
+        {
+          "model": "jacobi",
+          "rtol": 1e-12,
+          "repeat": 1,
+          "success": true,
+          "wall_seconds": 0.007433708000462502,
+          "cpu_seconds": 0.007372999999999852,
+          "nfev": 452,
+          "ode_dimension": 12,
+          "accepted_steps": 30,
+          "max_position_error_m": 8.774382731519182e-05,
+          "max_velocity_error_m_s": 6.570401327020231e-10,
+          "minimum_chart_v": null
+        },
+        {
+          "model": "cartesian",
+          "rtol": 1e-12,
+          "repeat": 1,
+          "success": true,
+          "wall_seconds": 0.007453625003108755,
+          "cpu_seconds": 0.007438000000000056,
+          "nfev": 437,
+          "ode_dimension": 18,
+          "accepted_steps": 29,
+          "max_position_error_m": 9.421866121581647e-05,
+          "max_velocity_error_m_s": 7.989849262580689e-10,
+          "minimum_chart_v": null
+        },
+        {
+          "model": "shape",
+          "rtol": 1e-10,
+          "repeat": 1,
+          "success": true,
+          "wall_seconds": 0.04363450000528246,
+          "cpu_seconds": 0.04355600000000015,
+          "nfev": 362,
+          "ode_dimension": 14,
+          "accepted_steps": 24,
+          "max_position_error_m": 0.0010954891215136182,
+          "max_velocity_error_m_s": 1.2465611201466486e-08,
+          "minimum_chart_v": 0.06162682064150775
+        },
+        {
+          "model": "jacobi",
+          "rtol": 1e-10,
+          "repeat": 1,
+          "success": true,
+          "wall_seconds": 0.004845041985390708,
+          "cpu_seconds": 0.004830000000000112,
+          "nfev": 302,
+          "ode_dimension": 12,
+          "accepted_steps": 20,
+          "max_position_error_m": 0.004932691597283412,
+          "max_velocity_error_m_s": 4.731639993861112e-08,
+          "minimum_chart_v": null
+        },
+        {
+          "model": "cartesian",
+          "rtol": 1e-10,
+          "repeat": 1,
+          "success": true,
+          "wall_seconds": 0.004903459019260481,
+          "cpu_seconds": 0.004903999999999797,
+          "nfev": 287,
+          "ode_dimension": 18,
+          "accepted_steps": 19,
+          "max_position_error_m": 0.004886799635486422,
+          "max_velocity_error_m_s": 5.655757117156193e-08,
+          "minimum_chart_v": null
+        },
+        {
+          "model": "shape",
+          "rtol": 1e-08,
+          "repeat": 1,
+          "success": true,
+          "wall_seconds": 0.031196041003568098,
+          "cpu_seconds": 0.031130999999999798,
+          "nfev": 257,
+          "ode_dimension": 14,
+          "accepted_steps": 17,
+          "max_position_error_m": 0.05894368100951525,
+          "max_velocity_error_m_s": 8.073019910499252e-07,
+          "minimum_chart_v": 0.06162682064150775
+        },
+        {
+          "model": "jacobi",
+          "rtol": 1e-08,
+          "repeat": 1,
+          "success": true,
+          "wall_seconds": 0.0036124160105828196,
+          "cpu_seconds": 0.0036009999999997433,
+          "nfev": 212,
+          "ode_dimension": 12,
+          "accepted_steps": 14,
+          "max_position_error_m": 0.2149273611840004,
+          "max_velocity_error_m_s": 2.7448902465068617e-06,
+          "minimum_chart_v": null
+        },
+        {
+          "model": "cartesian",
+          "rtol": 1e-08,
+          "repeat": 1,
+          "success": true,
+          "wall_seconds": 0.0038242920127231628,
+          "cpu_seconds": 0.0038129999999996222,
+          "nfev": 212,
+          "ode_dimension": 18,
+          "accepted_steps": 14,
+          "max_position_error_m": 0.2569605338602514,
+          "max_velocity_error_m_s": 3.279170485155578e-06,
+          "minimum_chart_v": null
+        },
+        {
+          "model": "cartesian",
+          "rtol": 1e-08,
+          "repeat": 2,
+          "success": true,
+          "wall_seconds": 0.003792666015215218,
+          "cpu_seconds": 0.003770999999999969,
+          "nfev": 212,
+          "ode_dimension": 18,
+          "accepted_steps": 14,
+          "max_position_error_m": 0.2569605338602514,
+          "max_velocity_error_m_s": 3.279170485155578e-06,
+          "minimum_chart_v": null
+        },
+        {
+          "model": "jacobi",
+          "rtol": 1e-08,
+          "repeat": 2,
+          "success": true,
+          "wall_seconds": 0.0034117919858545065,
+          "cpu_seconds": 0.003411000000000275,
+          "nfev": 212,
+          "ode_dimension": 12,
+          "accepted_steps": 14,
+          "max_position_error_m": 0.2149273611840004,
+          "max_velocity_error_m_s": 2.7448902465068617e-06,
+          "minimum_chart_v": null
+        },
+        {
+          "model": "shape",
+          "rtol": 1e-08,
+          "repeat": 2,
+          "success": true,
+          "wall_seconds": 0.03171029200893827,
+          "cpu_seconds": 0.03159899999999993,
+          "nfev": 257,
+          "ode_dimension": 14,
+          "accepted_steps": 17,
+          "max_position_error_m": 0.05894368100951525,
+          "max_velocity_error_m_s": 8.073019910499252e-07,
+          "minimum_chart_v": 0.06162682064150775
+        },
+        {
+          "model": "cartesian",
+          "rtol": 1e-10,
+          "repeat": 2,
+          "success": true,
+          "wall_seconds": 0.004897792008705437,
+          "cpu_seconds": 0.004882999999999971,
+          "nfev": 287,
+          "ode_dimension": 18,
+          "accepted_steps": 19,
+          "max_position_error_m": 0.004886799635486422,
+          "max_velocity_error_m_s": 5.655757117156193e-08,
+          "minimum_chart_v": null
+        },
+        {
+          "model": "jacobi",
+          "rtol": 1e-10,
+          "repeat": 2,
+          "success": true,
+          "wall_seconds": 0.00473487499402836,
+          "cpu_seconds": 0.004734000000000016,
+          "nfev": 302,
+          "ode_dimension": 12,
+          "accepted_steps": 20,
+          "max_position_error_m": 0.004932691597283412,
+          "max_velocity_error_m_s": 4.731639993861112e-08,
+          "minimum_chart_v": null
+        },
+        {
+          "model": "shape",
+          "rtol": 1e-10,
+          "repeat": 2,
+          "success": true,
+          "wall_seconds": 0.04306249998626299,
+          "cpu_seconds": 0.042996000000000034,
+          "nfev": 362,
+          "ode_dimension": 14,
+          "accepted_steps": 24,
+          "max_position_error_m": 0.0010954891215136182,
+          "max_velocity_error_m_s": 1.2465611201466486e-08,
+          "minimum_chart_v": 0.06162682064150775
+        },
+        {
+          "model": "cartesian",
+          "rtol": 1e-12,
+          "repeat": 2,
+          "success": true,
+          "wall_seconds": 0.007497792015783489,
+          "cpu_seconds": 0.007484999999999964,
+          "nfev": 437,
+          "ode_dimension": 18,
+          "accepted_steps": 29,
+          "max_position_error_m": 9.421866121581647e-05,
+          "max_velocity_error_m_s": 7.989849262580689e-10,
+          "minimum_chart_v": null
+        },
+        {
+          "model": "jacobi",
+          "rtol": 1e-12,
+          "repeat": 2,
+          "success": true,
+          "wall_seconds": 0.007158207998145372,
+          "cpu_seconds": 0.007148999999999628,
+          "nfev": 452,
+          "ode_dimension": 12,
+          "accepted_steps": 30,
+          "max_position_error_m": 8.774382731519182e-05,
+          "max_velocity_error_m_s": 6.570401327020231e-10,
+          "minimum_chart_v": null
+        },
+        {
+          "model": "shape",
+          "rtol": 1e-12,
+          "repeat": 2,
+          "success": true,
+          "wall_seconds": 0.06880308300605975,
+          "cpu_seconds": 0.06847000000000003,
+          "nfev": 572,
+          "ode_dimension": 14,
+          "accepted_steps": 38,
+          "max_position_error_m": 1.7928022939551404e-05,
+          "max_velocity_error_m_s": 1.6341592186548808e-10,
+          "minimum_chart_v": 0.06162682064150775
+        }
+      ],
+      "aggregates": [
+        {
+          "model": "cartesian",
+          "rtol": 1e-08,
+          "max_position_error_m": 0.2569605338602514,
+          "median_wall_seconds": 0.0038242920127231628,
+          "median_cpu_seconds": 0.0038129999999996222,
+          "min_cpu_seconds": 0.003770999999999969,
+          "max_cpu_seconds": 0.004979000000000067,
+          "nfev": 212,
+          "ode_dimension": 18
+        },
+        {
+          "model": "jacobi",
+          "rtol": 1e-08,
+          "max_position_error_m": 0.2149273611840004,
+          "median_wall_seconds": 0.0036124160105828196,
+          "median_cpu_seconds": 0.0036009999999997433,
+          "min_cpu_seconds": 0.003411000000000275,
+          "max_cpu_seconds": 0.003654000000000046,
+          "nfev": 212,
+          "ode_dimension": 12
+        },
+        {
+          "model": "shape",
+          "rtol": 1e-08,
+          "max_position_error_m": 0.05894368100951525,
+          "median_wall_seconds": 0.03171029200893827,
+          "median_cpu_seconds": 0.03159899999999993,
+          "min_cpu_seconds": 0.031130999999999798,
+          "max_cpu_seconds": 0.03255499999999989,
+          "nfev": 257,
+          "ode_dimension": 14
+        },
+        {
+          "model": "cartesian",
+          "rtol": 1e-10,
+          "max_position_error_m": 0.004886799635486422,
+          "median_wall_seconds": 0.004903459019260481,
+          "median_cpu_seconds": 0.004903999999999797,
+          "min_cpu_seconds": 0.004882999999999971,
+          "max_cpu_seconds": 0.004952999999999985,
+          "nfev": 287,
+          "ode_dimension": 18
+        },
+        {
+          "model": "jacobi",
+          "rtol": 1e-10,
+          "max_position_error_m": 0.004932691597283412,
+          "median_wall_seconds": 0.0047847499954514205,
+          "median_cpu_seconds": 0.004785000000000039,
+          "min_cpu_seconds": 0.004734000000000016,
+          "max_cpu_seconds": 0.004830000000000112,
+          "nfev": 302,
+          "ode_dimension": 12
+        },
+        {
+          "model": "shape",
+          "rtol": 1e-10,
+          "max_position_error_m": 0.0010954891215136182,
+          "median_wall_seconds": 0.04363450000528246,
+          "median_cpu_seconds": 0.04355600000000015,
+          "min_cpu_seconds": 0.042996000000000034,
+          "max_cpu_seconds": 0.043709999999999916,
+          "nfev": 362,
+          "ode_dimension": 14
+        },
+        {
+          "model": "cartesian",
+          "rtol": 1e-12,
+          "max_position_error_m": 9.421866121581647e-05,
+          "median_wall_seconds": 0.007453625003108755,
+          "median_cpu_seconds": 0.007438000000000056,
+          "min_cpu_seconds": 0.0074230000000001795,
+          "max_cpu_seconds": 0.007484999999999964,
+          "nfev": 437,
+          "ode_dimension": 18
+        },
+        {
+          "model": "jacobi",
+          "rtol": 1e-12,
+          "max_position_error_m": 8.774382731519182e-05,
+          "median_wall_seconds": 0.0072670410154387355,
+          "median_cpu_seconds": 0.007241999999999749,
+          "min_cpu_seconds": 0.007148999999999628,
+          "max_cpu_seconds": 0.007372999999999852,
+          "nfev": 452,
+          "ode_dimension": 12
+        },
+        {
+          "model": "shape",
+          "rtol": 1e-12,
+          "max_position_error_m": 1.7928022939551404e-05,
+          "median_wall_seconds": 0.06880308300605975,
+          "median_cpu_seconds": 0.06863299999999972,
+          "min_cpu_seconds": 0.06847000000000003,
+          "max_cpu_seconds": 0.068905,
+          "nfev": 572,
+          "ode_dimension": 14
+        }
+      ],
+      "matched_error_targets_m": {
+        "10.0": {
+          "cartesian": {
+            "model": "cartesian",
+            "rtol": 1e-08,
+            "max_position_error_m": 0.2569605338602514,
+            "median_wall_seconds": 0.0038242920127231628,
+            "median_cpu_seconds": 0.0038129999999996222,
+            "min_cpu_seconds": 0.003770999999999969,
+            "max_cpu_seconds": 0.004979000000000067,
+            "nfev": 212,
+            "ode_dimension": 18
+          },
+          "jacobi": {
+            "model": "jacobi",
+            "rtol": 1e-08,
+            "max_position_error_m": 0.2149273611840004,
+            "median_wall_seconds": 0.0036124160105828196,
+            "median_cpu_seconds": 0.0036009999999997433,
+            "min_cpu_seconds": 0.003411000000000275,
+            "max_cpu_seconds": 0.003654000000000046,
+            "nfev": 212,
+            "ode_dimension": 12
+          },
+          "shape": {
+            "model": "shape",
+            "rtol": 1e-08,
+            "max_position_error_m": 0.05894368100951525,
+            "median_wall_seconds": 0.03171029200893827,
+            "median_cpu_seconds": 0.03159899999999993,
+            "min_cpu_seconds": 0.031130999999999798,
+            "max_cpu_seconds": 0.03255499999999989,
+            "nfev": 257,
+            "ode_dimension": 14
+          }
+        },
+        "1.0": {
+          "cartesian": {
+            "model": "cartesian",
+            "rtol": 1e-08,
+            "max_position_error_m": 0.2569605338602514,
+            "median_wall_seconds": 0.0038242920127231628,
+            "median_cpu_seconds": 0.0038129999999996222,
+            "min_cpu_seconds": 0.003770999999999969,
+            "max_cpu_seconds": 0.004979000000000067,
+            "nfev": 212,
+            "ode_dimension": 18
+          },
+          "jacobi": {
+            "model": "jacobi",
+            "rtol": 1e-08,
+            "max_position_error_m": 0.2149273611840004,
+            "median_wall_seconds": 0.0036124160105828196,
+            "median_cpu_seconds": 0.0036009999999997433,
+            "min_cpu_seconds": 0.003411000000000275,
+            "max_cpu_seconds": 0.003654000000000046,
+            "nfev": 212,
+            "ode_dimension": 12
+          },
+          "shape": {
+            "model": "shape",
+            "rtol": 1e-08,
+            "max_position_error_m": 0.05894368100951525,
+            "median_wall_seconds": 0.03171029200893827,
+            "median_cpu_seconds": 0.03159899999999993,
+            "min_cpu_seconds": 0.031130999999999798,
+            "max_cpu_seconds": 0.03255499999999989,
+            "nfev": 257,
+            "ode_dimension": 14
+          }
+        },
+        "0.1": {
+          "cartesian": {
+            "model": "cartesian",
+            "rtol": 1e-10,
+            "max_position_error_m": 0.004886799635486422,
+            "median_wall_seconds": 0.004903459019260481,
+            "median_cpu_seconds": 0.004903999999999797,
+            "min_cpu_seconds": 0.004882999999999971,
+            "max_cpu_seconds": 0.004952999999999985,
+            "nfev": 287,
+            "ode_dimension": 18
+          },
+          "jacobi": {
+            "model": "jacobi",
+            "rtol": 1e-10,
+            "max_position_error_m": 0.004932691597283412,
+            "median_wall_seconds": 0.0047847499954514205,
+            "median_cpu_seconds": 0.004785000000000039,
+            "min_cpu_seconds": 0.004734000000000016,
+            "max_cpu_seconds": 0.004830000000000112,
+            "nfev": 302,
+            "ode_dimension": 12
+          },
+          "shape": {
+            "model": "shape",
+            "rtol": 1e-08,
+            "max_position_error_m": 0.05894368100951525,
+            "median_wall_seconds": 0.03171029200893827,
+            "median_cpu_seconds": 0.03159899999999993,
+            "min_cpu_seconds": 0.031130999999999798,
+            "max_cpu_seconds": 0.03255499999999989,
+            "nfev": 257,
+            "ode_dimension": 14
+          }
+        }
+      }
+    },
+    "lro": {
+      "dataset": "lro_jan2023",
+      "duration_s": 21600,
+      "force_model": "Same isolated Newtonian Earth-Moon-test-particle model in all solvers",
+      "reference": "Conventional barycentric Cartesian DOP853; independently refined maximum step",
+      "reference_refinement_max_change_m": 7.606265583415516e-06,
+      "output_epochs": 1001,
+      "caveat": "Finite tolerance sweep measures these implementations on this CPU; not a theoretical optimum or full-force flight/FPGA benchmark",
+      "state_dimension_note": "Spatial shape retains scale, quaternion, shape/rotation rates and an unused clock:14; Jacobi12; full Cartesian18. Removing unused clock gives13, still not a two-state system.",
+      "platform": "macOS-26.0.1-arm64-arm-64bit-Mach-O",
+      "processor": "arm64",
+      "python": "3.13.9",
+      "source_sha256": {
+        "dynamics.py": "7279350d06da696cdb23657ede16ddc58138134760f5005201ef2880cd5413ea",
+        "shape_dynamics.py": "36ff3195de59f66229a45aa960b439b84ca591c0131e14393a03a9357d3878f6",
+        "coordinate_benchmark.py": "948e12b92f449aabc54d5d3719fe6cd9912f0e596b31017a1729ed7cee2e26a2"
+      },
+      "trials": [
+        {
+          "model": "cartesian",
+          "rtol": 1e-08,
+          "repeat": 0,
+          "success": true,
+          "wall_seconds": 0.010923707974143326,
+          "cpu_seconds": 0.010898000000000074,
+          "nfev": 644,
+          "ode_dimension": 18,
+          "accepted_steps": 38,
+          "max_position_error_m": 1.2789858149099624,
+          "max_velocity_error_m_s": 0.0009634027173246052,
+          "minimum_chart_v": null
+        },
+        {
+          "model": "jacobi",
+          "rtol": 1e-08,
+          "repeat": 0,
+          "success": true,
+          "wall_seconds": 0.009969250007998198,
+          "cpu_seconds": 0.009948999999999986,
+          "nfev": 647,
+          "ode_dimension": 12,
+          "accepted_steps": 39,
+          "max_position_error_m": 1.120479142355711,
+          "max_velocity_error_m_s": 0.0008573163330143526,
+          "minimum_chart_v": null
+        },
+        {
+          "model": "shape",
+          "rtol": 1e-08,
+          "repeat": 0,
+          "success": true,
+          "wall_seconds": 0.1700177500024438,
+          "cpu_seconds": 0.16946700000000003,
+          "nfev": 1376,
+          "ode_dimension": 14,
+          "accepted_steps": 78,
+          "max_position_error_m": 0.09583371883736716,
+          "max_velocity_error_m_s": 6.863564127406843e-05,
+          "minimum_chart_v": 0.0034867056612693775
+        },
+        {
+          "model": "cartesian",
+          "rtol": 1e-10,
+          "repeat": 0,
+          "success": true,
+          "wall_seconds": 0.017422292003175244,
+          "cpu_seconds": 0.01738100000000009,
+          "nfev": 1058,
+          "ode_dimension": 18,
+          "accepted_steps": 64,
+          "max_position_error_m": 0.022930257102757316,
+          "max_velocity_error_m_s": 1.8308509740302897e-05,
+          "minimum_chart_v": null
+        },
+        {
+          "model": "jacobi",
+          "rtol": 1e-10,
+          "repeat": 0,
+          "success": true,
+          "wall_seconds": 0.017259333020774648,
+          "cpu_seconds": 0.01724799999999993,
+          "nfev": 1112,
+          "ode_dimension": 12,
+          "accepted_steps": 66,
+          "max_position_error_m": 0.017058219947448012,
+          "max_velocity_error_m_s": 1.3528419113897316e-05,
+          "minimum_chart_v": null
+        },
+        {
+          "model": "shape",
+          "rtol": 1e-10,
+          "repeat": 0,
+          "success": true,
+          "wall_seconds": 0.2830333750171121,
+          "cpu_seconds": 0.281895,
+          "nfev": 2342,
+          "ode_dimension": 14,
+          "accepted_steps": 132,
+          "max_position_error_m": 0.0010004548043134984,
+          "max_velocity_error_m_s": 9.749342809431458e-07,
+          "minimum_chart_v": 0.0034867056565769613
+        },
+        {
+          "model": "cartesian",
+          "rtol": 1e-12,
+          "repeat": 0,
+          "success": true,
+          "wall_seconds": 0.02942362500471063,
+          "cpu_seconds": 0.02938099999999988,
+          "nfev": 1784,
+          "ode_dimension": 18,
+          "accepted_steps": 110,
+          "max_position_error_m": 0.00032323440349276095,
+          "max_velocity_error_m_s": 2.6374642144071993e-07,
+          "minimum_chart_v": null
+        },
+        {
+          "model": "jacobi",
+          "rtol": 1e-12,
+          "repeat": 0,
+          "success": true,
+          "wall_seconds": 0.02710387497791089,
+          "cpu_seconds": 0.027072999999999903,
+          "nfev": 1778,
+          "ode_dimension": 12,
+          "accepted_steps": 112,
+          "max_position_error_m": 0.00024359730904160645,
+          "max_velocity_error_m_s": 1.9750998386568058e-07,
+          "minimum_chart_v": null
+        },
+        {
+          "model": "shape",
+          "rtol": 1e-12,
+          "repeat": 0,
+          "success": true,
+          "wall_seconds": 0.43122741699335165,
+          "cpu_seconds": 0.42963400000000007,
+          "nfev": 3539,
+          "ode_dimension": 14,
+          "accepted_steps": 227,
+          "max_position_error_m": 7.987369900766142e-06,
+          "max_velocity_error_m_s": 7.817997938166752e-09,
+          "minimum_chart_v": 0.00348670565649828
+        },
+        {
+          "model": "shape",
+          "rtol": 1e-12,
+          "repeat": 1,
+          "success": true,
+          "wall_seconds": 0.4272565839928575,
+          "cpu_seconds": 0.4258899999999999,
+          "nfev": 3539,
+          "ode_dimension": 14,
+          "accepted_steps": 227,
+          "max_position_error_m": 7.987369900766142e-06,
+          "max_velocity_error_m_s": 7.817997938166752e-09,
+          "minimum_chart_v": 0.00348670565649828
+        },
+        {
+          "model": "jacobi",
+          "rtol": 1e-12,
+          "repeat": 1,
+          "success": true,
+          "wall_seconds": 0.027596208004979417,
+          "cpu_seconds": 0.027517000000000014,
+          "nfev": 1778,
+          "ode_dimension": 12,
+          "accepted_steps": 112,
+          "max_position_error_m": 0.00024359730904160645,
+          "max_velocity_error_m_s": 1.9750998386568058e-07,
+          "minimum_chart_v": null
+        },
+        {
+          "model": "cartesian",
+          "rtol": 1e-12,
+          "repeat": 1,
+          "success": true,
+          "wall_seconds": 0.029829790990334004,
+          "cpu_seconds": 0.029710000000000125,
+          "nfev": 1784,
+          "ode_dimension": 18,
+          "accepted_steps": 110,
+          "max_position_error_m": 0.00032323440349276095,
+          "max_velocity_error_m_s": 2.6374642144071993e-07,
+          "minimum_chart_v": null
+        },
+        {
+          "model": "shape",
+          "rtol": 1e-10,
+          "repeat": 1,
+          "success": true,
+          "wall_seconds": 0.2836675829894375,
+          "cpu_seconds": 0.2829769999999998,
+          "nfev": 2342,
+          "ode_dimension": 14,
+          "accepted_steps": 132,
+          "max_position_error_m": 0.0010004548043134984,
+          "max_velocity_error_m_s": 9.749342809431458e-07,
+          "minimum_chart_v": 0.0034867056565769613
+        },
+        {
+          "model": "jacobi",
+          "rtol": 1e-10,
+          "repeat": 1,
+          "success": true,
+          "wall_seconds": 0.017377749987645075,
+          "cpu_seconds": 0.017317999999999945,
+          "nfev": 1112,
+          "ode_dimension": 12,
+          "accepted_steps": 66,
+          "max_position_error_m": 0.017058219947448012,
+          "max_velocity_error_m_s": 1.3528419113897316e-05,
+          "minimum_chart_v": null
+        },
+        {
+          "model": "cartesian",
+          "rtol": 1e-10,
+          "repeat": 1,
+          "success": true,
+          "wall_seconds": 0.017564707988640293,
+          "cpu_seconds": 0.017487999999999726,
+          "nfev": 1058,
+          "ode_dimension": 18,
+          "accepted_steps": 64,
+          "max_position_error_m": 0.022930257102757316,
+          "max_velocity_error_m_s": 1.8308509740302897e-05,
+          "minimum_chart_v": null
+        },
+        {
+          "model": "shape",
+          "rtol": 1e-08,
+          "repeat": 1,
+          "success": true,
+          "wall_seconds": 0.16728299998794682,
+          "cpu_seconds": 0.16679200000000005,
+          "nfev": 1376,
+          "ode_dimension": 14,
+          "accepted_steps": 78,
+          "max_position_error_m": 0.09583371883736716,
+          "max_velocity_error_m_s": 6.863564127406843e-05,
+          "minimum_chart_v": 0.0034867056612693775
+        },
+        {
+          "model": "jacobi",
+          "rtol": 1e-08,
+          "repeat": 1,
+          "success": true,
+          "wall_seconds": 0.01003950001904741,
+          "cpu_seconds": 0.010032999999999959,
+          "nfev": 647,
+          "ode_dimension": 12,
+          "accepted_steps": 39,
+          "max_position_error_m": 1.120479142355711,
+          "max_velocity_error_m_s": 0.0008573163330143526,
+          "minimum_chart_v": null
+        },
+        {
+          "model": "cartesian",
+          "rtol": 1e-08,
+          "repeat": 1,
+          "success": true,
+          "wall_seconds": 0.010700041020754725,
+          "cpu_seconds": 0.010682999999999776,
+          "nfev": 644,
+          "ode_dimension": 18,
+          "accepted_steps": 38,
+          "max_position_error_m": 1.2789858149099624,
+          "max_velocity_error_m_s": 0.0009634027173246052,
+          "minimum_chart_v": null
+        },
+        {
+          "model": "cartesian",
+          "rtol": 1e-08,
+          "repeat": 2,
+          "success": true,
+          "wall_seconds": 0.010889124998357147,
+          "cpu_seconds": 0.010851000000000166,
+          "nfev": 644,
+          "ode_dimension": 18,
+          "accepted_steps": 38,
+          "max_position_error_m": 1.2789858149099624,
+          "max_velocity_error_m_s": 0.0009634027173246052,
+          "minimum_chart_v": null
+        },
+        {
+          "model": "jacobi",
+          "rtol": 1e-08,
+          "repeat": 2,
+          "success": true,
+          "wall_seconds": 0.010366250004153699,
+          "cpu_seconds": 0.010272000000000059,
+          "nfev": 647,
+          "ode_dimension": 12,
+          "accepted_steps": 39,
+          "max_position_error_m": 1.120479142355711,
+          "max_velocity_error_m_s": 0.0008573163330143526,
+          "minimum_chart_v": null
+        },
+        {
+          "model": "shape",
+          "rtol": 1e-08,
+          "repeat": 2,
+          "success": true,
+          "wall_seconds": 0.1673891250102315,
+          "cpu_seconds": 0.16686400000000035,
+          "nfev": 1376,
+          "ode_dimension": 14,
+          "accepted_steps": 78,
+          "max_position_error_m": 0.09583371883736716,
+          "max_velocity_error_m_s": 6.863564127406843e-05,
+          "minimum_chart_v": 0.0034867056612693775
+        },
+        {
+          "model": "cartesian",
+          "rtol": 1e-10,
+          "repeat": 2,
+          "success": true,
+          "wall_seconds": 0.01839474998996593,
+          "cpu_seconds": 0.018285000000000107,
+          "nfev": 1058,
+          "ode_dimension": 18,
+          "accepted_steps": 64,
+          "max_position_error_m": 0.022930257102757316,
+          "max_velocity_error_m_s": 1.8308509740302897e-05,
+          "minimum_chart_v": null
+        },
+        {
+          "model": "jacobi",
+          "rtol": 1e-10,
+          "repeat": 2,
+          "success": true,
+          "wall_seconds": 0.017193041974678636,
+          "cpu_seconds": 0.01715900000000037,
+          "nfev": 1112,
+          "ode_dimension": 12,
+          "accepted_steps": 66,
+          "max_position_error_m": 0.017058219947448012,
+          "max_velocity_error_m_s": 1.3528419113897316e-05,
+          "minimum_chart_v": null
+        },
+        {
+          "model": "shape",
+          "rtol": 1e-10,
+          "repeat": 2,
+          "success": true,
+          "wall_seconds": 0.28429375000996515,
+          "cpu_seconds": 0.2833070000000002,
+          "nfev": 2342,
+          "ode_dimension": 14,
+          "accepted_steps": 132,
+          "max_position_error_m": 0.0010004548043134984,
+          "max_velocity_error_m_s": 9.749342809431458e-07,
+          "minimum_chart_v": 0.0034867056565769613
+        },
+        {
+          "model": "cartesian",
+          "rtol": 1e-12,
+          "repeat": 2,
+          "success": true,
+          "wall_seconds": 0.029061874985927716,
+          "cpu_seconds": 0.029005999999999865,
+          "nfev": 1784,
+          "ode_dimension": 18,
+          "accepted_steps": 110,
+          "max_position_error_m": 0.00032323440349276095,
+          "max_velocity_error_m_s": 2.6374642144071993e-07,
+          "minimum_chart_v": null
+        },
+        {
+          "model": "jacobi",
+          "rtol": 1e-12,
+          "repeat": 2,
+          "success": true,
+          "wall_seconds": 0.027584041992668062,
+          "cpu_seconds": 0.027541999999999955,
+          "nfev": 1778,
+          "ode_dimension": 12,
+          "accepted_steps": 112,
+          "max_position_error_m": 0.00024359730904160645,
+          "max_velocity_error_m_s": 1.9750998386568058e-07,
+          "minimum_chart_v": null
+        },
+        {
+          "model": "shape",
+          "rtol": 1e-12,
+          "repeat": 2,
+          "success": true,
+          "wall_seconds": 0.42955716597498395,
+          "cpu_seconds": 0.42851000000000017,
+          "nfev": 3539,
+          "ode_dimension": 14,
+          "accepted_steps": 227,
+          "max_position_error_m": 7.987369900766142e-06,
+          "max_velocity_error_m_s": 7.817997938166752e-09,
+          "minimum_chart_v": 0.00348670565649828
+        }
+      ],
+      "aggregates": [
+        {
+          "model": "cartesian",
+          "rtol": 1e-08,
+          "max_position_error_m": 1.2789858149099624,
+          "median_wall_seconds": 0.010889124998357147,
+          "median_cpu_seconds": 0.010851000000000166,
+          "min_cpu_seconds": 0.010682999999999776,
+          "max_cpu_seconds": 0.010898000000000074,
+          "nfev": 644,
+          "ode_dimension": 18
+        },
+        {
+          "model": "jacobi",
+          "rtol": 1e-08,
+          "max_position_error_m": 1.120479142355711,
+          "median_wall_seconds": 0.01003950001904741,
+          "median_cpu_seconds": 0.010032999999999959,
+          "min_cpu_seconds": 0.009948999999999986,
+          "max_cpu_seconds": 0.010272000000000059,
+          "nfev": 647,
+          "ode_dimension": 12
+        },
+        {
+          "model": "shape",
+          "rtol": 1e-08,
+          "max_position_error_m": 0.09583371883736716,
+          "median_wall_seconds": 0.1673891250102315,
+          "median_cpu_seconds": 0.16686400000000035,
+          "min_cpu_seconds": 0.16679200000000005,
+          "max_cpu_seconds": 0.16946700000000003,
+          "nfev": 1376,
+          "ode_dimension": 14
+        },
+        {
+          "model": "cartesian",
+          "rtol": 1e-10,
+          "max_position_error_m": 0.022930257102757316,
+          "median_wall_seconds": 0.017564707988640293,
+          "median_cpu_seconds": 0.017487999999999726,
+          "min_cpu_seconds": 0.01738100000000009,
+          "max_cpu_seconds": 0.018285000000000107,
+          "nfev": 1058,
+          "ode_dimension": 18
+        },
+        {
+          "model": "jacobi",
+          "rtol": 1e-10,
+          "max_position_error_m": 0.017058219947448012,
+          "median_wall_seconds": 0.017259333020774648,
+          "median_cpu_seconds": 0.01724799999999993,
+          "min_cpu_seconds": 0.01715900000000037,
+          "max_cpu_seconds": 0.017317999999999945,
+          "nfev": 1112,
+          "ode_dimension": 12
+        },
+        {
+          "model": "shape",
+          "rtol": 1e-10,
+          "max_position_error_m": 0.0010004548043134984,
+          "median_wall_seconds": 0.2836675829894375,
+          "median_cpu_seconds": 0.2829769999999998,
+          "min_cpu_seconds": 0.281895,
+          "max_cpu_seconds": 0.2833070000000002,
+          "nfev": 2342,
+          "ode_dimension": 14
+        },
+        {
+          "model": "cartesian",
+          "rtol": 1e-12,
+          "max_position_error_m": 0.00032323440349276095,
+          "median_wall_seconds": 0.02942362500471063,
+          "median_cpu_seconds": 0.02938099999999988,
+          "min_cpu_seconds": 0.029005999999999865,
+          "max_cpu_seconds": 0.029710000000000125,
+          "nfev": 1784,
+          "ode_dimension": 18
+        },
+        {
+          "model": "jacobi",
+          "rtol": 1e-12,
+          "max_position_error_m": 0.00024359730904160645,
+          "median_wall_seconds": 0.027584041992668062,
+          "median_cpu_seconds": 0.027517000000000014,
+          "min_cpu_seconds": 0.027072999999999903,
+          "max_cpu_seconds": 0.027541999999999955,
+          "nfev": 1778,
+          "ode_dimension": 12
+        },
+        {
+          "model": "shape",
+          "rtol": 1e-12,
+          "max_position_error_m": 7.987369900766142e-06,
+          "median_wall_seconds": 0.42955716597498395,
+          "median_cpu_seconds": 0.42851000000000017,
+          "min_cpu_seconds": 0.4258899999999999,
+          "max_cpu_seconds": 0.42963400000000007,
+          "nfev": 3539,
+          "ode_dimension": 14
+        }
+      ],
+      "matched_error_targets_m": {
+        "10.0": {
+          "cartesian": {
+            "model": "cartesian",
+            "rtol": 1e-08,
+            "max_position_error_m": 1.2789858149099624,
+            "median_wall_seconds": 0.010889124998357147,
+            "median_cpu_seconds": 0.010851000000000166,
+            "min_cpu_seconds": 0.010682999999999776,
+            "max_cpu_seconds": 0.010898000000000074,
+            "nfev": 644,
+            "ode_dimension": 18
+          },
+          "jacobi": {
+            "model": "jacobi",
+            "rtol": 1e-08,
+            "max_position_error_m": 1.120479142355711,
+            "median_wall_seconds": 0.01003950001904741,
+            "median_cpu_seconds": 0.010032999999999959,
+            "min_cpu_seconds": 0.009948999999999986,
+            "max_cpu_seconds": 0.010272000000000059,
+            "nfev": 647,
+            "ode_dimension": 12
+          },
+          "shape": {
+            "model": "shape",
+            "rtol": 1e-08,
+            "max_position_error_m": 0.09583371883736716,
+            "median_wall_seconds": 0.1673891250102315,
+            "median_cpu_seconds": 0.16686400000000035,
+            "min_cpu_seconds": 0.16679200000000005,
+            "max_cpu_seconds": 0.16946700000000003,
+            "nfev": 1376,
+            "ode_dimension": 14
+          }
+        },
+        "1.0": {
+          "cartesian": {
+            "model": "cartesian",
+            "rtol": 1e-10,
+            "max_position_error_m": 0.022930257102757316,
+            "median_wall_seconds": 0.017564707988640293,
+            "median_cpu_seconds": 0.017487999999999726,
+            "min_cpu_seconds": 0.01738100000000009,
+            "max_cpu_seconds": 0.018285000000000107,
+            "nfev": 1058,
+            "ode_dimension": 18
+          },
+          "jacobi": {
+            "model": "jacobi",
+            "rtol": 1e-10,
+            "max_position_error_m": 0.017058219947448012,
+            "median_wall_seconds": 0.017259333020774648,
+            "median_cpu_seconds": 0.01724799999999993,
+            "min_cpu_seconds": 0.01715900000000037,
+            "max_cpu_seconds": 0.017317999999999945,
+            "nfev": 1112,
+            "ode_dimension": 12
+          },
+          "shape": {
+            "model": "shape",
+            "rtol": 1e-08,
+            "max_position_error_m": 0.09583371883736716,
+            "median_wall_seconds": 0.1673891250102315,
+            "median_cpu_seconds": 0.16686400000000035,
+            "min_cpu_seconds": 0.16679200000000005,
+            "max_cpu_seconds": 0.16946700000000003,
+            "nfev": 1376,
+            "ode_dimension": 14
+          }
+        },
+        "0.1": {
+          "cartesian": {
+            "model": "cartesian",
+            "rtol": 1e-10,
+            "max_position_error_m": 0.022930257102757316,
+            "median_wall_seconds": 0.017564707988640293,
+            "median_cpu_seconds": 0.017487999999999726,
+            "min_cpu_seconds": 0.01738100000000009,
+            "max_cpu_seconds": 0.018285000000000107,
+            "nfev": 1058,
+            "ode_dimension": 18
+          },
+          "jacobi": {
+            "model": "jacobi",
+            "rtol": 1e-10,
+            "max_position_error_m": 0.017058219947448012,
+            "median_wall_seconds": 0.017259333020774648,
+            "median_cpu_seconds": 0.01724799999999993,
+            "min_cpu_seconds": 0.01715900000000037,
+            "max_cpu_seconds": 0.017317999999999945,
+            "nfev": 1112,
+            "ode_dimension": 12
+          },
+          "shape": {
+            "model": "shape",
+            "rtol": 1e-08,
+            "max_position_error_m": 0.09583371883736716,
+            "median_wall_seconds": 0.1673891250102315,
+            "median_cpu_seconds": 0.16686400000000035,
+            "min_cpu_seconds": 0.16679200000000005,
+            "max_cpu_seconds": 0.16946700000000003,
+            "nfev": 1376,
+            "ode_dimension": 14
+          }
+        }
+      }
+    }
+  },
+  "backend_benchmark": {
+    "classification": "Same degree-120 force on host CPU; Python is an unoptimized analytic reference, not a conventional optimized native competitor",
+    "platform": "macOS-26.0.1-arm64-arm-64bit-Mach-O",
+    "machine": "arm64",
+    "trials": [
+      {
+        "backend": "native",
+        "repeat": 0,
+        "calls": 3600,
+        "cpu_seconds_per_call": 5.4187777777777846e-05,
+        "wall_seconds_per_call": 5.430347222298021e-05
+      },
+      {
+        "backend": "python_reference",
+        "repeat": 0,
+        "calls": 12,
+        "cpu_seconds_per_call": 0.13440658333333333,
+        "wall_seconds_per_call": 0.134715680583516
+      },
+      {
+        "backend": "python_reference",
+        "repeat": 1,
+        "calls": 12,
+        "cpu_seconds_per_call": 0.13391899999999998,
+        "wall_seconds_per_call": 0.13418708333241133
+      },
+      {
+        "backend": "native",
+        "repeat": 1,
+        "calls": 3600,
+        "cpu_seconds_per_call": 5.3506944444444335e-05,
+        "wall_seconds_per_call": 5.3639155004121774e-05
+      },
+      {
+        "backend": "native",
+        "repeat": 2,
+        "calls": 3600,
+        "cpu_seconds_per_call": 5.36686111111109e-05,
+        "wall_seconds_per_call": 5.377114583097864e-05
+      },
+      {
+        "backend": "python_reference",
+        "repeat": 2,
+        "calls": 12,
+        "cpu_seconds_per_call": 0.13408933333333328,
+        "wall_seconds_per_call": 0.13438728124795793
+      }
+    ],
+    "median_cpu_seconds_per_call": {
+      "native": 5.36686111111109e-05,
+      "python_reference": 0.13408933333333328
+    },
+    "speedup_over_python_reference": 2498.468481990827,
+    "max_native_python_acceleration_difference_m_s2": 6.707437923744493e-16,
+    "coefficient_memory_bytes": {
+      "packed_native": 118096,
+      "python_coefficient_copies": 352352
+    },
+    "state_memory_bytes": {
+      "cartesian_three_body": 144,
+      "jacobi": 96,
+      "spatial_shape_current": 112,
+      "spatial_shape_without_unused_clock": 104,
+      "spacecraft_ephemeris_driven": 48,
+      "orbit_clock_covariance": 512
+    },
+    "hardware_execution": false
+  },
+  "additional_scenarios": [
+    {
+      "dataset": "lro_jan2023",
+      "scenario": "constant_RTN_acceleration",
+      "axis": "radial",
+      "magnitude_m_s2": 1e-09,
+      "max_position_change_m": 0.5849839796785292,
+      "rms_position_change_m": 0.3346149181310928,
+      "classification": "Hypothetical constant orbital-frame disturbance, not a fitted force or physical uncertainty bound"
+    },
+    {
+      "dataset": "lro_jan2023",
+      "scenario": "constant_RTN_acceleration",
+      "axis": "along_track",
+      "magnitude_m_s2": 1e-09,
+      "max_position_change_m": 101.05311835006292,
+      "rms_position_change_m": 45.074769395707406,
+      "classification": "Hypothetical constant orbital-frame disturbance, not a fitted force or physical uncertainty bound"
+    },
+    {
+      "dataset": "lro_jan2023",
+      "scenario": "constant_RTN_acceleration",
+      "axis": "normal",
+      "magnitude_m_s2": 1e-09,
+      "max_position_change_m": 0.004470271998731552,
+      "rms_position_change_m": 0.002058832958504873,
+      "classification": "Hypothetical constant orbital-frame disturbance, not a fitted force or physical uncertainty bound"
+    },
+    {
+      "dataset": "lro_jan2023",
+      "scenario": "ephemeris_grid_3600_to_900s",
+      "max_position_change_m": 1.4963782031833365e-06,
+      "rms_position_change_m": 8.504307964741613e-07
+    },
+    {
+      "dataset": "lro_jan2023",
+      "scenario": "GRGM900C_GM_plus_quoted_sigma",
+      "delta_gm_m3_s2": 14178.101463045039,
+      "max_position_change_m": 2.466490628795577
+    },
+    {
+      "dataset": "lro_jan2023",
+      "scenario": "historical_SRP_with_extra_forces",
+      "tide_convention": "none",
+      "rms_position_error_m": 461.2655760124242,
+      "classification": "Historical area/Cr/mass; not verified January2023 properties"
+    },
+    {
+      "dataset": "lro_jan2023",
+      "scenario": "historical_SRP_with_extra_forces",
+      "tide_convention": "full_elastic",
+      "rms_position_error_m": 401.88885142265326,
+      "classification": "Historical area/Cr/mass; not verified January2023 properties"
+    },
+    {
+      "dataset": "capstone_feb2023",
+      "scenario": "constant_RTN_acceleration",
+      "axis": "radial",
+      "magnitude_m_s2": 1e-09,
+      "max_position_change_m": 41.35931174094849,
+      "rms_position_change_m": 18.53622108044347,
+      "classification": "Hypothetical constant orbital-frame disturbance, not a fitted force or physical uncertainty bound"
+    },
+    {
+      "dataset": "capstone_feb2023",
+      "scenario": "constant_RTN_acceleration",
+      "axis": "along_track",
+      "magnitude_m_s2": 1e-09,
+      "max_position_change_m": 28.781319936277036,
+      "rms_position_change_m": 13.703632089478672,
+      "classification": "Hypothetical constant orbital-frame disturbance, not a fitted force or physical uncertainty bound"
+    },
+    {
+      "dataset": "capstone_feb2023",
+      "scenario": "constant_RTN_acceleration",
+      "axis": "normal",
+      "magnitude_m_s2": 1e-09,
+      "max_position_change_m": 30.854826258949352,
+      "rms_position_change_m": 14.460769424777308,
+      "classification": "Hypothetical constant orbital-frame disturbance, not a fitted force or physical uncertainty bound"
+    },
+    {
+      "dataset": "capstone_feb2023",
+      "scenario": "ephemeris_grid_3600_to_900s",
+      "max_position_change_m": 0.0002400200252652841,
+      "rms_position_change_m": 0.00010524962508530565
+    }
+  ],
+  "synthetic_navigation": [
+    {
+      "classification": "Synthetic idealized pseudorange observations generated from reconstructed LRO positions; not flight sensor data",
+      "measurement_equation": "z = direction dot r + clock_bias + independent Gaussian noise",
+      "seed": 20261031,
+      "directions_icrf": [
+        [
+          0.5773502691896258,
+          0.5773502691896258,
+          0.5773502691896258
+        ],
+        [
+          0.5773502691896258,
+          -0.5773502691896258,
+          -0.5773502691896258
+        ],
+        [
+          -0.5773502691896258,
+          0.5773502691896258,
+          -0.5773502691896258
+        ],
+        [
+          -0.5773502691896258,
+          -0.5773502691896258,
+          0.5773502691896258
+        ]
+      ],
+      "noise_sigma_m": 300.0,
+      "state_dependent_extra_forces": true,
+      "true_clock_bias_m": 6000.0,
+      "true_clock_drift_m_s": 0.03,
+      "initial_orbit_error_si": [
+        1000.0,
+        -1000.0,
+        500.0,
+        0.5,
+        -0.5,
+        0.2
+      ],
+      "initial_covariance": [
+        [
+          4000000.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          4000000.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          4000000.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          4.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          4.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          4.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          100000000.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.010000000000000002
+        ]
+      ],
+      "acceleration_noise_psd_m2_s3": 1e-10,
+      "clock_drift_noise_psd_m2_s3": 1e-08,
+      "duration_s": 21600.0,
+      "sensor_stop_s": 14400,
+      "observations_per_epoch": 4,
+      "sensed_epochs": 25,
+      "sensor_interval_s": 599.9999642372131,
+      "sensed_position_rms_m": 252.92833037700828,
+      "outage_position_rms_m": 224.6516773375895,
+      "open_loop_sensed_position_rms_m": 33583.87407976347,
+      "open_loop_outage_position_rms_m": 71584.62637925612,
+      "final_position_error_m": 225.96386129498535,
+      "open_loop_final_position_error_m": 81106.70251431246,
+      "clock_bias_rms_m": 68.5335363212218,
+      "final_clock_bias_error_m": -78.79255254776945,
+      "final_clock_drift_error_m_s": -0.008745539394302945,
+      "mean_nis_four_observations": 3.400773256314571,
+      "wall_seconds": 34.01925712500815,
+      "limitations": [
+        "Synthetic simultaneous directions; no actual pulsar catalog/visibility/phase ambiguity",
+        "No raw photon/TOA adapter, relativistic delays, dispersion or detector noise model",
+        "A single fixed seed and six-hour arc; not a Monte Carlo consistency or flight test"
+      ]
+    },
+    {
+      "classification": "Synthetic idealized pseudorange observations generated from reconstructed LRO positions; not flight sensor data",
+      "measurement_equation": "z = direction dot r + clock_bias + independent Gaussian noise",
+      "seed": 20261032,
+      "directions_icrf": [
+        [
+          0.5773502691896258,
+          0.5773502691896258,
+          0.5773502691896258
+        ],
+        [
+          0.5773502691896258,
+          -0.5773502691896258,
+          -0.5773502691896258
+        ],
+        [
+          -0.5773502691896258,
+          0.5773502691896258,
+          -0.5773502691896258
+        ],
+        [
+          -0.5773502691896258,
+          -0.5773502691896258,
+          0.5773502691896258
+        ]
+      ],
+      "noise_sigma_m": 300.0,
+      "state_dependent_extra_forces": true,
+      "true_clock_bias_m": 6000.0,
+      "true_clock_drift_m_s": 0.03,
+      "initial_orbit_error_si": [
+        1000.0,
+        -1000.0,
+        500.0,
+        0.5,
+        -0.5,
+        0.2
+      ],
+      "initial_covariance": [
+        [
+          4000000.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          4000000.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          4000000.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          4.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          4.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          4.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          100000000.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.010000000000000002
+        ]
+      ],
+      "acceleration_noise_psd_m2_s3": 1e-10,
+      "clock_drift_noise_psd_m2_s3": 1e-08,
+      "duration_s": 21600.0,
+      "sensor_stop_s": 14400,
+      "observations_per_epoch": 4,
+      "sensed_epochs": 25,
+      "sensor_interval_s": 599.9999642372131,
+      "sensed_position_rms_m": 261.58596405627526,
+      "outage_position_rms_m": 235.75459740438748,
+      "open_loop_sensed_position_rms_m": 33583.87407976347,
+      "open_loop_outage_position_rms_m": 71584.62637925612,
+      "final_position_error_m": 284.3123977912957,
+      "open_loop_final_position_error_m": 81106.70251431246,
+      "clock_bias_rms_m": 82.32577968285683,
+      "final_clock_bias_error_m": -74.90252605227488,
+      "final_clock_drift_error_m_s": -0.0004763085594143117,
+      "mean_nis_four_observations": 2.9675115378173196,
+      "wall_seconds": 33.56442354200408,
+      "limitations": [
+        "Synthetic simultaneous directions; no actual pulsar catalog/visibility/phase ambiguity",
+        "No raw photon/TOA adapter, relativistic delays, dispersion or detector noise model",
+        "A single fixed seed and six-hour arc; not a Monte Carlo consistency or flight test"
+      ]
+    },
+    {
+      "classification": "Synthetic idealized pseudorange observations generated from reconstructed LRO positions; not flight sensor data",
+      "measurement_equation": "z = direction dot r + clock_bias + independent Gaussian noise",
+      "seed": 20261033,
+      "directions_icrf": [
+        [
+          0.5773502691896258,
+          0.5773502691896258,
+          0.5773502691896258
+        ],
+        [
+          0.5773502691896258,
+          -0.5773502691896258,
+          -0.5773502691896258
+        ],
+        [
+          -0.5773502691896258,
+          0.5773502691896258,
+          -0.5773502691896258
+        ],
+        [
+          -0.5773502691896258,
+          -0.5773502691896258,
+          0.5773502691896258
+        ]
+      ],
+      "noise_sigma_m": 300.0,
+      "state_dependent_extra_forces": true,
+      "true_clock_bias_m": 6000.0,
+      "true_clock_drift_m_s": 0.03,
+      "initial_orbit_error_si": [
+        1000.0,
+        -1000.0,
+        500.0,
+        0.5,
+        -0.5,
+        0.2
+      ],
+      "initial_covariance": [
+        [
+          4000000.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          4000000.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          4000000.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          4.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          4.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          4.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          100000000.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.010000000000000002
+        ]
+      ],
+      "acceleration_noise_psd_m2_s3": 1e-10,
+      "clock_drift_noise_psd_m2_s3": 1e-08,
+      "duration_s": 21600.0,
+      "sensor_stop_s": 14400,
+      "observations_per_epoch": 4,
+      "sensed_epochs": 25,
+      "sensor_interval_s": 599.9999642372131,
+      "sensed_position_rms_m": 245.17208115526012,
+      "outage_position_rms_m": 134.21302227565425,
+      "open_loop_sensed_position_rms_m": 33583.87407976347,
+      "open_loop_outage_position_rms_m": 71584.62637925612,
+      "final_position_error_m": 57.46269294251013,
+      "open_loop_final_position_error_m": 81106.70251431246,
+      "clock_bias_rms_m": 51.94565067154514,
+      "final_clock_bias_error_m": 5.428364933155535,
+      "final_clock_drift_error_m_s": 0.0015823234337928663,
+      "mean_nis_four_observations": 3.8561650991251075,
+      "wall_seconds": 32.82141054200474,
+      "limitations": [
+        "Synthetic simultaneous directions; no actual pulsar catalog/visibility/phase ambiguity",
+        "No raw photon/TOA adapter, relativistic delays, dispersion or detector noise model",
+        "A single fixed seed and six-hour arc; not a Monte Carlo consistency or flight test"
+      ]
+    }
+  ],
+  "reference_check": {
+    "kernel": "lrorg_2022349_2023074_v01.bsp",
+    "source": "NASA FDF Regular Definitive SPK",
+    "archive_position_max_difference_m": 0.08672367495428247,
+    "archive_position_median_difference_m": 0.030924689896612918,
+    "selected_spk_boundaries": [
+      {
+        "start_s": -86330.81611526012,
+        "stop_s": 69.18391358852386
+      },
+      {
+        "start_s": 69.18391358852386,
+        "stop_s": 86469.18394255638
+      },
+      {
+        "start_s": 86469.18394255638,
+        "stop_s": 172869.18397152424
+      },
+      {
+        "start_s": 172869.18397152424,
+        "stop_s": 259269.1840004921
+      }
+    ],
+    "early_consistency_check": [
+      {
+        "step_s": 1.0,
+        "max_consistency_defect_m": 0.003079952108396867,
+        "time_s": 4208.5
+      },
+      {
+        "step_s": 0.1,
+        "max_consistency_defect_m": 0.00015613321154281886,
+        "time_s": 4208.200000000001
+      },
+      {
+        "step_s": 0.01,
+        "max_consistency_defect_m": 0.00018013695006843515,
+        "time_s": 4209.180000000043
+      },
+      {
+        "step_s": 0.001,
+        "max_consistency_defect_m": 0.00011884214710280551,
+        "time_s": 4210.177000000449
+      }
+    ],
+    "interpretation": "Reference diagnostic only; no force inferred or supplied to propagation"
+  },
+  "reference_acceleration_diagnostic": {
+    "interpretation": "Offline reference acceleration consistency diagnostic, not an identified physical disturbance; never injected into a forecast",
+    "max_residual_m_s2": 0.0501602345591199,
+    "peak_time_s": 4202.0,
+    "median_residual_before4000s_m_s2": 2.4673384020442073e-06,
+    "median_residual_after4400s_m_s2": 1.995566532151238e-06,
+    "max_differencing_disagreement_m_s2": 1.881735954252301e-06,
+    "integral_residual_m_s": [
+      0.025827500975009077,
+      -0.04582269636977114,
+      -0.009579510514418105
+    ],
+    "source_maneuver_listing": "Jan1-3 daily FDF29 SPK comments: None",
+    "causal_attribution": "Unresolved: force event, reconstruction/interpolation changes or input mismatch; source does not support asserting a recorded burn"
+  },
+  "reference_provenance": [
+    {
+      "file": "lrorg_2022349_2023074_v01.bsp",
+      "url": "https://naif.jpl.nasa.gov/pub/naif/pds/data/lro-l-spice-6-v1.0/lrosp_1000/data/spk/lrorg_2022349_2023074_v01.bsp",
+      "sha256": "b693a5ed81f2366a2509adc1a04dc3b39a2c4ab66abf0dba8606adf56f93808b",
+      "bytes": 7575552
+    },
+    {
+      "file": "lrorg_2022349_2023074_v01.lbl",
+      "url": "https://naif.jpl.nasa.gov/pub/naif/pds/data/lro-l-spice-6-v1.0/lrosp_1000/data/spk/lrorg_2022349_2023074_v01.lbl",
+      "sha256": "f31d9c7f81c6c9b21332395c72258e986007a8ebbade9f2c41e8c73779214bd7",
+      "bytes": 1378
+    }
+  ],
+  "runtime_checks": {
+    "shape": {
+      "type": "function",
+      "numba_dispatcher": false
+    },
+    "jacobi": {
+      "type": "function",
+      "numba_dispatcher": false
+    },
+    "cartesian": {
+      "type": "function",
+      "numba_dispatcher": false
+    },
+    "new_modules_parse_as_python39": true,
+    "wheel_modules": [
+      "qrc_pulsar_bench/cislunar_error_budget.py",
+      "qrc_pulsar_bench/cislunar_perturbations.py",
+      "qrc_pulsar_bench/coordinate_benchmark.py"
+    ]
+  },
+  "tests": {
+    "passed": 261,
+    "log": "pytest.log",
+    "wheel_built": true
+  },
+  "source_receipts": {
+    "reference_acceleration_audit.py": "ee2f5fe34089041a1fa1c7fd7a8e29f46282d0a496dc216c615362361bd5db0d",
+    "additional_scenarios.py": "9e9bbc31c4e03e094104e6df51a3262b1b219e3d4d65749ddcaa79180c7b44df",
+    "check_reference.py": "fd004ee36dfc34374aa40a64caa845bb293bd82317757d6d5ad8713bd69bf583",
+    "navigation_scenarios.py": "7c8049527eff66c83dbacd648f31d54a2699b7c76e8f6f07db7c64c6f08fd31d",
+    "backend_benchmark.py": "1214e2068b853cfe4a2e8c2b39ea014883cd85c3101da5ac94dad186a7ba6465"
+  },
+  "not_established": [
+    "Unique attribution of remaining flight residual",
+    "Complete mission disturbance history",
+    "GRGM900C compatible permanent tide convention",
+    "Calibrated initial-state and parameter covariance",
+    "Real onboard sensor performance",
+    "Full-force matched shape versus Cartesian runtime",
+    "FPGA or flight hardware performance",
+    "Percentage reduction of ground corrections"
+  ]
+}

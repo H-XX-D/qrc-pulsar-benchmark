@@ -146,3 +146,8 @@ from .commercial_spinoffs import (
     CommercialPillar,
     CommercialTechnologyArchitect,
 )
+from .surface_relay_network import (
+    PlanetSpecificRover,
+    SurfaceObservationPost,
+    SurfaceRelayNetworkArchitect,
+)

@@ -23,6 +23,12 @@ from 22.75 km to about 0.46 km RMS; the separately reported sensor experiment
 uses synthetic measurements. The guide includes all four archive comparisons,
 remaining force/input gaps and reproduction commands.
 
+The [cause budget and matched-accuracy comparison](docs/cislunar-error-budget-and-advantage.md)
+adds first-PN dynamics, planetary tides, Earth J2 and lunar-tide sensitivity.
+It distinguishes unresolved spacecraft/reference inputs from measured effects
+and compares the current spatial shape and conventional solvers at the same
+numerical error target.
+
 The binary calculators implement leading-order GR relations using supplied masses
 and orbital elements. The triple calculator estimates perturbation scales for
 near-circular, tightly hierarchical systems. The geometric shape map describes
