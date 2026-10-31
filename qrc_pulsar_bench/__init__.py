@@ -124,3 +124,9 @@ from .argonaut_timeline import (
     ArgonautMilestone,
     ArgonautTimelineManager,
 )
+from .asteroid_pathfinder import (
+    AsteroidPathfinderConstants,
+    AsteroidBeltPathfinder,
+    PathfinderMissionReport,
+    plan_argonaut_pathfinder_mission,
+)
