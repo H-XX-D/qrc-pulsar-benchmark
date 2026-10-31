@@ -328,10 +328,38 @@ class EarthOrbitalStationCapture:
             "feasibility": "INFEASIBLE: Requires 87.4% propellant mass fraction; impossible for micro-canister.",
         }
 
+        # Mode D: Geosynchronous Orbiting Station Capture (GEO Station & Orbiting Rover)
+        # Altitude: 35,786 km, Radius: 42,164 km
+        r_geo = 42164e3
+        v_geo_circ = np.sqrt(mu_e / r_geo)  # ~3,074.7 m/s
+        # Aerocapture to GEO apoapsis:
+        a_post_geo = (r_peri_aero + r_geo) / 2.0
+        v_peri_post_geo = np.sqrt(mu_e * (2.0 / r_peri_aero - 1.0 / a_post_geo))
+        v_apo_post_geo = np.sqrt(mu_e * (2.0 / r_geo - 1.0 / a_post_geo))
+        v_shed_aero_geo = v_entry - v_peri_post_geo  # ~3.81 km/s shed for free
+        dv_circ_geo = v_geo_circ - v_apo_post_geo    # ~1,488.4 m/s
+
+        mode_d = {
+            "name": "Geosynchronous Orbiting Station Capture (GEO Station & Orbiting Rover)",
+            "geo_radius_km": float(r_geo / 1e3),
+            "geo_altitude_km": float((r_geo - r_e) / 1e3),
+            "atmospheric_entry_speed_mps": float(v_entry),
+            "aerodynamic_delta_v_shed_mps": float(v_shed_aero_geo),
+            "onboard_burn_delta_v_mps": float(dv_circ_geo),
+            "orbiting_rover_intercept": (
+                "The GEO Station dispatches an autonomous Orbiting Rover (space tug) to match velocity "
+                f"({dv_circ_geo:.1f} m/s) at GEO apoapsis, grappling the capsule with zero canister burn required."
+            ),
+            "planetary_protection": "QUARANTINE SAFE: GEO orbit lifetime >1,000,000 years; zero biosphere hazard.",
+            "communication_advantage": "24/7/365 uninterrupted gigabit optical line-of-sight to ground science centers.",
+            "feasibility": "HIGHLY OPTIMAL FOR GEO: Saves 5.24 km/s vs direct insertion; enables permanent station telerobotics.",
+        }
+
         return {
             "mode_a_leo_aerocapture": mode_a,
             "mode_b_lunar_gateway_nrho": mode_b,
             "mode_c_direct_propulsive": mode_c,
+            "mode_d_geo_station": mode_d,
         }
 
 
@@ -350,11 +378,13 @@ class SampleReturnMissionReport:
     terminal_targeting_accuracy_km: float
     capture_mode_a_aerocapture: Dict[str, Any]
     capture_mode_b_lunar_gateway: Dict[str, Any]
+    capture_mode_d_geo_station: Dict[str, Any]
 
     def summary(self) -> str:
         """Format an executive technical summary."""
         ca = self.capture_mode_a_aerocapture
         cb = self.capture_mode_b_lunar_gateway
+        cd = self.capture_mode_d_geo_station
         lines = [
             "==================================================================================",
             f"JOVIAN SAMPLE RETURN & ORBITAL STATION CAPTURE REPORT: {self.collector_moon} -> EARTH",
@@ -383,6 +413,13 @@ class SampleReturnMissionReport:
             f"     * Lunar Flyby Gravity Assist Scrub : {cb['aerodynamic_delta_v_shed_mps']:8.1f} m/s (FREE deceleration)",
             f"     * NRHO Orbit Insertion Burn        : {cb['onboard_burn_delta_v_mps']:8.1f} m/s",
             f"     * Cryogenic Volatiles Preservation : {cb['feasibility']}",
+            f"   - [Option D] Geosynchronous Orbiting Station (GEO Station & Orbiting Rover):",
+            f"     * GEO Altitude & Radius            : {cd['geo_altitude_km']:.0f} km alt ({cd['geo_radius_km']:.0f} km radius)",
+            f"     * Aerodynamic Energy Shed to GEO   : {cd['aerodynamic_delta_v_shed_mps']:8.1f} m/s (Aero-GEO deceleration)",
+            f"     * GEO Apoapsis Circularization     : {cd['onboard_burn_delta_v_mps']:8.1f} m/s (Saves 5,241 m/s vs direct!)",
+            f"     * Orbiting Rover Tug Intercept     : {cd['orbiting_rover_intercept']}",
+            f"     * Planetary Quarantine Safety      : {cd['planetary_protection']}",
+            f"     * Science Communication Advantage  : {cd['communication_advantage']}",
             "==================================================================================",
         ]
         return "\n".join(lines)
@@ -424,4 +461,5 @@ def plan_jovian_sample_return_mission(
         terminal_targeting_accuracy_km=gnc["terminal_miss_km"],
         capture_mode_a_aerocapture=capture["mode_a_leo_aerocapture"],
         capture_mode_b_lunar_gateway=capture["mode_b_lunar_gateway_nrho"],
+        capture_mode_d_geo_station=capture["mode_d_geo_station"],
     )

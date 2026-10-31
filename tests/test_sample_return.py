@@ -132,6 +132,16 @@ def test_earth_orbital_station_capture_modes():
     assert mode_c["propellant_mass_fraction_burn"] > 0.85  # Over 85% fuel required
     assert "INFEASIBLE" in mode_c["feasibility"]
 
+    # Mode D (Geosynchronous Orbiting Station Capture & Orbiting Rover)
+    mode_d = capture_modes["mode_d_geo_station"]
+    assert abs(mode_d["geo_altitude_km"] - 35785.8) < 10.0  # GEO altitude ~35,786 km
+    assert abs(mode_d["geo_radius_km"] - 42164.0) < 10.0    # GEO radius ~42,164 km
+    assert abs(mode_d["aerodynamic_delta_v_shed_mps"] - 3806.5) < 50.0  # ~3.81 km/s shed aerodynamically
+    assert abs(mode_d["onboard_burn_delta_v_mps"] - 1488.4) < 10.0      # ~1.49 km/s circularization at GEO
+    assert "Orbiting Rover" in mode_d["orbiting_rover_intercept"]
+    assert "QUARANTINE SAFE" in mode_d["planetary_protection"]
+    assert "HIGHLY OPTIMAL FOR GEO" in mode_d["feasibility"]
+
 
 def test_mission_synthesis_report():
     """Verify end-to-end mission synthesis report and executive formatting."""
@@ -147,9 +157,12 @@ def test_mission_synthesis_report():
     assert report.propellant_mass_kg < 2.0
     assert report.dry_bus_mass_kg > 8.0
     assert report.terminal_targeting_accuracy_km < 5.0
+    assert "geo_altitude_km" in report.capture_mode_d_geo_station
 
     summary = report.summary()
     assert "JOVIAN SAMPLE RETURN & ORBITAL STATION CAPTURE REPORT" in summary
     assert "Electrospray Propellant Mass" in summary
     assert "LEO Space Station Aerocapture" in summary
     assert "Lunar Gateway NRHO Invariant Manifold Capture" in summary
+    assert "Geosynchronous Orbiting Station" in summary
+    assert "Orbiting Rover Tug Intercept" in summary
