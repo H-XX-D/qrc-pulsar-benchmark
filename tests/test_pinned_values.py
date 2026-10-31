@@ -203,7 +203,7 @@ def test_archibald_loader_scales_uncertainty_like_residual(tmp_path):
     rows = [f"{56000 + i},{1e-3 * (-1)**i},{2e-3},0,0,1\n" for i in range(20)]
     path.write_text(header + "".join(rows))
     res = ZenodoResidualEvaluator.evaluate(str(path), num_windows=2)
-    period_us = 1e6 / 365.953339305
+    period_us = 1e6 / 365.953363080  # Archibald et al. (2018) spin frequency
     assert res["overall_rms_us"] == pytest.approx(1e-3 * period_us, rel=1e-12)
     assert res["chi2_per_observation"] == pytest.approx(0.25, rel=1e-12)
 
@@ -226,11 +226,12 @@ def test_qrc_sep_check_reports_conflict_when_prediction_exceeds_bound():
     assert qrc["pull_vs_published_sigma"] == pytest.approx((5e-6 + 1.09e-6) / 0.74e-6, rel=1e-12)
 
 
-def test_j0337_inclinations_match_archibald_projected_axes():
-    # Archibald et al. (2018) Table 1: tan i = (a sin i) / (a cos i).
-    # Inner 1.2175252 / 1.48950 lt-s (i_I = 39.263(4) deg); outer
-    # 74.672629 / 91.358 lt-s. The (a cos i) errors give about 1e-4 in cos i.
+def test_j0337_inclinations_match_published_projected_axes():
+    # tan i = (a sin i) / (a cos i). Archibald et al. (2018) Table 1:
+    # 1.2175252 / 1.48950 and 74.672629 / 91.358 lt-s. The catalog uses the
+    # Ransom et al. (2014) fit. Its (a cos i) errors, 1.4900(5) and
+    # 91.42(4) lt-s, carry 1.0e-4 and 1.4e-4 in cos i; allow 2 sigma each.
     inner = np.cos(np.arctan2(1.2175252, 1.48950))
     outer = np.cos(np.arctan2(74.672629, 91.358))
-    assert PSR_J0337_1715.cos_i1 == pytest.approx(inner, abs=1e-4)
-    assert PSR_J0337_1715.cos_i2 == pytest.approx(outer, abs=1e-4)
+    assert PSR_J0337_1715.cos_i1 == pytest.approx(inner, abs=2e-4)
+    assert PSR_J0337_1715.cos_i2 == pytest.approx(outer, abs=2.8e-4)
