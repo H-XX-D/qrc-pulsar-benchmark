@@ -6,6 +6,11 @@ Python 3.9 or later is required.
 
 ## Scope
 
+The intended next application is **autonomous onboard orbit estimation for
+Earth–Moon spacecraft**. The [cislunar benchmark specification](docs/cislunar-onboard-benchmark.md)
+defines the measurement, uncertainty and computation comparisons needed to test
+that application; it is not an executed flight-navigation result.
+
 The binary calculators implement leading-order GR relations using supplied masses
 and orbital elements. The triple calculator estimates perturbation scales for
 near-circular, tightly hierarchical systems. The geometric shape map describes

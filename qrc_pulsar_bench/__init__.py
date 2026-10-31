@@ -59,3 +59,21 @@ from .qrc_engine import (
     compute_fading_memory_capacity,
     benchmark_qrc_reservoir,
 )
+from .fpga_orbit_engine import (
+    FPGASpecification,
+    HardwareCycleReport,
+    PipelinedInvCubeUnit,
+    FPGAOrbitEngine,
+)
+from .station_keeping import (
+    EarthMoonConstants,
+    StationKeepingPolicy,
+    StationKeepingReport,
+    EarthMoonCR3BP,
+    PeriodicLyapunovOrbit,
+    PredictiveStationKeepingEngine,
+)
+from .capstone_replay import (
+    CapstoneFlightReplay,
+    CapstoneReplayReport,
+)
