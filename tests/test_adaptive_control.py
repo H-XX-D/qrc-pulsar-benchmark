@@ -106,3 +106,14 @@ def test_training_selector_rejects_held_out_data():
     from qrc_pulsar_bench.control_tuning import select
     with pytest.raises(ValueError,match='training scenarios only'):
         select([{'scenario':{'name':'test_a'}}],'mpc')
+
+
+def test_target_point_is_independent_bounded_candidate():
+    model=free_model();reference=lambda t:np.array([1e6,0,0,0,0,0.])
+    c=BiasAwareController(model,reference,10000.,method='target',
+        settings=ControlSettings(decision_interval_s=1000.,planning_horizon_s=2000.,linear_step_s=500.))
+    state=reference(0)+np.array([1000.,0,0,0,0,0.])
+    times,schedule,candidates=c._candidate_burns(NavigationEstimate(state,0,0),500.,1000.)
+    assert len(candidates)==1 and candidates[0][1]=='TARGET_POINT_BURN'
+    assert schedule[0,0]<0 and np.linalg.norm(schedule[0])<=c.actuator.capacity(500.)
+    assert times.tolist()==[0.]

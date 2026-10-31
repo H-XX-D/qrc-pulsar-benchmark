@@ -35,6 +35,11 @@ bounded finite burns and an emergency maneuver search. Its observations and
 spacecraft fault cases are explicitly synthetic; it does not claim certified
 collision avoidance, validated NRHO maintenance or flight hardware readiness.
 
+The [controller tuning and advantage experiment](docs/controller-tuning-and-advantage.md)
+adds a causal navigation/disturbance filter, imperfect burns, corrupted and
+missing fixes, conventional control baselines, and a separate tuning/evaluation
+split. It tests coordinate, guidance and estimation benefits separately.
+
 The binary calculators implement leading-order GR relations using supplied masses
 and orbital elements. The triple calculator estimates perturbation scales for
 near-circular, tightly hierarchical systems. The geometric shape map describes
