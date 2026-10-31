@@ -156,3 +156,9 @@ from .full_program_science import (
     ScientificBreakthrough,
     FullProgramScienceArchitect,
 )
+from .adaptive_mothership import (
+    AdaptiveMothershipConstants,
+    ColonizerOutpostSpec,
+    AdaptiveResupplyManifest,
+    AdaptiveMothershipArchitect,
+)
