@@ -167,3 +167,9 @@ from .drone_autonomy_logistics import (
     HavenAugmentationMission,
     DroneAutonomyLogisticsArchitect,
 )
+from .catastrophe_avoidance import (
+    CatastropheAvoidanceFlightSystem,
+    PowerBudgetComparison,
+    CatastropheHazardState,
+)
+
