@@ -17,6 +17,8 @@ import numpy as np
 from qrc_pulsar_bench.sample_return import (
     SampleReturnConstants,
     StationaryCollectorLauncher,
+    AtmosphericEjectionCaptureRover,
+    CallistoStationPreparationFacility,
     DualModePropulsionSystem,
     AutonomousInterplanetaryGNC,
     EarthOrbitalStationCapture,
@@ -300,5 +302,76 @@ def test_mission_synthesis_report_extended():
     assert "MULTI-YEAR RESONANT LOW-THRUST OPTIMIZATION" in summary
     assert "DUAL-AGENT COOPERATIVE DOCKING" in summary
     assert "Receiver-Side Docking Control Mode" in summary
+    assert "ATMOSPHERIC & EJECTION CAPTURE ROVER & CALLISTO PREPARATION STATION" in summary
+    assert report.atmospheric_rover is not None
+    assert report.atmospheric_rover["plume_altitude_km"] == 50.0
+    assert report.callisto_station is not None
+    assert report.callisto_station["cleanroom_temperature_k"] == 85.0
+
+
+def test_atmospheric_ejection_capture_rover():
+    """Verify autonomous atmospheric & ejection capture rover physics and sortie ledger."""
+    rover = AtmosphericEjectionCaptureRover(
+        rover_dry_mass_kg=35.0,
+        propellant_capacity_kg=15.0,
+        rover_isp_s=320.0,
+        collector_area_m2=0.50,
+        aerogel_density_mg_cm3=20.0,
+    )
+    sortie = rover.simulate_plume_capture_sortie(
+        target_moon="Europa",
+        plume_altitude_km=50.0,
+        flyby_speed_mps=2100.0,
+    )
+
+    assert sortie["target_moon"] == "Europa"
+    assert sortie["plume_altitude_km"] == 50.0
+    assert sortie["flyby_speed_mps"] == 2100.0
+    assert abs(sortie["total_sortie_dv_mps"] - 167.7) < 0.1
+    assert abs(sortie["fuel_consumed_kg"] - 2.61) < 0.1
+    assert sortie["remaining_propellant_kg"] > 12.0
+    assert sortie["sorties_capacity"] >= 4
+    assert sortie["sample_mass_collected_kg"] == 1.25
+    assert abs(sortie["natural_gravity_assist_gain_mps"] - 1551.7) < 0.1
+
+    # Radiation check during Europa dive
+    assert abs(sortie["total_absorbed_dose_rad"] - 204.9) < 1.0  # < 0.21 krad
+    assert sortie["radiation_qualification_margin_percent"] > 99.0
+
+    # Hazards avoided check
+    assert abs(sortie["surface_escape_dv_saved_mps"] - 2020.0) < 0.1  # Saved Europa escape burn
+    assert "ELIMINATED" in sortie["surface_hazards"]
+    assert "SUCCESS" in sortie["status"]
+
+
+def test_callisto_station_preparation_facility():
+    """Verify Callisto station cleanroom processing, laser welding, and launch integration."""
+    facility = CallistoStationPreparationFacility(
+        station_radiation_rad_hr=7.08,
+        operational_lifetime_years=25.0,
+        cleanroom_pressure_bar=1e-11,
+        cleanroom_temp_kelvin=85.0,
+    )
+    prep = facility.process_and_prepare_for_launch(
+        rover_sample_mass_kg=1.25,
+        target_canister_gross_kg=15.0,
+        sample_allocation_kg=1.0,
+    )
+
+    assert "Callisto Halo Station" in prep["station_location"]
+    assert prep["operational_lifetime_years"] == 25.0
+    assert prep["cleanroom_temperature_k"] == 85.0
+    assert prep["cleanroom_pressure_bar"] == 1e-11
+    assert prep["rover_sample_ingested_kg"] == 1.25
+    assert prep["sample_packaged_for_earth_kg"] == 1.0
+    assert prep["sample_archived_on_station_kg"] == 0.25
+    assert prep["canister_gross_mass_kg"] == 15.0
+    assert prep["hydrazine_propellant_kg"] == 3.8
+    assert prep["micro_ion_propellant_kg"] == 2.2
+    assert prep["avionics_dry_bus_kg"] == 8.0
+    assert prep["hermetic_seal_leak_rate_mbar_l_s"] < 1e-10
+    assert "Laser" in prep["seal_method"]
+    assert "READY FOR EARTH INJECTION" in prep["status"]
+
 
 
