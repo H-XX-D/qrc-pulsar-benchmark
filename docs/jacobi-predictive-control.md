@@ -25,6 +25,14 @@ Position, velocity and acceleration of the coordinate origin come from the
 same spline; simply translating positions without translating acceleration
 would introduce a fictitious force.
 
+Jacobi **coordinates** must also be distinguished from the CR3BP Jacobi
+**integral**. For a rotating CR3BP model with additional acceleration `u`,
+`dC/dt = 2 partial_Omega/partial_t - 2 v dot u`. Time-dependent potentials and
+nonconservative forces generally destroy that constant. Even a closed neck in
+an ideal CR3BP zero-velocity surface does not prevent impact inside the allowed
+region. This controller does not use a Jacobi-constant threshold as proof of
+survival or assume that a retrograde burn inserts into a stable DRO.
+
 The demonstration uses DE440s, GRGM900C lunar harmonics, DE421 lunar orientation,
 Earth and Sun differential attraction, Earth J2, additional planetary-system
 tides, full point-mass first-PN corrections, and eclipse-modulated cannonball
@@ -124,6 +132,13 @@ the assumed solar-pressure area/mass ratio is fixed during these small burns.
 The controller cannot guarantee survival after loss of propulsion or inadequate
 warning time. No risk percentage or reduction in required ground contacts is
 inferred from these simulations.
+
+The separate `catastrophe_avoidance.py` module appeared concurrently during this
+work. Its fixed power savings, 30.05/35 ms latency, Jacobi-confinement flags,
+kinematic `v/r` growth proxy and string-valued DRO abort recommendation are not
+validated by this experiment. That module supplies no force, navigation or
+command input to the new controller. Its hardware/safety claims remain a
+separate review item; these simulations should not be used as support for them.
 
 ## Reproduction
 
