@@ -77,6 +77,15 @@ unannounced velocity changes, force errors, propulsion faults and navigation
 faults into the simulated plant. Frozen MPC is compared with matched coasting;
 recovery requires sustained position and velocity tracking without manual resets.
 
+The [compound-fault handling work](docs/compound-fault-handling.md) adds malformed
+sensor containment, a persistent local telemetry outbox and twenty frozen fault
+schedules, including simultaneous and consecutive failures. The
+[124-run comparison](docs/artemis-compound-results-2026-10-31.md) separates
+navigation recovery, nominal-path recovery and observed clearance/fuel checks.
+Ground supervises authorized autonomy; ground-link loss leaves the assumed
+onboard sensors available. The ground receiver is simulated and emergency
+survival planning remains unvalidated.
+
 The binary calculators implement leading-order GR relations using supplied masses
 and orbital elements. The triple calculator estimates perturbation scales for
 near-circular, tightly hierarchical systems. The geometric shape map describes

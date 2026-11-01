@@ -1,22 +1,22 @@
 {
   "verification": {
-    "cases": 49,
-    "completed": 35,
+    "cases": 61,
+    "completed": 47,
     "failures": 14,
-    "requested_days": 275.0,
+    "requested_days": 335.0,
     "reference_preflight_rejections": 14,
     "numerical_terminations": 0,
-    "completed_without_collision": 35,
-    "minimum_clearance_m": 262947.29203595803,
+    "completed_without_collision": 47,
+    "minimum_clearance_m": 257072.71156556858,
     "maximum_propellant_kg": 0.42967440924695666,
     "source_files": 76,
     "physical_inputs": 9,
-    "nonnegative_nis_samples": 9863,
+    "nonnegative_nis_samples": 12683,
     "minimum_nis": 0.19745864532199686,
     "maximum_rolling_issued_dv_m_s": 0.994084050283256,
-    "untrusted_zero_command_checks": 558,
-    "pre_event_sample_pairs": 2304,
-    "identical_commands_through_onset": 2332,
+    "untrusted_zero_command_checks": 232,
+    "pre_event_sample_pairs": 2880,
+    "identical_causal_prefix_commands": 2906,
     "arithmetic_pairs": [
       {
         "scenario": "P1_fresh",
@@ -25,6 +25,7 @@
         "same_response": true,
         "same_reacquisitions": true,
         "same_burns": true,
+        "post_event_rms_difference_m": null,
         "issued_dv_difference_m_s": 0
       },
       {
@@ -34,6 +35,7 @@
         "same_response": true,
         "same_reacquisitions": true,
         "same_burns": true,
+        "post_event_rms_difference_m": null,
         "issued_dv_difference_m_s": 0
       },
       {
@@ -43,6 +45,7 @@
         "same_response": true,
         "same_reacquisitions": true,
         "same_burns": true,
+        "post_event_rms_difference_m": null,
         "issued_dv_difference_m_s": 0
       },
       {
@@ -52,6 +55,7 @@
         "same_response": true,
         "same_reacquisitions": true,
         "same_burns": true,
+        "post_event_rms_difference_m": null,
         "issued_dv_difference_m_s": 0
       },
       {
@@ -61,6 +65,7 @@
         "same_response": true,
         "same_reacquisitions": true,
         "same_burns": true,
+        "post_event_rms_difference_m": null,
         "issued_dv_difference_m_s": 0
       },
       {
@@ -70,6 +75,7 @@
         "same_response": true,
         "same_reacquisitions": true,
         "same_burns": true,
+        "post_event_rms_difference_m": null,
         "issued_dv_difference_m_s": 0
       },
       {
@@ -79,7 +85,38 @@
         "same_response": true,
         "same_reacquisitions": true,
         "same_burns": true,
+        "post_event_rms_difference_m": null,
         "issued_dv_difference_m_s": 0
+      },
+      {
+        "scenario": "P1_gap_holdout",
+        "anomaly": "bad_velocity_after_outage",
+        "executed_pair": true,
+        "same_response": true,
+        "same_reacquisitions": true,
+        "same_burns": true,
+        "post_event_rms_difference_m": 0.0004032646760592229,
+        "issued_dv_difference_m_s": 1.2581729382787898e-05
+      },
+      {
+        "scenario": "P1_gap_holdout",
+        "anomaly": "kick_with_6h_outage",
+        "executed_pair": true,
+        "same_response": true,
+        "same_reacquisitions": true,
+        "same_burns": true,
+        "post_event_rms_difference_m": 0.0009329240419901907,
+        "issued_dv_difference_m_s": 5.272401970235485e-06
+      },
+      {
+        "scenario": "P1_gap_holdout",
+        "anomaly": "none",
+        "executed_pair": true,
+        "same_response": true,
+        "same_reacquisitions": true,
+        "same_burns": true,
+        "post_event_rms_difference_m": 3.668327424222184e-05,
+        "issued_dv_difference_m_s": 2.8994322101016934e-06
       },
       {
         "scenario": "P1_regression",
@@ -88,6 +125,7 @@
         "same_response": true,
         "same_reacquisitions": true,
         "same_burns": true,
+        "post_event_rms_difference_m": 0.04857911658473313,
         "issued_dv_difference_m_s": 4.191242098716685e-06
       },
       {
@@ -97,6 +135,7 @@
         "same_response": true,
         "same_reacquisitions": true,
         "same_burns": true,
+        "post_event_rms_difference_m": 0.0002829399497024099,
         "issued_dv_difference_m_s": 4.657303582067396e-06
       },
       {
@@ -106,6 +145,7 @@
         "same_response": true,
         "same_reacquisitions": true,
         "same_burns": true,
+        "post_event_rms_difference_m": 0.0004511314885675688,
         "issued_dv_difference_m_s": 3.1836022551523513e-06
       },
       {
@@ -115,6 +155,7 @@
         "same_response": true,
         "same_reacquisitions": true,
         "same_burns": true,
+        "post_event_rms_difference_m": 0.00011747736785139296,
         "issued_dv_difference_m_s": 9.19134004095934e-06
       },
       {
@@ -124,6 +165,7 @@
         "same_response": true,
         "same_reacquisitions": true,
         "same_burns": true,
+        "post_event_rms_difference_m": 0.0002347259182506889,
         "issued_dv_difference_m_s": 6.090720378104653e-06
       },
       {
@@ -133,6 +175,7 @@
         "same_response": true,
         "same_reacquisitions": true,
         "same_burns": true,
+        "post_event_rms_difference_m": 0.00015633273204684883,
         "issued_dv_difference_m_s": 1.9786076141281583e-05
       },
       {
@@ -142,6 +185,7 @@
         "same_response": true,
         "same_reacquisitions": true,
         "same_burns": true,
+        "post_event_rms_difference_m": 0.00036779267247766256,
         "issued_dv_difference_m_s": 9.233384908824416e-06
       },
       {
@@ -151,6 +195,7 @@
         "same_response": true,
         "same_reacquisitions": true,
         "same_burns": true,
+        "post_event_rms_difference_m": 0.004400120378704742,
         "issued_dv_difference_m_s": 9.233384908824416e-06
       },
       {
@@ -160,7 +205,8 @@
         "same_response": true,
         "same_reacquisitions": true,
         "same_burns": true,
-        "issued_dv_difference_m_s": 9.233384908824416e-06
+        "post_event_rms_difference_m": 1.470304501010105,
+        "issued_dv_difference_m_s": 7.504846577299773e-06
       },
       {
         "scenario": "P2_fresh",
@@ -169,6 +215,7 @@
         "same_response": true,
         "same_reacquisitions": true,
         "same_burns": true,
+        "post_event_rms_difference_m": 9.130155290293374e-05,
         "issued_dv_difference_m_s": 8.191304852245285e-06
       },
       {
@@ -178,6 +225,7 @@
         "same_response": true,
         "same_reacquisitions": true,
         "same_burns": true,
+        "post_event_rms_difference_m": 0.00020485340662901308,
         "issued_dv_difference_m_s": 1.013613445088879e-05
       },
       {
@@ -187,7 +235,38 @@
         "same_response": true,
         "same_reacquisitions": true,
         "same_burns": true,
+        "post_event_rms_difference_m": 5.288918832491163e-05,
         "issued_dv_difference_m_s": 1.146161348641872e-05
+      },
+      {
+        "scenario": "P2_gap_holdout",
+        "anomaly": "bad_velocity_after_outage",
+        "executed_pair": true,
+        "same_response": true,
+        "same_reacquisitions": true,
+        "same_burns": true,
+        "post_event_rms_difference_m": 0.00012312193749153266,
+        "issued_dv_difference_m_s": 1.6032048059111403e-05
+      },
+      {
+        "scenario": "P2_gap_holdout",
+        "anomaly": "kick_with_6h_outage",
+        "executed_pair": true,
+        "same_response": true,
+        "same_reacquisitions": true,
+        "same_burns": true,
+        "post_event_rms_difference_m": 0.0004189160536043346,
+        "issued_dv_difference_m_s": 1.3777029668815555e-05
+      },
+      {
+        "scenario": "P2_gap_holdout",
+        "anomaly": "none",
+        "executed_pair": true,
+        "same_response": true,
+        "same_reacquisitions": true,
+        "same_burns": true,
+        "post_event_rms_difference_m": 3.385688741630588e-05,
+        "issued_dv_difference_m_s": 1.551335251059882e-05
       },
       {
         "scenario": "P2_regression",
@@ -196,6 +275,7 @@
         "same_response": true,
         "same_reacquisitions": true,
         "same_burns": true,
+        "post_event_rms_difference_m": 0.00019418891065470234,
         "issued_dv_difference_m_s": 1.2819550071929697e-05
       },
       {
@@ -205,6 +285,7 @@
         "same_response": true,
         "same_reacquisitions": true,
         "same_burns": true,
+        "post_event_rms_difference_m": 5.567872218392722e-05,
         "issued_dv_difference_m_s": 5.43999281088503e-06
       },
       {
@@ -214,6 +295,7 @@
         "same_response": true,
         "same_reacquisitions": true,
         "same_burns": true,
+        "post_event_rms_difference_m": 9.380447807316727e-05,
         "issued_dv_difference_m_s": 1.7884745550089676e-06
       },
       {
@@ -223,6 +305,7 @@
         "same_response": true,
         "same_reacquisitions": true,
         "same_burns": true,
+        "post_event_rms_difference_m": 9.230811741645084e-06,
         "issued_dv_difference_m_s": 2.0807559528268627e-05
       },
       {
@@ -232,10 +315,11 @@
         "same_response": true,
         "same_reacquisitions": true,
         "same_burns": true,
+        "post_event_rms_difference_m": 2.1073149195416363e-05,
         "issued_dv_difference_m_s": 6.9441055978725075e-06
       }
     ],
-    "results_sha256": "eae01fd2d1198f05bbd8f751dfc9db78f88fe7e8105c15c2a07ba44c701438ec",
+    "results_sha256": "b0e0e1b9443a029edaac4f4d88fe8381186c85b0b1711c539c42ef0651867b88",
     "diagnostic": {
       "original_nis": -503.1860747659448,
       "original_innovation_condition": 2.3921214692149673e+24,
@@ -252,8 +336,16 @@
       "bad_process_noise_steps": 0
     },
     "hardware_synthesis": false,
-    "tests_passed": 395,
-    "wheel_sha256": "eb9b11bcc3e6fbaf99c28030109905a98833f11d9d93d4af639ed071c596eb1f"
+    "tests_passed": 399,
+    "wheel_sha256": "d8326654e90c5000c166bde44a896e95860f88e2f585ae5b895db9ef0adaf314",
+    "executed_arithmetic_pairs": 23,
+    "matching_arithmetic_outcomes": true,
+    "maximum_arithmetic_rms_difference_m": 1.470304501010105,
+    "maximum_arithmetic_issued_dv_difference_m_s": 2.0807559528268627e-05,
+    "post_confirmation_position_bound_coverage_range": [
+      0.8936170212765957,
+      1.0
+    ]
   },
   "cases": [
     {
@@ -566,6 +658,302 @@
     },
     {
       "key": [
+        "P1_gap_holdout",
+        "bad_velocity_after_outage",
+        "32",
+        "maneuver_aware"
+      ],
+      "split": "gap_holdout",
+      "response": "recovered",
+      "settled": true,
+      "settling_after_onset_h": 11.833333333333334,
+      "settling_after_end_h": 2.8333333333333335,
+      "post_event_rms_m": 40.39235265879187,
+      "post_event_peak_m": 131.72011244018583,
+      "final_error_m": 11.191117026787177,
+      "final_velocity_error_m_s": 0.0006993512601492641,
+      "completed": true,
+      "collision": false,
+      "min_clearance_m": 262984.3922579249,
+      "issued_dv_m_s": 0.7013523275965801,
+      "delivered_dv_m_s": 0.7119986120971725,
+      "propellant_kg": 0.1625145695310266,
+      "burns": 86,
+      "actual_burns": 86,
+      "status_counts": {
+        "0": 126,
+        "2": 18
+      },
+      "fixes_rejected": 13,
+      "fixes_accepted": 126,
+      "navigation_reacquisitions": 0,
+      "first_recovery_required_h": null,
+      "failure": null,
+      "first_reacquisition_after_onset_h": null,
+      "first_reacquisition_navigation_error_m": null,
+      "first_reacquisition_velocity_error_m_s": null,
+      "final_navigation_error_m": 10.370391359013379,
+      "final_navigation_velocity_error_m_s": 0.0016901664847558165,
+      "post_confirmation_navigation_rms_m": null,
+      "post_confirmation_position_bound_coverage": null,
+      "post_confirmation_velocity_bound_coverage": null,
+      "events": []
+    },
+    {
+      "key": [
+        "P1_gap_holdout",
+        "bad_velocity_after_outage",
+        "float64",
+        "maneuver_aware"
+      ],
+      "split": "gap_holdout",
+      "response": "recovered",
+      "settled": true,
+      "settling_after_onset_h": 11.833333333333334,
+      "settling_after_end_h": 2.8333333333333335,
+      "post_event_rms_m": 40.39194939411581,
+      "post_event_peak_m": 131.7189028760431,
+      "final_error_m": 11.19116210462423,
+      "final_velocity_error_m_s": 0.0006993493422547317,
+      "completed": true,
+      "collision": false,
+      "min_clearance_m": 262995.9784137693,
+      "issued_dv_m_s": 0.7013397458671973,
+      "delivered_dv_m_s": 0.7119858307870451,
+      "propellant_kg": 0.16251165461704886,
+      "burns": 86,
+      "actual_burns": 86,
+      "status_counts": {
+        "0": 126,
+        "2": 18
+      },
+      "fixes_rejected": 13,
+      "fixes_accepted": 126,
+      "navigation_reacquisitions": 0,
+      "first_recovery_required_h": null,
+      "failure": null,
+      "first_reacquisition_after_onset_h": null,
+      "first_reacquisition_navigation_error_m": null,
+      "first_reacquisition_velocity_error_m_s": null,
+      "final_navigation_error_m": 10.370391452032289,
+      "final_navigation_velocity_error_m_s": 0.0016901701592780213,
+      "post_confirmation_navigation_rms_m": null,
+      "post_confirmation_position_bound_coverage": null,
+      "post_confirmation_velocity_bound_coverage": null,
+      "events": []
+    },
+    {
+      "key": [
+        "P1_gap_holdout",
+        "kick_with_6h_outage",
+        "32",
+        "maneuver_aware"
+      ],
+      "split": "gap_holdout",
+      "response": "not_recovered",
+      "settled": false,
+      "settling_after_onset_h": null,
+      "settling_after_end_h": null,
+      "post_event_rms_m": 35187.395842093116,
+      "post_event_peak_m": 125456.10459517084,
+      "final_error_m": 26597.409817719443,
+      "final_velocity_error_m_s": 1.142421626697552,
+      "completed": true,
+      "collision": false,
+      "min_clearance_m": 257072.71156556858,
+      "issued_dv_m_s": 0.40878204323949296,
+      "delivered_dv_m_s": 0.41473998476694673,
+      "propellant_kg": 0.0947277703033933,
+      "burns": 37,
+      "actual_burns": 37,
+      "status_counts": {
+        "0": 49,
+        "2": 13,
+        "64": 82
+      },
+      "fixes_rejected": 2,
+      "fixes_accepted": 131,
+      "navigation_reacquisitions": 1,
+      "first_recovery_required_h": 31.0,
+      "failure": null,
+      "first_reacquisition_after_onset_h": 7.0,
+      "first_reacquisition_navigation_error_m": 23.542773722925546,
+      "first_reacquisition_velocity_error_m_s": 0.0008116510120231593,
+      "final_navigation_error_m": 10.436718156619598,
+      "final_navigation_velocity_error_m_s": 0.0016983185052023833,
+      "post_confirmation_navigation_rms_m": 12.570490833562818,
+      "post_confirmation_position_bound_coverage": 1.0,
+      "post_confirmation_velocity_bound_coverage": 1.0,
+      "events": [
+        {
+          "measurement_s": 111540.0,
+          "available_s": 111600.0,
+          "reason": "observation_gap",
+          "first_s": 107940.0,
+          "confirmations": 3,
+          "state_correction": [
+            1398.4655248252675,
+            -8071.139626189135,
+            -4131.522246835753,
+            0.3373538575553994,
+            -0.5174626425232418,
+            -0.12256491175010176
+          ],
+          "confirmation_nis": 1.016823937995256,
+          "position_3sigma_m": 60.01107969887002,
+          "velocity_3sigma_m_s": 0.004120136174400029
+        }
+      ]
+    },
+    {
+      "key": [
+        "P1_gap_holdout",
+        "kick_with_6h_outage",
+        "float64",
+        "maneuver_aware"
+      ],
+      "split": "gap_holdout",
+      "response": "not_recovered",
+      "settled": false,
+      "settling_after_onset_h": null,
+      "settling_after_end_h": null,
+      "post_event_rms_m": 35187.39677501716,
+      "post_event_peak_m": 125456.10662496288,
+      "final_error_m": 26597.409912892326,
+      "final_velocity_error_m_s": 1.142421624809558,
+      "completed": true,
+      "collision": false,
+      "min_clearance_m": 257173.65927963797,
+      "issued_dv_m_s": 0.40877677083752273,
+      "delivered_dv_m_s": 0.4147346776576815,
+      "propellant_kg": 0.09472654863679963,
+      "burns": 37,
+      "actual_burns": 37,
+      "status_counts": {
+        "0": 49,
+        "2": 13,
+        "64": 82
+      },
+      "fixes_rejected": 2,
+      "fixes_accepted": 131,
+      "navigation_reacquisitions": 1,
+      "first_recovery_required_h": 31.0,
+      "failure": null,
+      "first_reacquisition_after_onset_h": 7.0,
+      "first_reacquisition_navigation_error_m": 23.54277372144524,
+      "first_reacquisition_velocity_error_m_s": 0.0008116510121286864,
+      "final_navigation_error_m": 10.436714878470813,
+      "final_navigation_velocity_error_m_s": 0.0016983183842267957,
+      "post_confirmation_navigation_rms_m": 12.570493456857344,
+      "post_confirmation_position_bound_coverage": 1.0,
+      "post_confirmation_velocity_bound_coverage": 1.0,
+      "events": [
+        {
+          "measurement_s": 111540.0,
+          "available_s": 111600.0,
+          "reason": "observation_gap",
+          "first_s": 107940.0,
+          "confirmations": 3,
+          "state_correction": [
+            1398.465543512255,
+            -8071.139667970128,
+            -4131.522293865448,
+            0.3373538596729304,
+            -0.5174626470783892,
+            -0.12256491319366081
+          ],
+          "confirmation_nis": 1.0168239382755915,
+          "position_3sigma_m": 60.011079698768185,
+          "velocity_3sigma_m_s": 0.004120136174424326
+        }
+      ]
+    },
+    {
+      "key": [
+        "P1_gap_holdout",
+        "none",
+        "32",
+        "maneuver_aware"
+      ],
+      "split": "gap_holdout",
+      "response": "contained",
+      "settled": true,
+      "settling_after_onset_h": 0.0,
+      "settling_after_end_h": 0.0,
+      "post_event_rms_m": 18.93636455407815,
+      "post_event_peak_m": 40.06164248626135,
+      "final_error_m": 11.175387668153546,
+      "final_velocity_error_m_s": 0.0007001744248259131,
+      "completed": true,
+      "collision": false,
+      "min_clearance_m": 262973.9023924486,
+      "issued_dv_m_s": 0.5364169352655648,
+      "delivered_dv_m_s": 0.5427564609586562,
+      "propellant_kg": 0.12430114798280556,
+      "burns": 96,
+      "actual_burns": 96,
+      "status_counts": {
+        "0": 144
+      },
+      "fixes_rejected": 0,
+      "fixes_accepted": 145,
+      "navigation_reacquisitions": 0,
+      "first_recovery_required_h": null,
+      "failure": null,
+      "first_reacquisition_after_onset_h": null,
+      "first_reacquisition_navigation_error_m": null,
+      "first_reacquisition_velocity_error_m_s": null,
+      "final_navigation_error_m": 10.369003176781773,
+      "final_navigation_velocity_error_m_s": 0.0016896331669204697,
+      "post_confirmation_navigation_rms_m": null,
+      "post_confirmation_position_bound_coverage": null,
+      "post_confirmation_velocity_bound_coverage": null,
+      "events": []
+    },
+    {
+      "key": [
+        "P1_gap_holdout",
+        "none",
+        "float64",
+        "maneuver_aware"
+      ],
+      "split": "gap_holdout",
+      "response": "contained",
+      "settled": true,
+      "settling_after_onset_h": 0.0,
+      "settling_after_end_h": 0.0,
+      "post_event_rms_m": 18.936401237352392,
+      "post_event_peak_m": 40.06148646437447,
+      "final_error_m": 11.175595774405876,
+      "final_velocity_error_m_s": 0.0007001544312408004,
+      "completed": true,
+      "collision": false,
+      "min_clearance_m": 262963.9198642862,
+      "issued_dv_m_s": 0.5364140358333547,
+      "delivered_dv_m_s": 0.5427535020246712,
+      "propellant_kg": 0.12430047619614015,
+      "burns": 96,
+      "actual_burns": 96,
+      "status_counts": {
+        "0": 144
+      },
+      "fixes_rejected": 0,
+      "fixes_accepted": 145,
+      "navigation_reacquisitions": 0,
+      "first_recovery_required_h": null,
+      "failure": null,
+      "first_reacquisition_after_onset_h": null,
+      "first_reacquisition_navigation_error_m": null,
+      "first_reacquisition_velocity_error_m_s": null,
+      "final_navigation_error_m": 10.369002803438283,
+      "final_navigation_velocity_error_m_s": 0.0016896354204973712,
+      "post_confirmation_navigation_rms_m": null,
+      "post_confirmation_position_bound_coverage": null,
+      "post_confirmation_velocity_bound_coverage": null,
+      "events": []
+    },
+    {
+      "key": [
         "P1_regression",
         "kick_50cm_s",
         "32",
@@ -611,6 +999,7 @@
         {
           "measurement_s": 91740.0,
           "available_s": 91800.0,
+          "reason": "consistent_velocity_change",
           "first_s": 88140.0,
           "confirmations": 3,
           "state_correction": [
@@ -674,6 +1063,7 @@
         {
           "measurement_s": 91740.0,
           "available_s": 91800.0,
+          "reason": "consistent_velocity_change",
           "first_s": 88140.0,
           "confirmations": 3,
           "state_correction": [
@@ -905,6 +1295,7 @@
         {
           "measurement_s": 122340.0,
           "available_s": 122400.0,
+          "reason": "consistent_velocity_change",
           "first_s": 118740.0,
           "confirmations": 3,
           "state_correction": [
@@ -966,6 +1357,7 @@
         {
           "measurement_s": 122340.0,
           "available_s": 122400.0,
+          "reason": "consistent_velocity_change",
           "first_s": 118740.0,
           "confirmations": 3,
           "state_correction": [
@@ -1113,6 +1505,7 @@
         {
           "measurement_s": 178140.0,
           "available_s": 178200.0,
+          "reason": "consistent_velocity_change",
           "first_s": 174540.0,
           "confirmations": 3,
           "state_correction": [
@@ -1174,6 +1567,7 @@
         {
           "measurement_s": 178140.0,
           "available_s": 178200.0,
+          "reason": "consistent_velocity_change",
           "first_s": 174540.0,
           "confirmations": 3,
           "state_correction": [
@@ -1236,6 +1630,7 @@
         {
           "measurement_s": 178140.0,
           "available_s": 178200.0,
+          "reason": "consistent_velocity_change",
           "first_s": 174540.0,
           "confirmations": 3,
           "state_correction": [
@@ -1298,6 +1693,7 @@
         {
           "measurement_s": 178140.0,
           "available_s": 178200.0,
+          "reason": "consistent_velocity_change",
           "first_s": 174540.0,
           "confirmations": 3,
           "state_correction": [
@@ -1360,6 +1756,7 @@
         {
           "measurement_s": 178140.0,
           "available_s": 178200.0,
+          "reason": "consistent_velocity_change",
           "first_s": 174540.0,
           "confirmations": 3,
           "state_correction": [
@@ -1422,6 +1819,7 @@
         {
           "measurement_s": 178140.0,
           "available_s": 178200.0,
+          "reason": "consistent_velocity_change",
           "first_s": 174540.0,
           "confirmations": 3,
           "state_correction": [
@@ -1450,37 +1848,57 @@
       "settled": false,
       "settling_after_onset_h": null,
       "settling_after_end_h": null,
-      "post_event_rms_m": 38176.180705791405,
-      "post_event_peak_m": 168991.97570400825,
-      "final_error_m": 32283.459968645537,
-      "final_velocity_error_m_s": 1.4576939610207968,
+      "post_event_rms_m": 143328.27609014636,
+      "post_event_peak_m": 655672.6094875541,
+      "final_error_m": 117219.41118763838,
+      "final_velocity_error_m_s": 5.4419805205283724,
       "completed": true,
       "collision": false,
-      "min_clearance_m": 302964.7629164739,
-      "issued_dv_m_s": 0.14785694567611127,
-      "delivered_dv_m_s": 0.14749989667344107,
-      "propellant_kg": 0.03426521781989322,
-      "burns": 61,
-      "actual_burns": 61,
+      "min_clearance_m": 304536.7959892473,
+      "issued_dv_m_s": 1.1038674053975361,
+      "delivered_dv_m_s": 1.0960156333253357,
+      "propellant_kg": 0.2557599032523399,
+      "burns": 75,
+      "actual_burns": 75,
       "status_counts": {
-        "0": 97,
-        "2": 200,
-        "64": 39
+        "0": 111,
+        "2": 7,
+        "64": 204,
+        "128": 14
       },
-      "fixes_rejected": 195,
-      "fixes_accepted": 136,
-      "navigation_reacquisitions": 0,
-      "first_recovery_required_h": 148.5,
+      "fixes_rejected": 2,
+      "fixes_accepted": 329,
+      "navigation_reacquisitions": 1,
+      "first_recovery_required_h": 66.0,
       "failure": null,
-      "first_reacquisition_after_onset_h": null,
-      "first_reacquisition_navigation_error_m": null,
-      "first_reacquisition_velocity_error_m_s": null,
-      "final_navigation_error_m": 7.037806773460187,
-      "final_navigation_velocity_error_m_s": 0.0014004167531549312,
-      "post_confirmation_navigation_rms_m": null,
-      "post_confirmation_position_bound_coverage": null,
-      "post_confirmation_velocity_bound_coverage": null,
-      "events": []
+      "first_reacquisition_after_onset_h": 4.0,
+      "first_reacquisition_navigation_error_m": 29.476348695197878,
+      "first_reacquisition_velocity_error_m_s": 0.0015924838566014664,
+      "final_navigation_error_m": 7.144794129718097,
+      "final_navigation_velocity_error_m_s": 0.0014085034721215974,
+      "post_confirmation_navigation_rms_m": 16.368181521713648,
+      "post_confirmation_position_bound_coverage": 0.9399141630901288,
+      "post_confirmation_velocity_bound_coverage": 0.9914163090128756,
+      "events": [
+        {
+          "measurement_s": 187140.0,
+          "available_s": 187200.0,
+          "reason": "observation_gap",
+          "first_s": 183540.0,
+          "confirmations": 3,
+          "state_correction": [
+            461.36451927013695,
+            2358.573816699907,
+            1698.5193601539358,
+            0.016000087502128224,
+            0.180259724868165,
+            0.12006789471982415
+          ],
+          "confirmation_nis": 3.1086823134320123,
+          "position_3sigma_m": 60.18203027398629,
+          "velocity_3sigma_m_s": 0.004071145200633935
+        }
+      ]
     },
     {
       "key": [
@@ -1494,37 +1912,57 @@
       "settled": false,
       "settling_after_onset_h": null,
       "settling_after_end_h": null,
-      "post_event_rms_m": 38176.17717108286,
-      "post_event_peak_m": 168991.95926147955,
-      "final_error_m": 32283.45636646452,
-      "final_velocity_error_m_s": 1.4576938140214313,
+      "post_event_rms_m": 143326.80578564535,
+      "post_event_peak_m": 655665.9368341025,
+      "final_error_m": 117218.19207228688,
+      "final_velocity_error_m_s": 5.441924464937226,
       "completed": true,
       "collision": false,
-      "min_clearance_m": 302871.22756069433,
-      "issued_dv_m_s": 0.1478661790610201,
-      "delivered_dv_m_s": 0.14750911795605504,
-      "propellant_kg": 0.03426735754442234,
-      "burns": 61,
-      "actual_burns": 61,
+      "min_clearance_m": 304674.28443075647,
+      "issued_dv_m_s": 1.1038749102441134,
+      "delivered_dv_m_s": 1.096023021975564,
+      "propellant_kg": 0.2557616416387418,
+      "burns": 75,
+      "actual_burns": 75,
       "status_counts": {
-        "0": 97,
-        "2": 200,
-        "64": 39
+        "0": 111,
+        "2": 7,
+        "64": 204,
+        "128": 14
       },
-      "fixes_rejected": 195,
-      "fixes_accepted": 136,
-      "navigation_reacquisitions": 0,
-      "first_recovery_required_h": 148.5,
+      "fixes_rejected": 2,
+      "fixes_accepted": 329,
+      "navigation_reacquisitions": 1,
+      "first_recovery_required_h": 66.0,
       "failure": null,
-      "first_reacquisition_after_onset_h": null,
-      "first_reacquisition_navigation_error_m": null,
-      "first_reacquisition_velocity_error_m_s": null,
-      "final_navigation_error_m": 7.037806782664016,
-      "final_navigation_velocity_error_m_s": 0.0014004167532772076,
-      "post_confirmation_navigation_rms_m": null,
-      "post_confirmation_position_bound_coverage": null,
-      "post_confirmation_velocity_bound_coverage": null,
-      "events": []
+      "first_reacquisition_after_onset_h": 4.0,
+      "first_reacquisition_navigation_error_m": 29.476348693822775,
+      "first_reacquisition_velocity_error_m_s": 0.001592483856616042,
+      "final_navigation_error_m": 7.14479399499051,
+      "final_navigation_velocity_error_m_s": 0.001408503473357282,
+      "post_confirmation_navigation_rms_m": 16.368177939590407,
+      "post_confirmation_position_bound_coverage": 0.9399141630901288,
+      "post_confirmation_velocity_bound_coverage": 0.9914163090128756,
+      "events": [
+        {
+          "measurement_s": 187140.0,
+          "available_s": 187200.0,
+          "reason": "observation_gap",
+          "first_s": 183540.0,
+          "confirmations": 3,
+          "state_correction": [
+            461.36442485265434,
+            2358.5738957449794,
+            1698.5193893546239,
+            0.016000077500187615,
+            0.18025973597372058,
+            0.12006789986327249
+          ],
+          "confirmation_nis": 3.108682313559478,
+          "position_3sigma_m": 60.18203027398644,
+          "velocity_3sigma_m_s": 0.0040711452006347995
+        }
+      ]
     },
     {
       "key": [
@@ -1655,6 +2093,7 @@
         {
           "measurement_s": 208740.0,
           "available_s": 208800.0,
+          "reason": "consistent_velocity_change",
           "first_s": 205140.0,
           "confirmations": 3,
           "state_correction": [
@@ -1716,6 +2155,7 @@
         {
           "measurement_s": 208740.0,
           "available_s": 208800.0,
+          "reason": "consistent_velocity_change",
           "first_s": 205140.0,
           "confirmations": 3,
           "state_correction": [
@@ -1820,6 +2260,302 @@
     },
     {
       "key": [
+        "P2_gap_holdout",
+        "bad_velocity_after_outage",
+        "32",
+        "maneuver_aware"
+      ],
+      "split": "gap_holdout",
+      "response": "recovered",
+      "settled": true,
+      "settling_after_onset_h": 47.75,
+      "settling_after_end_h": 38.75,
+      "post_event_rms_m": 31.52872113574994,
+      "post_event_peak_m": 115.12218399335532,
+      "final_error_m": 17.533772526400785,
+      "final_velocity_error_m_s": 0.001230858703441799,
+      "completed": true,
+      "collision": false,
+      "min_clearance_m": 304674.316472708,
+      "issued_dv_m_s": 0.7545000836102516,
+      "delivered_dv_m_s": 0.7601118389657813,
+      "propellant_kg": 0.17482760271593634,
+      "burns": 188,
+      "actual_burns": 188,
+      "status_counts": {
+        "0": 318,
+        "2": 18
+      },
+      "fixes_rejected": 13,
+      "fixes_accepted": 318,
+      "navigation_reacquisitions": 0,
+      "first_recovery_required_h": null,
+      "failure": null,
+      "first_reacquisition_after_onset_h": null,
+      "first_reacquisition_navigation_error_m": null,
+      "first_reacquisition_velocity_error_m_s": null,
+      "final_navigation_error_m": 15.618159414577278,
+      "final_navigation_velocity_error_m_s": 0.002131686877331358,
+      "post_confirmation_navigation_rms_m": null,
+      "post_confirmation_position_bound_coverage": null,
+      "post_confirmation_velocity_bound_coverage": null,
+      "events": []
+    },
+    {
+      "key": [
+        "P2_gap_holdout",
+        "bad_velocity_after_outage",
+        "float64",
+        "maneuver_aware"
+      ],
+      "split": "gap_holdout",
+      "response": "recovered",
+      "settled": true,
+      "settling_after_onset_h": 47.75,
+      "settling_after_end_h": 38.75,
+      "post_event_rms_m": 31.52859801381245,
+      "post_event_peak_m": 115.1213341188305,
+      "final_error_m": 17.533741744215032,
+      "final_velocity_error_m_s": 0.0012308342838694263,
+      "completed": true,
+      "collision": false,
+      "min_clearance_m": 304770.28020721325,
+      "issued_dv_m_s": 0.7544840515621924,
+      "delivered_dv_m_s": 0.7600958842537486,
+      "propellant_kg": 0.1748238885296587,
+      "burns": 188,
+      "actual_burns": 188,
+      "status_counts": {
+        "0": 318,
+        "2": 18
+      },
+      "fixes_rejected": 13,
+      "fixes_accepted": 318,
+      "navigation_reacquisitions": 0,
+      "first_recovery_required_h": null,
+      "failure": null,
+      "first_reacquisition_after_onset_h": null,
+      "first_reacquisition_navigation_error_m": null,
+      "first_reacquisition_velocity_error_m_s": null,
+      "final_navigation_error_m": 15.618144015709456,
+      "final_navigation_velocity_error_m_s": 0.0021316877008130397,
+      "post_confirmation_navigation_rms_m": null,
+      "post_confirmation_position_bound_coverage": null,
+      "post_confirmation_velocity_bound_coverage": null,
+      "events": []
+    },
+    {
+      "key": [
+        "P2_gap_holdout",
+        "kick_with_6h_outage",
+        "32",
+        "maneuver_aware"
+      ],
+      "split": "gap_holdout",
+      "response": "not_recovered",
+      "settled": false,
+      "settling_after_onset_h": null,
+      "settling_after_end_h": null,
+      "post_event_rms_m": 43701.43775895697,
+      "post_event_peak_m": 179804.1999265936,
+      "final_error_m": 27004.72214050958,
+      "final_velocity_error_m_s": 1.458495478438955,
+      "completed": true,
+      "collision": false,
+      "min_clearance_m": 304674.316472708,
+      "issued_dv_m_s": 0.41498316326446605,
+      "delivered_dv_m_s": 0.4186980359395904,
+      "propellant_kg": 0.09616462838130246,
+      "burns": 59,
+      "actual_burns": 59,
+      "status_counts": {
+        "0": 97,
+        "2": 13,
+        "64": 226
+      },
+      "fixes_rejected": 2,
+      "fixes_accepted": 323,
+      "navigation_reacquisitions": 1,
+      "first_recovery_required_h": 55.0,
+      "failure": null,
+      "first_reacquisition_after_onset_h": 7.0,
+      "first_reacquisition_navigation_error_m": 31.66414030762151,
+      "first_reacquisition_velocity_error_m_s": 0.0011472161804891286,
+      "final_navigation_error_m": 15.54276159233483,
+      "final_navigation_velocity_error_m_s": 0.0021567118481030955,
+      "post_confirmation_navigation_rms_m": 15.500781906053836,
+      "post_confirmation_position_bound_coverage": 0.960352422907489,
+      "post_confirmation_velocity_bound_coverage": 0.9911894273127754,
+      "events": [
+        {
+          "measurement_s": 197940.0,
+          "available_s": 198000.0,
+          "reason": "observation_gap",
+          "first_s": 194340.0,
+          "confirmations": 3,
+          "state_correction": [
+            -5952.426510806195,
+            1135.4554541632533,
+            -5518.91956786532,
+            -0.21051542378354782,
+            0.054362001165458196,
+            -0.18248346692135442
+          ],
+          "confirmation_nis": 3.9473717292067563,
+          "position_3sigma_m": 60.18745975172124,
+          "velocity_3sigma_m_s": 0.004069524342007887
+        }
+      ]
+    },
+    {
+      "key": [
+        "P2_gap_holdout",
+        "kick_with_6h_outage",
+        "float64",
+        "maneuver_aware"
+      ],
+      "split": "gap_holdout",
+      "response": "not_recovered",
+      "settled": false,
+      "settling_after_onset_h": null,
+      "settling_after_end_h": null,
+      "post_event_rms_m": 43701.438177873024,
+      "post_event_peak_m": 179804.203090715,
+      "final_error_m": 27004.72286684865,
+      "final_velocity_error_m_s": 1.4584955143996399,
+      "completed": true,
+      "collision": false,
+      "min_clearance_m": 304770.28020721325,
+      "issued_dv_m_s": 0.41496938623479723,
+      "delivered_dv_m_s": 0.41868428856664247,
+      "propellant_kg": 0.09616143611805228,
+      "burns": 59,
+      "actual_burns": 59,
+      "status_counts": {
+        "0": 97,
+        "2": 13,
+        "64": 226
+      },
+      "fixes_rejected": 2,
+      "fixes_accepted": 323,
+      "navigation_reacquisitions": 1,
+      "first_recovery_required_h": 55.0,
+      "failure": null,
+      "first_reacquisition_after_onset_h": 7.0,
+      "first_reacquisition_navigation_error_m": 31.66414030608,
+      "first_reacquisition_velocity_error_m_s": 0.0011472161805554447,
+      "final_navigation_error_m": 15.542761558340729,
+      "final_navigation_velocity_error_m_s": 0.002156711837475946,
+      "post_confirmation_navigation_rms_m": 15.500781868292712,
+      "post_confirmation_position_bound_coverage": 0.960352422907489,
+      "post_confirmation_velocity_bound_coverage": 0.9911894273127754,
+      "events": [
+        {
+          "measurement_s": 197940.0,
+          "available_s": 198000.0,
+          "reason": "observation_gap",
+          "first_s": 194340.0,
+          "confirmations": 3,
+          "state_correction": [
+            -5952.426682496443,
+            1135.4554317817092,
+            -5518.919524321333,
+            -0.21051543277141604,
+            0.05436200000190183,
+            -0.182483465863438
+          ],
+          "confirmation_nis": 3.9473717290906487,
+          "position_3sigma_m": 60.18745975172146,
+          "velocity_3sigma_m_s": 0.004069524342007117
+        }
+      ]
+    },
+    {
+      "key": [
+        "P2_gap_holdout",
+        "none",
+        "32",
+        "maneuver_aware"
+      ],
+      "split": "gap_holdout",
+      "response": "recovered",
+      "settled": true,
+      "settling_after_onset_h": 47.75,
+      "settling_after_end_h": 47.75,
+      "post_event_rms_m": 21.498896045717334,
+      "post_event_peak_m": 49.33136519116151,
+      "final_error_m": 17.5338910580802,
+      "final_velocity_error_m_s": 0.001230826564221487,
+      "completed": true,
+      "collision": false,
+      "min_clearance_m": 304674.316472708,
+      "issued_dv_m_s": 0.7426004886915716,
+      "delivered_dv_m_s": 0.7479303361628444,
+      "propellant_kg": 0.1720707844149274,
+      "burns": 198,
+      "actual_burns": 198,
+      "status_counts": {
+        "0": 336
+      },
+      "fixes_rejected": 0,
+      "fixes_accepted": 337,
+      "navigation_reacquisitions": 0,
+      "first_recovery_required_h": null,
+      "failure": null,
+      "first_reacquisition_after_onset_h": null,
+      "first_reacquisition_navigation_error_m": null,
+      "first_reacquisition_velocity_error_m_s": null,
+      "final_navigation_error_m": 15.618144544655735,
+      "final_navigation_velocity_error_m_s": 0.0021316881560025426,
+      "post_confirmation_navigation_rms_m": null,
+      "post_confirmation_position_bound_coverage": null,
+      "post_confirmation_velocity_bound_coverage": null,
+      "events": []
+    },
+    {
+      "key": [
+        "P2_gap_holdout",
+        "none",
+        "float64",
+        "maneuver_aware"
+      ],
+      "split": "gap_holdout",
+      "response": "recovered",
+      "settled": true,
+      "settling_after_onset_h": 47.75,
+      "settling_after_end_h": 47.75,
+      "post_event_rms_m": 21.49892990260475,
+      "post_event_peak_m": 49.33189697989461,
+      "final_error_m": 17.53373916671663,
+      "final_velocity_error_m_s": 0.0012308343622671025,
+      "completed": true,
+      "collision": false,
+      "min_clearance_m": 304770.28020721325,
+      "issued_dv_m_s": 0.742584975339061,
+      "delivered_dv_m_s": 0.7479149799639817,
+      "propellant_kg": 0.17206719037534413,
+      "burns": 198,
+      "actual_burns": 198,
+      "status_counts": {
+        "0": 336
+      },
+      "fixes_rejected": 0,
+      "fixes_accepted": 337,
+      "navigation_reacquisitions": 0,
+      "first_recovery_required_h": null,
+      "failure": null,
+      "first_reacquisition_after_onset_h": null,
+      "first_reacquisition_navigation_error_m": null,
+      "first_reacquisition_velocity_error_m_s": null,
+      "final_navigation_error_m": 15.61814392177658,
+      "final_navigation_velocity_error_m_s": 0.0021316876907914845,
+      "post_confirmation_navigation_rms_m": null,
+      "post_confirmation_position_bound_coverage": null,
+      "post_confirmation_velocity_bound_coverage": null,
+      "events": []
+    },
+    {
+      "key": [
         "P2_regression",
         "kick_50cm_s",
         "32",
@@ -1864,6 +2600,7 @@
         {
           "measurement_s": 178140.0,
           "available_s": 178200.0,
+          "reason": "consistent_velocity_change",
           "first_s": 174540.0,
           "confirmations": 3,
           "state_correction": [
@@ -1926,6 +2663,7 @@
         {
           "measurement_s": 178140.0,
           "available_s": 178200.0,
+          "reason": "consistent_velocity_change",
           "first_s": 174540.0,
           "confirmations": 3,
           "state_correction": [

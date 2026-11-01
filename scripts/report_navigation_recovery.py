@@ -87,6 +87,8 @@ def main():
                 same_response=metrics['response']==baseline['metrics']['response'],
                 same_reacquisitions=metrics.get('navigation_reacquisitions')==baseline['metrics'].get('navigation_reacquisitions'),
                 same_burns=metrics.get('burns')==baseline['metrics'].get('burns'),
+                post_event_rms_difference_m=(abs(metrics['post_event_rms_m']-baseline['metrics']['post_event_rms_m'])
+                    if metrics['completed'] and baseline['metrics']['completed'] else None),
                 issued_dv_difference_m_s=abs(metrics.get('issued_dv_m_s',0)-baseline['metrics'].get('issued_dv_m_s',0))))
     failure=np.load(args.diagnosis/'failed_update.npz');p=failure['p'];r=failure['r']
     innovation=failure['z']-failure['predicted'][:6];s=p[:6,:6]+r
@@ -119,6 +121,11 @@ def main():
             if name.startswith('qrc_pulsar_bench/'):
                 assert wheel.read(name)==(REPO/name).read_bytes(),(name,'wheel changed')
     verification['wheel_sha256']=sha(wheels[0])
+    executed_pairs=[p for p in paired if p['executed_pair']]
+    verification['executed_arithmetic_pairs']=len(executed_pairs)
+    verification['matching_arithmetic_outcomes']=all(p['same_response'] and p['same_reacquisitions'] and p['same_burns'] for p in executed_pairs)
+    verification['maximum_arithmetic_rms_difference_m']=max(p['post_event_rms_difference_m'] for p in executed_pairs)
+    verification['maximum_arithmetic_issued_dv_difference_m_s']=max(p['issued_dv_difference_m_s'] for p in executed_pairs)
     coverage=[r for r in summary if r['key'][2]=='float64' and r['post_confirmation_position_bound_coverage'] is not None]
     verification['post_confirmation_position_bound_coverage_range']=[
         min(r['post_confirmation_position_bound_coverage'] for r in coverage),
@@ -215,6 +222,11 @@ def main():
         f"Passed {verification['tests_passed']} tests and verified the built wheel, {verification['source_files']} source/test/runner hashes, {verification['physical_inputs']} input hashes, "
         f"{verification['nonnegative_nis_samples']} nonnegative NIS values, exact pre-event sample pairing and identical commands before fault information is observable. "
         'Metrics are independently recomputed from saved trajectories and commands. All failed cases remain in the report.',
+        '',f"Float64 versus 32/24 QP: {len(executed_pairs)} executed pairs; matching trajectory classifications, navigation-reacquisition counts "
+        f"and burn counts: {verification['matching_arithmetic_outcomes']}. "
+        f"Largest post-event RMS difference {verification['maximum_arithmetic_rms_difference_m']:.6g} m; "
+        f"largest issued-Δv difference {verification['maximum_arithmetic_issued_dv_difference_m_s']:.6g} m/s. "
+        'Rejected reference cases are excluded from these arithmetic comparisons.',
         '', 'Integer comparisons run only the 32/24 QP core on the host. Navigation QR, force propagation and supervision remain host float64. '
         'No FPGA synthesis, timing, power, radiation or flight qualification is claimed. '
         'Positive covariance is necessary for a valid estimate, but does not prove a nonlinear EKF is statistically calibrated.',
