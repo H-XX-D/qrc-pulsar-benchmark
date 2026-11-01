@@ -36,6 +36,8 @@ class RoutineMPC(StrategyMPC):
             self.mode='inhibited';return self._coast(t,'invalid_navigation',2)
         try:
             self.validate_input(t,estimate,mass,record_epoch=False)
+            if estimate.get('navigation_trusted',True) is not True:
+                self.mode='inhibited';return self._coast(t,'untrusted_navigation',2)
             if np.shape(estimate.get('covariance'))!=(9,9) or 'time_s' not in estimate or 'last_observation_s' not in estimate:
                 raise ValueError('Timestamped nine-state covariance required')
             if t<self.last_epoch+self.settings.interval_s-1e-6:
@@ -66,6 +68,8 @@ class RoutineMPC(StrategyMPC):
 
     def rearm(self,t,estimate,mass):
         """Explicit caller action; never resets spent budget or decision history."""
+        if estimate.get('navigation_trusted',True) is not True:
+            raise ValueError('Trusted navigation required to rearm')
         self.validate_input(t,estimate,mass,record_epoch=False)
         if np.shape(estimate.get('covariance'))!=(9,9) or 'time_s' not in estimate or 'last_observation_s' not in estimate or t-estimate['last_observation_s']>3600:
             raise ValueError('Fresh timestamped navigation required to rearm')

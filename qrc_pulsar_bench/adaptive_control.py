@@ -6,7 +6,7 @@ missing physics, infer future burns or produce a certified uncertainty tube.
 """
 from dataclasses import dataclass
 import numpy as np
-from scipy.linalg import expm
+from scipy.linalg import expm, solve_triangular
 from scipy.optimize import lsq_linear
 from .jacobi_control import (JacobiFlightModel, JacobiPredictiveController,
                              NavigationEstimate, _array)
@@ -59,6 +59,55 @@ def validate_covariance(p):
     if not np.allclose(normalized,normalized.T,rtol=1e-10,atol=1e-12) or np.linalg.eigvalsh(normalized)[0]<-1e-10:
         raise ValueError('Symmetric positive semidefinite covariance required')
     return p
+
+
+def covariance_factor(p):
+    """Factor a validated input covariance in correlation units.
+
+    The eigen fallback handles semidefinite inputs (including zero process
+    noise). Only roundoff-sized negative eigenvalues are allowed there. A live
+    filter retains its factor and never refactors a rounded full covariance.
+    """
+    p=validate_covariance(p)
+    scale=np.sqrt(np.where(np.diag(p)>0,np.diag(p),1.))
+    correlation=p/np.outer(scale,scale)
+    try:return scale[:,None]*np.linalg.cholesky(correlation)
+    except np.linalg.LinAlgError:
+        values,vectors=np.linalg.eigh(correlation)
+        tolerance=64*np.finfo(float).eps*len(p)*max(1.,np.max(np.abs(values)))
+        if values[0]<-tolerance:raise ValueError('Input covariance cannot be factored reliably')
+        return scale[:,None]*(vectors*np.sqrt(np.maximum(values,0.)))
+
+
+def triangular_factor(columns):
+    """QR factor of a sum of covariance outer products, without forming P."""
+    if not np.all(np.isfinite(columns)):raise ValueError('Nonfinite covariance factor')
+    scale=np.linalg.norm(columns,axis=1)
+    scale=np.where(scale>0,scale,1.)
+    _,r=np.linalg.qr((columns/scale[:,None]).T,mode='reduced')
+    root=scale[:,None]*r.T
+    if not np.all(np.isfinite(root)):raise ValueError('Nonfinite covariance factor')
+    return root
+
+
+def square_root_measurement(root,measurement_covariance,innovation):
+    """Joint QR conditioning for a fix of the first m state components.
+
+    Returns a nonnegative NIS, mean correction and posterior factor. The joint
+    array preserves small measurement noise even when adding R to HPH' would
+    round it away. It avoids covariance subtraction and an indefinite S solve.
+    """
+    m=len(innovation);n=len(root)
+    r=covariance_factor(measurement_covariance)
+    joint=np.zeros((m+n,m+root.shape[1]))
+    joint[:m,:m]=r;joint[:m,m:]=root[:m,:];joint[m:,m:]=root
+    factor=triangular_factor(joint)
+    whitened=solve_triangular(factor[:m,:m],innovation,lower=True)
+    nis=float(whitened@whitened)
+    correction=factor[m:,:m]@whitened
+    if not np.isfinite(nis) or not np.all(np.isfinite(correction)):
+        raise ValueError('Nonfinite navigation update')
+    return nis,correction,factor[m:,m:]
 
 
 def propagate_known_commands(model, state, start, stop, mass, commands=(), *, as_of_s):
@@ -133,8 +182,9 @@ class CausalOrbitFilter:
         self.settings = settings
         self.state = np.r_[_array(state,(6,),"filter state"),np.zeros(3)]
         p = _array(covariance,(6,6),"filter covariance")
-        self.covariance = np.zeros((9,9));self.covariance[:6,:6]=p
-        self.covariance[6:,6:] = np.eye(3)*settings.initial_bias_sigma_m_s2**2
+        full=np.zeros((9,9));full[:6,:6]=p
+        full[6:,6:]=np.eye(3)*settings.initial_bias_sigma_m_s2**2
+        self._root=covariance_factor(full)
         self.mass, self.time_s = float(mass), float(time_s)
         self.last_observation_s = float(time_s)
         self.last_processed_observation_s = -np.inf
@@ -145,7 +195,12 @@ class CausalOrbitFilter:
     def _check_covariance(p):
         validate_covariance(p)
 
-    def _predict(self, time_s, commands, as_of_s):
+    @property
+    def covariance(self):
+        # A reporting view. The stored factor remains the numerical authority.
+        return self._root@self._root.T
+
+    def _predict_factor(self, time_s, commands, as_of_s):
         if not np.all(np.isfinite([time_s,as_of_s])):
             raise ValueError('Finite prediction and knowledge epochs required')
         if time_s < self.time_s: raise ValueError("Out-of-order observation epoch")
@@ -156,7 +211,7 @@ class CausalOrbitFilter:
             earth_radius_m=self.model.earth_radius_m,max_step_s=self.model.max_step_s,rtol=self.model.rtol)
         mean,mass,pieces = propagate_known_commands(model,self.state[:6],self.time_s,time_s,
             self.mass,commands,as_of_s=as_of_s)
-        covariance = self.covariance.copy()
+        root=self._root.copy()
         spectral = np.zeros((9,9))
         spectral[3:6,3:6]=np.eye(3)*self.settings.acceleration_noise_psd
         spectral[6:,6:]=np.eye(3)*self.settings.bias_random_walk_psd
@@ -168,7 +223,7 @@ class CausalOrbitFilter:
                 a[3:6,6:]=np.eye(3)
                 a[6:,6:]=-rate*np.eye(3)
                 phi,q=covariance_step(a,spectral,right-left)
-                covariance=phi@covariance@phi.T+q
+                root=triangular_factor(np.hstack((phi@root,covariance_factor(q))))
             # Approximate finite-burn execution uncertainty by a velocity jump
             # at burn completion, including the half-burn position correlation.
             # Short burns only; this is not a coupled attitude/propulsion model.
@@ -183,9 +238,14 @@ class CausalOrbitFilter:
                     uncertainty=dv*dv*(self.settings.maneuver_fraction_sigma**2*along
                         +self.settings.maneuver_pointing_sigma_rad**2*(np.eye(3)-along))
                     mapping=np.zeros((9,3));mapping[:3,:]=duration/2*np.eye(3);mapping[3:6,:]=np.eye(3)
-                    covariance+=mapping@uncertainty@mapping.T
-        covariance=.5*(covariance+covariance.T)
-        return np.r_[mean,bias*np.exp(-rate*(time_s-self.time_s))],covariance,mass
+                    root=triangular_factor(np.hstack((root,mapping@covariance_factor(uncertainty))))
+        return np.r_[mean,bias*np.exp(-rate*(time_s-self.time_s))],root,mass
+
+    def _predict(self,time_s,commands,as_of_s):
+        state,root,mass=self._predict_factor(time_s,commands,as_of_s)
+        covariance=root@root.T
+        self._check_covariance(covariance)
+        return state,covariance,mass
 
     def observe(self, state_fix, covariance, measurement_s, available_s, commands=()):
         if not np.all(np.isfinite([measurement_s,available_s])) or available_s<measurement_s:
@@ -195,24 +255,26 @@ class CausalOrbitFilter:
         z=_array(state_fix,(6,),"state fix");r=_array(covariance,(6,6),"measurement covariance")
         self._check_covariance(r)
         if np.min(np.linalg.eigvalsh(r))<=0:raise ValueError("Positive definite measurement covariance required")
-        predicted,p,mass=self._predict(measurement_s,commands,available_s)
-        innovation=z-predicted[:6];s=p[:6,:6]+r
-        nis=float(innovation@np.linalg.solve(s,innovation))
+        predicted,root,mass=self._predict_factor(measurement_s,commands,available_s)
+        innovation=z-predicted[:6]
+        nis,correction,posterior=square_root_measurement(root,r,innovation)
         accepted=nis<=self.settings.nis_limit
+        clipped=False
         if accepted:
-            gain=np.linalg.solve(s,p[:6,:]).T
-            predicted+=gain@innovation
-            j=np.eye(9);j[:,:6]-=gain
-            p=j@p@j.T+gain@r@gain.T
+            predicted+=correction
+            root=posterior
             norm=np.linalg.norm(predicted[6:])
             if norm>self.settings.maximum_bias_m_s2:
                 predicted[6:]*=self.settings.maximum_bias_m_s2/norm
-                self.bias_clips+=1
-            self.last_observation_s=measurement_s;self.accepted+=1
-        else:self.rejected+=1
-        self.state,self.covariance,self.mass,self.time_s=predicted,.5*(p+p.T),mass,float(measurement_s)
+                clipped=True
+        # Validate before committing state, factor, timestamps or counters.
+        self._check_covariance(root@root.T)
+        if not np.all(np.isfinite(predicted)):raise ValueError('Nonfinite navigation state')
+        self.state,self._root,self.mass,self.time_s=predicted,root,mass,float(measurement_s)
         self.last_processed_observation_s=float(measurement_s)
-        self._check_covariance(self.covariance)
+        if accepted:
+            self.last_observation_s=measurement_s;self.accepted+=1;self.bias_clips+=int(clipped)
+        else:self.rejected+=1
         return dict(accepted=bool(accepted),nis=nis,innovation=innovation.copy())
 
     def forecast(self,time_s,commands=(),*,as_of_s=None):

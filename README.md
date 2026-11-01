@@ -67,6 +67,11 @@ quantized convexity, clears failed commands, and bounds controller caches.
 It also compares optional outage-handling policies and extends the simulation
 campaign to seven- and thirty-day runs with recurring faults.
 
+The [square-root navigation and reacquisition implementation](docs/navigation-recovery.md)
+addresses the negative-covariance failure and checks sustained evidence of
+changed motion before restoring navigation trust. It preserves the routine
+MPC authority limits and distinguishes navigation recovery from trajectory return.
+
 The [blind anomaly campaign](docs/artemis-anomaly-results-2026-10-31.md) injects
 unannounced velocity changes, force errors, propulsion faults and navigation
 faults into the simulated plant. Frozen MPC is compared with matched coasting;

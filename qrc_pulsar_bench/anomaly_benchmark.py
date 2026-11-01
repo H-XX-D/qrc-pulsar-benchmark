@@ -64,7 +64,7 @@ include the whole response, including the disturbance interval.
 
 
 class AnomalyExperiment(ResilienceExperiment):
-    def run_anomaly(self,scenario,anomaly,*,library=None,coast_after_event=False):
+    def run_anomaly(self,scenario,anomaly,*,library=None,coast_after_event=False,filter_factory=None):
         if anomaly.end_s>scenario.days*DAY or anomaly.onset_s<DAY/2:
             raise ValueError('Fault outside the declared experiment')
         initial,model,plan,inputs=self.prepare(scenario)
@@ -77,7 +77,8 @@ class AnomalyExperiment(ResilienceExperiment):
         bias=rng.normal(size=3);bias*=scenario.bias_m_s2/np.linalg.norm(bias)
         fault_rng=np.random.default_rng(scenario.seed+100000)
         direction=fault_rng.normal(size=3);direction/=np.linalg.norm(direction)
-        nav=CausalOrbitFilter(model,initial,np.diag(np.r_[[500.]*3,[.03]*3]**2),500.)
+        nav=(CausalOrbitFilter if filter_factory is None else filter_factory)(
+            model,initial,np.diag(np.r_[[500.]*3,[.03]*3]**2),500.)
         covariance=np.diag(np.r_[[30.]*3,[.002]*3]**2)
         ledger=[];history=None;mass=500.;records=[];samples=[];dense=[]
         collision=False;actual_dv=0.;minimum_clearance=np.inf;start=time.process_time()
@@ -108,6 +109,18 @@ class AnomalyExperiment(ResilienceExperiment):
             samples.append(dict(**point,navigation_error_m=float(np.linalg.norm(actual[:3]-estimate['state'][:3])),
                 age_s=float(t-estimate['last_observation_s']),accepted=None if observation is None else observation['accepted'],
                 nis=None if observation is None else observation['nis']))
+            if filter_factory is not None:
+                # Truth-based diagnostics stay in the scoring harness only.
+                error=actual-estimate['state'][:6]
+                p=estimate['covariance'];scales=np.sqrt(np.diag(p))
+                samples[-1].update(navigation_velocity_error_m_s=float(np.linalg.norm(error[3:])),
+                    navigation_trusted=estimate.get('navigation_trusted',True),
+                    navigation_mode=estimate.get('navigation_mode','tracking'),
+                    candidate_confirmations=estimate.get('candidate_confirmations',0),
+                    reacquired=False if observation is None else observation.get('reacquired',False),
+                    position_3sigma_m=float(3*np.sqrt(np.linalg.eigvalsh(p[:3,:3])[-1])),
+                    velocity_3sigma_m_s=float(3*np.sqrt(np.linalg.eigvalsh(p[3:6,3:6])[-1])),
+                    covariance_correlation_min_eigenvalue=float(np.linalg.eigvalsh(p/np.outer(scales,scales))[0]))
             if t==0:dense.append(point)
             if t>=scenario.days*DAY:break
             if coast_after_event and t>=anomaly.onset_s:
@@ -153,5 +166,7 @@ class AnomalyExperiment(ResilienceExperiment):
                 issued_dv_m_s=float(issued),delivered_dv_m_s=float(actual_dv),propellant_kg=500.-mass,
                 burns=sum(bool(c['burn_s']>0) for c in records),actual_burns=sum(bool(c['actual_burn_s']>0) for c in records),
                 status_counts=statuses,fixes_rejected=nav.rejected,fixes_accepted=nav.accepted,
+                navigation_reacquisitions=getattr(nav,'reacquisitions',0),
                 first_recovery_required_h=next((c['time_s']/3600 for c in records if c['status']==64),None)),
-            cpu_s=time.process_time()-start,samples=samples,dense_samples=dense,commands=records)
+            cpu_s=time.process_time()-start,samples=samples,dense_samples=dense,commands=records,
+            navigation_events=list(getattr(nav,'events',[])))

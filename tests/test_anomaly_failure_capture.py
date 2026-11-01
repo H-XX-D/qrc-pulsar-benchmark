@@ -12,9 +12,14 @@ def test_numerical_exception_preserves_partial_evidence_without_resuming(monkeyp
     monkeypatch.syspath_prepend(str(Path(__file__).resolve().parents[1]/'scripts'))
     capture=importlib.import_module('artemis_anomaly_continuation').capture_failure
     class BrokenFilter(CausalOrbitFilter):
+        @property
+        def covariance(self):
+            p=super().covariance
+            if getattr(self,'inject_failure',False):p[6,6]=-1e-20
+            return p
         def observe(self,fix,covariance,measurement_s,available_s,commands=()):
             if available_s>=43200:
-                self.covariance[6,6]=-1e-20
+                self.inject_failure=True
                 self._check_covariance(self.covariance)
             return super().observe(fix,covariance,measurement_s,available_s,commands)
     monkeypatch.setattr(module,'CausalOrbitFilter',BrokenFilter)
