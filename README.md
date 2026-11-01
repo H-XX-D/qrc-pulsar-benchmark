@@ -55,6 +55,23 @@ comparison baseline. The integer C++ QP core has a fixed iteration budget and
 no PID fallback. Navigation, QP formation and nonlinear burn checks remain on
 the host pending a selected FPGA architecture.
 
+The [MPC strategy search](docs/artemis-mpc-strategies.md) compares 15 settings
+for command smoothing, burn spacing, predictive coasting, sparse effort and
+estimated-bias compensation. It selects tracking/fuel/correction tradeoffs on
+September training cases, then checks frozen finalists on eight fresh January
+cases. The report includes failed strategies and fixed-point precision checks.
+
+The [MPC hardening and endurance work](docs/mpc-hardening.md) validates navigation
+inputs, rejects replayed measurements, checks the integer-library format and
+quantized convexity, clears failed commands, and bounds controller caches.
+It also compares optional outage-handling policies and extends the simulation
+campaign to seven- and thirty-day runs with recurring faults.
+
+The [blind anomaly campaign](docs/artemis-anomaly-results-2026-10-31.md) injects
+unannounced velocity changes, force errors, propulsion faults and navigation
+faults into the simulated plant. Frozen MPC is compared with matched coasting;
+recovery requires sustained position and velocity tracking without manual resets.
+
 The binary calculators implement leading-order GR relations using supplied masses
 and orbital elements. The triple calculator estimates perturbation scales for
 near-circular, tightly hierarchical systems. The geometric shape map describes

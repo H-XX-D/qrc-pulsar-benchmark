@@ -47,6 +47,20 @@ def covariance_step(a, spectral, dt):
     return phi, .5*(q+q.T)
 
 
+def validate_covariance(p):
+    """PSD check in correlation units, including tiny acceleration variances."""
+    p=np.asarray(p,dtype=float)
+    if p.ndim!=2 or p.shape[0]!=p.shape[1] or not np.all(np.isfinite(p)):
+        raise ValueError('Finite square covariance required')
+    diagonal=np.diag(p)
+    if np.any(diagonal<0):raise ValueError('Negative variance')
+    scale=np.sqrt(np.where(diagonal>0,diagonal,1.))
+    normalized=p/np.outer(scale,scale)
+    if not np.allclose(normalized,normalized.T,rtol=1e-10,atol=1e-12) or np.linalg.eigvalsh(normalized)[0]<-1e-10:
+        raise ValueError('Symmetric positive semidefinite covariance required')
+    return p
+
+
 def propagate_known_commands(model, state, start, stop, mass, commands=(), *, as_of_s):
     """Reconstruct past command effects with an explicit knowledge-time bound.
 
@@ -82,6 +96,9 @@ def propagate_known_commands(model, state, start, stop, mass, commands=(), *, as
 
 @dataclass(frozen=True)
 class FilterSettings:
+    # Zero preserves the original constant-bias model. Positive values model
+    # disturbance decorrelation, including while observations are missing.
+    bias_correlation_s: float = 0.
     bias_random_walk_psd: float = 1e-18
     acceleration_noise_psd: float = 1e-10
     initial_bias_sigma_m_s2: float = 1e-7
@@ -108,6 +125,8 @@ class CausalOrbitFilter:
     the predicted mean, not an exact nonlinear distribution.
     """
     def __init__(self, model, state, covariance, mass, *, time_s=0., settings=FilterSettings()):
+        if not np.all(np.isfinite([mass,time_s])) or mass<=0:
+            raise ValueError('Finite filter epoch and positive mass required')
         self.model = MoonCartesianFlightModel(model.acceleration,model.inner,
             moon_radius_m=model.moon_radius_m,earth_radius_m=model.earth_radius_m,
             max_step_s=model.max_step_s,rtol=model.rtol)
@@ -118,19 +137,21 @@ class CausalOrbitFilter:
         self.covariance[6:,6:] = np.eye(3)*settings.initial_bias_sigma_m_s2**2
         self.mass, self.time_s = float(mass), float(time_s)
         self.last_observation_s = float(time_s)
+        self.last_processed_observation_s = -np.inf
         self.rejected = 0; self.accepted = 0; self.bias_clips = 0
         self._check_covariance(self.covariance)
 
     @staticmethod
     def _check_covariance(p):
-        if (not np.all(np.isfinite(p)) or not np.allclose(p,p.T,rtol=1e-10,atol=1e-14)
-                or np.min(np.linalg.eigvalsh(p)) < -1e-13):
-            raise ValueError("Covariance must be finite symmetric positive semidefinite")
+        validate_covariance(p)
 
     def _predict(self, time_s, commands, as_of_s):
+        if not np.all(np.isfinite([time_s,as_of_s])):
+            raise ValueError('Finite prediction and knowledge epochs required')
         if time_s < self.time_s: raise ValueError("Out-of-order observation epoch")
         bias = self.state[6:].copy()
-        model = MoonCartesianFlightModel(lambda r,v,t:self.model.acceleration(r,v,t)+bias,
+        rate=0. if self.settings.bias_correlation_s==0 else 1/self.settings.bias_correlation_s
+        model = MoonCartesianFlightModel(lambda r,v,t:self.model.acceleration(r,v,t)+bias*np.exp(-rate*(t-self.time_s)),
             self.model.inner,moon_radius_m=self.model.moon_radius_m,
             earth_radius_m=self.model.earth_radius_m,max_step_s=self.model.max_step_s,rtol=self.model.rtol)
         mean,mass,pieces = propagate_known_commands(model,self.state[:6],self.time_s,time_s,
@@ -145,6 +166,7 @@ class CausalOrbitFilter:
                 middle=(left+right)/2;point=piece.at(middle)[:6]
                 a=np.zeros((9,9));a[:6,:6]=force_jacobian(self.model.acceleration,point,middle)
                 a[3:6,6:]=np.eye(3)
+                a[6:,6:]=-rate*np.eye(3)
                 phi,q=covariance_step(a,spectral,right-left)
                 covariance=phi@covariance@phi.T+q
             # Approximate finite-burn execution uncertainty by a velocity jump
@@ -163,11 +185,13 @@ class CausalOrbitFilter:
                     mapping=np.zeros((9,3));mapping[:3,:]=duration/2*np.eye(3);mapping[3:6,:]=np.eye(3)
                     covariance+=mapping@uncertainty@mapping.T
         covariance=.5*(covariance+covariance.T)
-        return np.r_[mean,bias],covariance,mass
+        return np.r_[mean,bias*np.exp(-rate*(time_s-self.time_s))],covariance,mass
 
     def observe(self, state_fix, covariance, measurement_s, available_s, commands=()):
-        if not np.isfinite(available_s) or available_s<measurement_s:
+        if not np.all(np.isfinite([measurement_s,available_s])) or available_s<measurement_s:
             raise ValueError("Observation delivered before measurement exists")
+        if measurement_s<=self.last_processed_observation_s:
+            raise ValueError('Duplicate or replayed observation')
         z=_array(state_fix,(6,),"state fix");r=_array(covariance,(6,6),"measurement covariance")
         self._check_covariance(r)
         if np.min(np.linalg.eigvalsh(r))<=0:raise ValueError("Positive definite measurement covariance required")
@@ -187,6 +211,7 @@ class CausalOrbitFilter:
             self.last_observation_s=measurement_s;self.accepted+=1
         else:self.rejected+=1
         self.state,self.covariance,self.mass,self.time_s=predicted,.5*(p+p.T),mass,float(measurement_s)
+        self.last_processed_observation_s=float(measurement_s)
         self._check_covariance(self.covariance)
         return dict(accepted=bool(accepted),nis=nis,innovation=innovation.copy())
 

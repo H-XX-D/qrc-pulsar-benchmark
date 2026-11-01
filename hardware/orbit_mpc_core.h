@@ -19,6 +19,8 @@
 // 16 fixed iteration budget did not meet projected residual tolerance.
 // Only status 0 publishes a solution. All failures zero the output.
 // Hardware timing/resources require actual synthesis and RTL verification.
+// Host bridge identifies ABI, arithmetic format and bounded work budget.
+extern "C" int orbit_mpc_metadata(int field);
 extern "C" int orbit_mpc_solve(const int32_t h[QRC_MPC_N*QRC_MPC_N],
     const int32_t g[QRC_MPC_N], const int32_t warm[QRC_MPC_N],
     int n, int32_t beta, int32_t tolerance, int valid,

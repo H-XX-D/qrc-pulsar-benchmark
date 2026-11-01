@@ -70,6 +70,6 @@ def test_prediction_has_future_control_coupling_and_bounds():
 
 def test_bad_solver_budget_does_not_publish_unsafe_iterate(qp):
     # Ill conditioning and nearly zero stopping tolerance force a visible failure.
-    h=np.diag([.9,.000001,.000002]);g=np.array([.1,.0002,-.0003])
+    h=np.diag([.9,.00002,.00004]);g=np.array([.1,.0002,-.0003])
     status,solution,_=qp.solve(h,g,np.zeros(3),0,tolerance=1e-9)
     assert status==16 and not solution.any()

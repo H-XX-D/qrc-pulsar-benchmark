@@ -1,0 +1,5402 @@
+{
+  "classification": "Synthetic controlled vehicles on real initial ARTEMIS geometry; no future spacecraft states read",
+  "revision_reason": "Prior fresh seven-day failure spent >20m/s and exceeded local MPC validity. Preserve failed evidence; add estimated-error latch and rolling issued-DV budget. No claim that command inhibition recovers the mission.",
+  "development_selection": {
+    "selected": "legacy",
+    "table": {
+      "legacy": {
+        "cases": 4,
+        "mean_rms_m": 49.079986149292125,
+        "worst_rms_m": 68.3608891503547,
+        "worst_peak_m": 221.2600736408058,
+        "mean_dv_m_s": 0.3559864847453876,
+        "mean_burns": 87.0,
+        "failed_cases": 0,
+        "tight_cases": 2
+      },
+      "decay_only": {
+        "cases": 4,
+        "mean_rms_m": 93.91626279437395,
+        "worst_rms_m": 145.17161647677597,
+        "worst_peak_m": 514.2077577116563,
+        "mean_dv_m_s": 0.3550119807904608,
+        "mean_burns": 77.0,
+        "failed_cases": 2,
+        "tight_cases": 1
+      },
+      "guarded": {
+        "cases": 4,
+        "mean_rms_m": 60.05968818275603,
+        "worst_rms_m": 70.58159531066856,
+        "worst_peak_m": 311.67063580315596,
+        "mean_dv_m_s": 0.36793613870660136,
+        "mean_burns": 97.0,
+        "failed_cases": 0,
+        "tight_cases": 1
+      },
+      "decay_guarded": {
+        "cases": 4,
+        "mean_rms_m": 69.49528783609736,
+        "worst_rms_m": 100.04054499689504,
+        "worst_peak_m": 435.0212151411799,
+        "mean_dv_m_s": 0.3456963977109977,
+        "mean_burns": 80.5,
+        "failed_cases": 1,
+        "tight_cases": 1
+      }
+    },
+    "rule": "Among all-case100mRMS/500mpeak qualified profiles, minimize worstRMS/50 + meanDV/baselineDV + meanBurns/baselineBurns"
+  },
+  "aggregate": {
+    "earlier/fresh/3days/float64": {
+      "cases": 4,
+      "mean_rms_m": 42.12882180434751,
+      "worst_rms_m": 64.71282471862881,
+      "worst_peak_m": 238.41343014441495,
+      "mean_dv_m_s": 0.39567947392389113,
+      "mean_burns": 90.25,
+      "tracking_pass_cases": 4,
+      "screen_or_numeric_fault_cases": 0,
+      "recovery_cases": 0
+    },
+    "earlier/fresh/3days/32": {
+      "cases": 4,
+      "mean_rms_m": 42.128781863091035,
+      "worst_rms_m": 64.71286040400423,
+      "worst_peak_m": 238.4134023742704,
+      "mean_dv_m_s": 0.3956780588072268,
+      "mean_burns": 90.25,
+      "tracking_pass_cases": 4,
+      "screen_or_numeric_fault_cases": 0,
+      "recovery_cases": 0
+    },
+    "earlier/fresh/7days/float64": {
+      "cases": 4,
+      "mean_rms_m": 115954.92405528009,
+      "worst_rms_m": 463647.46067170595,
+      "worst_peak_m": 2467748.42753188,
+      "mean_dv_m_s": 7.096771198381364,
+      "mean_burns": 205.75,
+      "tracking_pass_cases": 3,
+      "screen_or_numeric_fault_cases": 2,
+      "recovery_cases": 0
+    },
+    "earlier/fresh/7days/32": {
+      "cases": 4,
+      "mean_rms_m": 97527.87644301294,
+      "worst_rms_m": 389939.2702076546,
+      "worst_peak_m": 1983442.0038780442,
+      "mean_dv_m_s": 5.9359892830913905,
+      "mean_burns": 198.0,
+      "tracking_pass_cases": 3,
+      "screen_or_numeric_fault_cases": 2,
+      "recovery_cases": 0
+    },
+    "supervised/regression/3days/float64": {
+      "cases": 1,
+      "mean_rms_m": 39.66678966142928,
+      "worst_rms_m": 39.66678966142928,
+      "worst_peak_m": 145.49623128847958,
+      "mean_dv_m_s": 0.4629272237065978,
+      "mean_burns": 87.0,
+      "tracking_pass_cases": 1,
+      "screen_or_numeric_fault_cases": 0,
+      "recovery_cases": 0
+    },
+    "supervised/regression/3days/32": {
+      "cases": 1,
+      "mean_rms_m": 39.66652076764797,
+      "worst_rms_m": 39.66652076764797,
+      "worst_peak_m": 145.49517217144657,
+      "mean_dv_m_s": 0.4629202765082921,
+      "mean_burns": 87.0,
+      "tracking_pass_cases": 1,
+      "screen_or_numeric_fault_cases": 0,
+      "recovery_cases": 0
+    },
+    "supervised/regression/7days/float64": {
+      "cases": 1,
+      "mean_rms_m": 102054.2197129078,
+      "worst_rms_m": 102054.2197129078,
+      "worst_peak_m": 513398.6120461268,
+      "mean_dv_m_s": 0.21534179067067988,
+      "mean_burns": 53.0,
+      "tracking_pass_cases": 0,
+      "screen_or_numeric_fault_cases": 1,
+      "recovery_cases": 1
+    },
+    "supervised/regression/7days/32": {
+      "cases": 1,
+      "mean_rms_m": 102053.72573318772,
+      "worst_rms_m": 102053.72573318772,
+      "worst_peak_m": 513396.1863249825,
+      "mean_dv_m_s": 0.21536062345514465,
+      "mean_burns": 53.0,
+      "tracking_pass_cases": 0,
+      "screen_or_numeric_fault_cases": 1,
+      "recovery_cases": 1
+    },
+    "supervised/endurance/30days/float64": {
+      "cases": 2,
+      "mean_rms_m": 39.291349556657494,
+      "worst_rms_m": 42.41587207504666,
+      "worst_peak_m": 369.29319215264974,
+      "mean_dv_m_s": 2.22813529880443,
+      "mean_burns": 885.5,
+      "tracking_pass_cases": 2,
+      "screen_or_numeric_fault_cases": 1,
+      "recovery_cases": 0
+    },
+    "supervised/endurance/30days/32": {
+      "cases": 2,
+      "mean_rms_m": 39.291408869222906,
+      "worst_rms_m": 42.41601585075416,
+      "worst_peak_m": 369.29248656983225,
+      "mean_dv_m_s": 2.2281932920896423,
+      "mean_burns": 885.5,
+      "tracking_pass_cases": 2,
+      "screen_or_numeric_fault_cases": 1,
+      "recovery_cases": 0
+    }
+  },
+  "verification": {
+    "status": "evidence_verified",
+    "run_counts": {
+      "earlier/develop": 16,
+      "earlier/precision": 4,
+      "earlier/fresh": 16,
+      "supervised/regression": 4,
+      "supervised/endurance": 4
+    },
+    "total_runs": 44,
+    "total_simulated_days": 280.0,
+    "current_source_files": 68,
+    "input_files": 9,
+    "tests_passed": 366,
+    "native_sanitized_fault_cases": 1200,
+    "sources_and_snapshots_verified": true,
+    "complete_matrices": true,
+    "recomputed_metrics": true,
+    "rolling_issued_budget_peaks": {
+      "P1_jan15_regression/float64": 0.28926611164573957,
+      "P1_jan15_regression/32": 0.2892665764336942,
+      "P1_jan18_failure_replay/float64": 0.13884803481852426,
+      "P1_jan18_failure_replay/32": 0.13886707752849817,
+      "P1_jan20_30days/float64": 0.15245248670434455,
+      "P1_jan20_30days/32": 0.15250365525238838,
+      "P2_jan20_30days/float64": 0.2512804089751116,
+      "P2_jan20_30days/32": 0.2512917320272059
+    },
+    "hardware_synthesis_performed": false,
+    "wheel_sha256": "25fb871cad2f7c4d0d5161feacd6a1b53962f0f39805b8342214351e77fac2a1",
+    "receipts": {
+      "earlier/develop": {
+        "path": "/Users/hendrixx./qrc-mpc-hardening-2026-10-31/develop.json",
+        "sha256": "ab44bf5225363f204da989cd67a65aeb4b140b282f28433b2b75ab68f924dd51"
+      },
+      "earlier/precision": {
+        "path": "/Users/hendrixx./qrc-mpc-hardening-2026-10-31/precision.json",
+        "sha256": "4e2e265ccb7eae4212900c432ff2e09f953ff47782552631320cbc483a852052"
+      },
+      "earlier/fresh": {
+        "path": "/Users/hendrixx./qrc-mpc-hardening-2026-10-31/fresh.json",
+        "sha256": "1871075176ec95100e73c17c7adc92607f170f20d1fef18f9e5c0757a1aa98d9"
+      },
+      "supervised/regression": {
+        "path": "/Users/hendrixx./qrc-mpc-supervised-2026-10-31/regression.json",
+        "sha256": "522e8d8a02f4cb251f3c6b6fccdb3495165ef37648d49dbf9299ebf04699b813"
+      },
+      "supervised/endurance": {
+        "path": "/Users/hendrixx./qrc-mpc-supervised-2026-10-31/endurance.json",
+        "sha256": "f0d6393218b7307e14ad37667e5ae7473a918923d52bef2e3e23a8a0e2291f51"
+      }
+    }
+  },
+  "diagnostics": {
+    "earlier/develop": [
+      {
+        "case": "P1_jan10_8101",
+        "arithmetic": "float64",
+        "nominal_min_clearance_m": null,
+        "nominal_below_controller_moon_floor": null,
+        "first_recovery_required_day": null,
+        "first_clearance_rejection_day": null,
+        "maximum_fix_age_h": 6.016666666666667,
+        "maximum_navigation_error_m": 94.90672844077635
+      },
+      {
+        "case": "P1_jan10_8101",
+        "arithmetic": "float64",
+        "nominal_min_clearance_m": null,
+        "nominal_below_controller_moon_floor": null,
+        "first_recovery_required_day": null,
+        "first_clearance_rejection_day": null,
+        "maximum_fix_age_h": 6.016666666666667,
+        "maximum_navigation_error_m": 154.19729059286593
+      },
+      {
+        "case": "P1_jan10_8101",
+        "arithmetic": "float64",
+        "nominal_min_clearance_m": null,
+        "nominal_below_controller_moon_floor": null,
+        "first_recovery_required_day": null,
+        "first_clearance_rejection_day": null,
+        "maximum_fix_age_h": 6.016666666666667,
+        "maximum_navigation_error_m": 93.20357410647361
+      },
+      {
+        "case": "P1_jan10_8101",
+        "arithmetic": "float64",
+        "nominal_min_clearance_m": null,
+        "nominal_below_controller_moon_floor": null,
+        "first_recovery_required_day": null,
+        "first_clearance_rejection_day": null,
+        "maximum_fix_age_h": 6.016666666666667,
+        "maximum_navigation_error_m": 154.05398969421506
+      },
+      {
+        "case": "P1_jan10_8102",
+        "arithmetic": "float64",
+        "nominal_min_clearance_m": null,
+        "nominal_below_controller_moon_floor": null,
+        "first_recovery_required_day": null,
+        "first_clearance_rejection_day": null,
+        "maximum_fix_age_h": 6.016666666666667,
+        "maximum_navigation_error_m": 76.93714802512675
+      },
+      {
+        "case": "P1_jan10_8102",
+        "arithmetic": "float64",
+        "nominal_min_clearance_m": null,
+        "nominal_below_controller_moon_floor": null,
+        "first_recovery_required_day": null,
+        "first_clearance_rejection_day": null,
+        "maximum_fix_age_h": 6.016666666666667,
+        "maximum_navigation_error_m": 72.81436738977789
+      },
+      {
+        "case": "P1_jan10_8102",
+        "arithmetic": "float64",
+        "nominal_min_clearance_m": null,
+        "nominal_below_controller_moon_floor": null,
+        "first_recovery_required_day": null,
+        "first_clearance_rejection_day": null,
+        "maximum_fix_age_h": 6.016666666666667,
+        "maximum_navigation_error_m": 76.6435967814474
+      },
+      {
+        "case": "P1_jan10_8102",
+        "arithmetic": "float64",
+        "nominal_min_clearance_m": null,
+        "nominal_below_controller_moon_floor": null,
+        "first_recovery_required_day": null,
+        "first_clearance_rejection_day": null,
+        "maximum_fix_age_h": 6.016666666666667,
+        "maximum_navigation_error_m": 73.06144697513102
+      },
+      {
+        "case": "P2_jan10_8101",
+        "arithmetic": "float64",
+        "nominal_min_clearance_m": null,
+        "nominal_below_controller_moon_floor": null,
+        "first_recovery_required_day": null,
+        "first_clearance_rejection_day": null,
+        "maximum_fix_age_h": 6.016666666666667,
+        "maximum_navigation_error_m": 196.3138757694671
+      },
+      {
+        "case": "P2_jan10_8101",
+        "arithmetic": "float64",
+        "nominal_min_clearance_m": null,
+        "nominal_below_controller_moon_floor": null,
+        "first_recovery_required_day": null,
+        "first_clearance_rejection_day": null,
+        "maximum_fix_age_h": 6.016666666666667,
+        "maximum_navigation_error_m": 151.029371896978
+      },
+      {
+        "case": "P2_jan10_8101",
+        "arithmetic": "float64",
+        "nominal_min_clearance_m": null,
+        "nominal_below_controller_moon_floor": null,
+        "first_recovery_required_day": null,
+        "first_clearance_rejection_day": null,
+        "maximum_fix_age_h": 6.016666666666667,
+        "maximum_navigation_error_m": 195.8671676993201
+      },
+      {
+        "case": "P2_jan10_8101",
+        "arithmetic": "float64",
+        "nominal_min_clearance_m": null,
+        "nominal_below_controller_moon_floor": null,
+        "first_recovery_required_day": null,
+        "first_clearance_rejection_day": null,
+        "maximum_fix_age_h": 6.016666666666667,
+        "maximum_navigation_error_m": 153.223128176244
+      },
+      {
+        "case": "P2_jan10_8102",
+        "arithmetic": "float64",
+        "nominal_min_clearance_m": null,
+        "nominal_below_controller_moon_floor": null,
+        "first_recovery_required_day": null,
+        "first_clearance_rejection_day": null,
+        "maximum_fix_age_h": 6.016666666666667,
+        "maximum_navigation_error_m": 126.36878202351404
+      },
+      {
+        "case": "P2_jan10_8102",
+        "arithmetic": "float64",
+        "nominal_min_clearance_m": null,
+        "nominal_below_controller_moon_floor": null,
+        "first_recovery_required_day": null,
+        "first_clearance_rejection_day": null,
+        "maximum_fix_age_h": 6.016666666666667,
+        "maximum_navigation_error_m": 239.14183390240436
+      },
+      {
+        "case": "P2_jan10_8102",
+        "arithmetic": "float64",
+        "nominal_min_clearance_m": null,
+        "nominal_below_controller_moon_floor": null,
+        "first_recovery_required_day": null,
+        "first_clearance_rejection_day": null,
+        "maximum_fix_age_h": 6.016666666666667,
+        "maximum_navigation_error_m": 123.08283538832609
+      },
+      {
+        "case": "P2_jan10_8102",
+        "arithmetic": "float64",
+        "nominal_min_clearance_m": null,
+        "nominal_below_controller_moon_floor": null,
+        "first_recovery_required_day": null,
+        "first_clearance_rejection_day": null,
+        "maximum_fix_age_h": 6.016666666666667,
+        "maximum_navigation_error_m": 225.37642323816468
+      }
+    ],
+    "earlier/precision": [
+      {
+        "case": "P1_jan10_8101",
+        "arithmetic": "32",
+        "nominal_min_clearance_m": null,
+        "nominal_below_controller_moon_floor": null,
+        "first_recovery_required_day": null,
+        "first_clearance_rejection_day": null,
+        "maximum_fix_age_h": 6.016666666666667,
+        "maximum_navigation_error_m": 94.9067099370879
+      },
+      {
+        "case": "P1_jan10_8102",
+        "arithmetic": "32",
+        "nominal_min_clearance_m": null,
+        "nominal_below_controller_moon_floor": null,
+        "first_recovery_required_day": null,
+        "first_clearance_rejection_day": null,
+        "maximum_fix_age_h": 6.016666666666667,
+        "maximum_navigation_error_m": 76.93733791375644
+      },
+      {
+        "case": "P2_jan10_8101",
+        "arithmetic": "32",
+        "nominal_min_clearance_m": null,
+        "nominal_below_controller_moon_floor": null,
+        "first_recovery_required_day": null,
+        "first_clearance_rejection_day": null,
+        "maximum_fix_age_h": 6.016666666666667,
+        "maximum_navigation_error_m": 196.3145572903651
+      },
+      {
+        "case": "P2_jan10_8102",
+        "arithmetic": "32",
+        "nominal_min_clearance_m": null,
+        "nominal_below_controller_moon_floor": null,
+        "first_recovery_required_day": null,
+        "first_clearance_rejection_day": null,
+        "maximum_fix_age_h": 6.016666666666667,
+        "maximum_navigation_error_m": 126.37030865814839
+      }
+    ],
+    "earlier/fresh": [
+      {
+        "case": "P1_jan15_9201",
+        "arithmetic": "float64",
+        "nominal_min_clearance_m": null,
+        "nominal_below_controller_moon_floor": null,
+        "first_recovery_required_day": null,
+        "first_clearance_rejection_day": null,
+        "maximum_fix_age_h": 6.016666666666667,
+        "maximum_navigation_error_m": 144.52756146318228
+      },
+      {
+        "case": "P1_jan15_9201",
+        "arithmetic": "32",
+        "nominal_min_clearance_m": null,
+        "nominal_below_controller_moon_floor": null,
+        "first_recovery_required_day": null,
+        "first_clearance_rejection_day": null,
+        "maximum_fix_age_h": 6.016666666666667,
+        "maximum_navigation_error_m": 144.52811871589122
+      },
+      {
+        "case": "P1_jan15_9202",
+        "arithmetic": "float64",
+        "nominal_min_clearance_m": null,
+        "nominal_below_controller_moon_floor": null,
+        "first_recovery_required_day": null,
+        "first_clearance_rejection_day": null,
+        "maximum_fix_age_h": 6.016666666666667,
+        "maximum_navigation_error_m": 66.36257830535413
+      },
+      {
+        "case": "P1_jan15_9202",
+        "arithmetic": "32",
+        "nominal_min_clearance_m": null,
+        "nominal_below_controller_moon_floor": null,
+        "first_recovery_required_day": null,
+        "first_clearance_rejection_day": null,
+        "maximum_fix_age_h": 6.016666666666667,
+        "maximum_navigation_error_m": 66.36257830535413
+      },
+      {
+        "case": "P2_jan15_9201",
+        "arithmetic": "float64",
+        "nominal_min_clearance_m": null,
+        "nominal_below_controller_moon_floor": null,
+        "first_recovery_required_day": null,
+        "first_clearance_rejection_day": null,
+        "maximum_fix_age_h": 6.016666666666667,
+        "maximum_navigation_error_m": 201.23077463162323
+      },
+      {
+        "case": "P2_jan15_9201",
+        "arithmetic": "32",
+        "nominal_min_clearance_m": null,
+        "nominal_below_controller_moon_floor": null,
+        "first_recovery_required_day": null,
+        "first_clearance_rejection_day": null,
+        "maximum_fix_age_h": 6.016666666666667,
+        "maximum_navigation_error_m": 201.23073131783886
+      },
+      {
+        "case": "P2_jan15_9202",
+        "arithmetic": "float64",
+        "nominal_min_clearance_m": null,
+        "nominal_below_controller_moon_floor": null,
+        "first_recovery_required_day": null,
+        "first_clearance_rejection_day": null,
+        "maximum_fix_age_h": 6.016666666666667,
+        "maximum_navigation_error_m": 300.2692899255201
+      },
+      {
+        "case": "P2_jan15_9202",
+        "arithmetic": "32",
+        "nominal_min_clearance_m": null,
+        "nominal_below_controller_moon_floor": null,
+        "first_recovery_required_day": null,
+        "first_clearance_rejection_day": null,
+        "maximum_fix_age_h": 6.016666666666667,
+        "maximum_navigation_error_m": 300.26932390052775
+      },
+      {
+        "case": "P1_jan18_9201",
+        "arithmetic": "float64",
+        "nominal_min_clearance_m": null,
+        "nominal_below_controller_moon_floor": null,
+        "first_recovery_required_day": null,
+        "first_clearance_rejection_day": 1.8333333333333333,
+        "maximum_fix_age_h": 12.016666666666667,
+        "maximum_navigation_error_m": 332.7699691588985
+      },
+      {
+        "case": "P1_jan18_9201",
+        "arithmetic": "32",
+        "nominal_min_clearance_m": null,
+        "nominal_below_controller_moon_floor": null,
+        "first_recovery_required_day": null,
+        "first_clearance_rejection_day": 1.8333333333333333,
+        "maximum_fix_age_h": 12.016666666666667,
+        "maximum_navigation_error_m": 332.7662140489609
+      },
+      {
+        "case": "P1_jan18_9202",
+        "arithmetic": "float64",
+        "nominal_min_clearance_m": null,
+        "nominal_below_controller_moon_floor": null,
+        "first_recovery_required_day": null,
+        "first_clearance_rejection_day": 1.8333333333333333,
+        "maximum_fix_age_h": 17.016666666666666,
+        "maximum_navigation_error_m": 820.0543349616789
+      },
+      {
+        "case": "P1_jan18_9202",
+        "arithmetic": "32",
+        "nominal_min_clearance_m": null,
+        "nominal_below_controller_moon_floor": null,
+        "first_recovery_required_day": null,
+        "first_clearance_rejection_day": 1.8333333333333333,
+        "maximum_fix_age_h": 17.016666666666666,
+        "maximum_navigation_error_m": 820.0534160063603
+      },
+      {
+        "case": "P2_jan18_9201",
+        "arithmetic": "float64",
+        "nominal_min_clearance_m": null,
+        "nominal_below_controller_moon_floor": null,
+        "first_recovery_required_day": null,
+        "first_clearance_rejection_day": null,
+        "maximum_fix_age_h": 12.016666666666667,
+        "maximum_navigation_error_m": 359.1733140290332
+      },
+      {
+        "case": "P2_jan18_9201",
+        "arithmetic": "32",
+        "nominal_min_clearance_m": null,
+        "nominal_below_controller_moon_floor": null,
+        "first_recovery_required_day": null,
+        "first_clearance_rejection_day": null,
+        "maximum_fix_age_h": 12.016666666666667,
+        "maximum_navigation_error_m": 359.1736761785763
+      },
+      {
+        "case": "P2_jan18_9202",
+        "arithmetic": "float64",
+        "nominal_min_clearance_m": null,
+        "nominal_below_controller_moon_floor": null,
+        "first_recovery_required_day": null,
+        "first_clearance_rejection_day": null,
+        "maximum_fix_age_h": 12.016666666666667,
+        "maximum_navigation_error_m": 271.5213052693614
+      },
+      {
+        "case": "P2_jan18_9202",
+        "arithmetic": "32",
+        "nominal_min_clearance_m": null,
+        "nominal_below_controller_moon_floor": null,
+        "first_recovery_required_day": null,
+        "first_clearance_rejection_day": null,
+        "maximum_fix_age_h": 12.016666666666667,
+        "maximum_navigation_error_m": 271.52144691241676
+      }
+    ],
+    "supervised/regression": [
+      {
+        "case": "P1_jan15_regression",
+        "arithmetic": "float64",
+        "nominal_min_clearance_m": 262966.2768607545,
+        "nominal_below_controller_moon_floor": false,
+        "first_recovery_required_day": null,
+        "first_clearance_rejection_day": null,
+        "maximum_fix_age_h": 6.016666666666667,
+        "maximum_navigation_error_m": 144.52756146318228
+      },
+      {
+        "case": "P1_jan15_regression",
+        "arithmetic": "32",
+        "nominal_min_clearance_m": 262966.2768607545,
+        "nominal_below_controller_moon_floor": false,
+        "first_recovery_required_day": null,
+        "first_clearance_rejection_day": null,
+        "maximum_fix_age_h": 6.016666666666667,
+        "maximum_navigation_error_m": 144.52811871589122
+      },
+      {
+        "case": "P1_jan18_failure_replay",
+        "arithmetic": "float64",
+        "nominal_min_clearance_m": 37777.93227432505,
+        "nominal_below_controller_moon_floor": true,
+        "first_recovery_required_day": 2.5625,
+        "first_clearance_rejection_day": 1.8333333333333333,
+        "maximum_fix_age_h": 17.016666666666666,
+        "maximum_navigation_error_m": 820.0543349616789
+      },
+      {
+        "case": "P1_jan18_failure_replay",
+        "arithmetic": "32",
+        "nominal_min_clearance_m": 37777.93227432505,
+        "nominal_below_controller_moon_floor": true,
+        "first_recovery_required_day": 2.5625,
+        "first_clearance_rejection_day": 1.8333333333333333,
+        "maximum_fix_age_h": 17.016666666666666,
+        "maximum_navigation_error_m": 820.0534160063603
+      }
+    ],
+    "supervised/endurance": [
+      {
+        "case": "P1_jan20_30days",
+        "arithmetic": "float64",
+        "nominal_min_clearance_m": 45866.16990427184,
+        "nominal_below_controller_moon_floor": true,
+        "first_recovery_required_day": null,
+        "first_clearance_rejection_day": 26.125,
+        "maximum_fix_age_h": 12.016666666666667,
+        "maximum_navigation_error_m": 127.19132054485497
+      },
+      {
+        "case": "P1_jan20_30days",
+        "arithmetic": "32",
+        "nominal_min_clearance_m": 45866.16990427184,
+        "nominal_below_controller_moon_floor": true,
+        "first_recovery_required_day": null,
+        "first_clearance_rejection_day": 26.125,
+        "maximum_fix_age_h": 12.016666666666667,
+        "maximum_navigation_error_m": 127.19134987934302
+      },
+      {
+        "case": "P2_jan20_30days",
+        "arithmetic": "float64",
+        "nominal_min_clearance_m": 249456.1719310803,
+        "nominal_below_controller_moon_floor": false,
+        "first_recovery_required_day": null,
+        "first_clearance_rejection_day": null,
+        "maximum_fix_age_h": 12.016666666666667,
+        "maximum_navigation_error_m": 153.5517020568385
+      },
+      {
+        "case": "P2_jan20_30days",
+        "arithmetic": "32",
+        "nominal_min_clearance_m": 249456.1719310803,
+        "nominal_below_controller_moon_floor": false,
+        "first_recovery_required_day": null,
+        "first_clearance_rejection_day": null,
+        "maximum_fix_age_h": 12.016666666666667,
+        "maximum_navigation_error_m": 153.55169344116243
+      }
+    ]
+  },
+  "results": {
+    "earlier/develop": [
+      {
+        "scenario": {
+          "name": "P1_jan10_8101",
+          "probe": 1,
+          "utc": "2012-01-10T00:00:00",
+          "days": 3.0,
+          "seed": 8101,
+          "split": "development",
+          "outages": [
+            [
+              36.0,
+              42.0
+            ]
+          ],
+          "pulses": [
+            [
+              24.0,
+              36.0,
+              3e-07
+            ]
+          ],
+          "bias_m_s2": 8e-08,
+          "thrust_sigma": 0.03,
+          "pointing_sigma_rad": 0.005
+        },
+        "profile": "legacy",
+        "arithmetic": "float64",
+        "classification": "Synthetic controlled vehicle; one reconstructed ARTEMIS spacecraft initial state; no future spacecraft samples",
+        "initial_state": [
+          -18991575.311241817,
+          3401834.206104337,
+          -858458.7962791702,
+          17.430072283197262,
+          216.49203774418532,
+          47.87283285036731
+        ],
+        "model": {
+          "epoch_jd_tdb": 2455936.5007660203,
+          "parameters": {
+            "gm_moon": 4902799967088.641,
+            "gm_earth": 398600435507022.7,
+            "gm_sun": 1.3271244004127942e+20,
+            "moon_radius_m": 1738000.0,
+            "moon_j2": 0,
+            "area_mass_m2_kg": 0.016,
+            "reflectivity": 1.0,
+            "earth_radius_m": 6378137.0
+          },
+          "extra": {
+            "earth_j2": true,
+            "other_planets": true,
+            "first_pn": true,
+            "tide_convention": "none",
+            "love_k2": 0.024116,
+            "earth_j2_value": 0.0010826358699107248
+          },
+          "lunar_degree": 60
+        },
+        "filter_settings": {
+          "bias_correlation_s": 0.0,
+          "bias_random_walk_psd": 1e-18,
+          "acceleration_noise_psd": 1e-10,
+          "initial_bias_sigma_m_s2": 1e-07,
+          "maximum_bias_m_s2": 2e-06,
+          "nis_limit": 35.0,
+          "covariance_step_s": 1800.0,
+          "maneuver_fraction_sigma": 0.05,
+          "maneuver_pointing_sigma_rad": 0.02
+        },
+        "guard": null,
+        "metrics": {
+          "rms_m": 36.98652108888815,
+          "peak_m": 141.75141529969355,
+          "full_rms_m": 70.71072830477523,
+          "full_peak_m": 288.6716226186547,
+          "dv_m_s": 0.4268092068441497,
+          "burns": 94,
+          "direction_changes": 32,
+          "collision": false,
+          "completed": true,
+          "numerical_faults": 0,
+          "fixes_rejected": 1,
+          "fixes_accepted": 132,
+          "online_cpu_s": 28.747045000000018,
+          "mode_counts": {
+            "fresh": 133,
+            "inhibited": 11
+          },
+          "status_counts": {
+            "0": 133,
+            "2": 11
+          },
+          "max_cache_sizes": [
+            12,
+            0,
+            144
+          ]
+        },
+        "total_cpu_s": 43.979526
+      },
+      {
+        "scenario": {
+          "name": "P1_jan10_8101",
+          "probe": 1,
+          "utc": "2012-01-10T00:00:00",
+          "days": 3.0,
+          "seed": 8101,
+          "split": "development",
+          "outages": [
+            [
+              36.0,
+              42.0
+            ]
+          ],
+          "pulses": [
+            [
+              24.0,
+              36.0,
+              3e-07
+            ]
+          ],
+          "bias_m_s2": 8e-08,
+          "thrust_sigma": 0.03,
+          "pointing_sigma_rad": 0.005
+        },
+        "profile": "decay_only",
+        "arithmetic": "float64",
+        "classification": "Synthetic controlled vehicle; one reconstructed ARTEMIS spacecraft initial state; no future spacecraft samples",
+        "initial_state": [
+          -18991575.311241817,
+          3401834.206104337,
+          -858458.7962791702,
+          17.430072283197262,
+          216.49203774418532,
+          47.87283285036731
+        ],
+        "model": {
+          "epoch_jd_tdb": 2455936.5007660203,
+          "parameters": {
+            "gm_moon": 4902799967088.641,
+            "gm_earth": 398600435507022.7,
+            "gm_sun": 1.3271244004127942e+20,
+            "moon_radius_m": 1738000.0,
+            "moon_j2": 0,
+            "area_mass_m2_kg": 0.016,
+            "reflectivity": 1.0,
+            "earth_radius_m": 6378137.0
+          },
+          "extra": {
+            "earth_j2": true,
+            "other_planets": true,
+            "first_pn": true,
+            "tide_convention": "none",
+            "love_k2": 0.024116,
+            "earth_j2_value": 0.0010826358699107248
+          },
+          "lunar_degree": 60
+        },
+        "filter_settings": {
+          "bias_correlation_s": 7200.0,
+          "bias_random_walk_psd": 1e-18,
+          "acceleration_noise_psd": 1e-10,
+          "initial_bias_sigma_m_s2": 1e-07,
+          "maximum_bias_m_s2": 2e-06,
+          "nis_limit": 35.0,
+          "covariance_step_s": 1800.0,
+          "maneuver_fraction_sigma": 0.05,
+          "maneuver_pointing_sigma_rad": 0.02
+        },
+        "guard": null,
+        "metrics": {
+          "rms_m": 103.18409753839181,
+          "peak_m": 449.3246261611897,
+          "full_rms_m": 113.19988669643828,
+          "full_peak_m": 449.3246261611897,
+          "dv_m_s": 0.47486928667786515,
+          "burns": 84,
+          "direction_changes": 28,
+          "collision": false,
+          "completed": true,
+          "numerical_faults": 0,
+          "fixes_rejected": 2,
+          "fixes_accepted": 131,
+          "online_cpu_s": 26.812734999999996,
+          "mode_counts": {
+            "fresh": 133,
+            "inhibited": 11
+          },
+          "status_counts": {
+            "0": 133,
+            "2": 11
+          },
+          "max_cache_sizes": [
+            12,
+            0,
+            144
+          ]
+        },
+        "total_cpu_s": 41.582521
+      },
+      {
+        "scenario": {
+          "name": "P1_jan10_8101",
+          "probe": 1,
+          "utc": "2012-01-10T00:00:00",
+          "days": 3.0,
+          "seed": 8101,
+          "split": "development",
+          "outages": [
+            [
+              36.0,
+              42.0
+            ]
+          ],
+          "pulses": [
+            [
+              24.0,
+              36.0,
+              3e-07
+            ]
+          ],
+          "bias_m_s2": 8e-08,
+          "thrust_sigma": 0.03,
+          "pointing_sigma_rad": 0.005
+        },
+        "profile": "guarded",
+        "arithmetic": "float64",
+        "classification": "Synthetic controlled vehicle; one reconstructed ARTEMIS spacecraft initial state; no future spacecraft samples",
+        "initial_state": [
+          -18991575.311241817,
+          3401834.206104337,
+          -858458.7962791702,
+          17.430072283197262,
+          216.49203774418532,
+          47.87283285036731
+        ],
+        "model": {
+          "epoch_jd_tdb": 2455936.5007660203,
+          "parameters": {
+            "gm_moon": 4902799967088.641,
+            "gm_earth": 398600435507022.7,
+            "gm_sun": 1.3271244004127942e+20,
+            "moon_radius_m": 1738000.0,
+            "moon_j2": 0,
+            "area_mass_m2_kg": 0.016,
+            "reflectivity": 1.0,
+            "earth_radius_m": 6378137.0
+          },
+          "extra": {
+            "earth_j2": true,
+            "other_planets": true,
+            "first_pn": true,
+            "tide_convention": "none",
+            "love_k2": 0.024116,
+            "earth_j2_value": 0.0010826358699107248
+          },
+          "lunar_degree": 60
+        },
+        "filter_settings": {
+          "bias_correlation_s": 0.0,
+          "bias_random_walk_psd": 1e-18,
+          "acceleration_noise_psd": 1e-10,
+          "initial_bias_sigma_m_s2": 1e-07,
+          "maximum_bias_m_s2": 2e-06,
+          "nis_limit": 35.0,
+          "covariance_step_s": 1800.0,
+          "maneuver_fraction_sigma": 0.05,
+          "maneuver_pointing_sigma_rad": 0.02
+        },
+        "guard": {
+          "fresh_age_s": 3600.0,
+          "maximum_age_s": 28800.0,
+          "position_sigma_limit_m": 200.0,
+          "velocity_sigma_limit_m_s": 0.03,
+          "degraded_dv_limit_m_s": 0.03,
+          "clearance_sigma_factor": 3.0,
+          "bias_correlation_s": 0.0
+        },
+        "metrics": {
+          "rms_m": 70.58159531066856,
+          "peak_m": 311.67063580315596,
+          "full_rms_m": 89.37844627083311,
+          "full_peak_m": 311.67063580315596,
+          "dv_m_s": 0.41308205760197825,
+          "burns": 102,
+          "direction_changes": 38,
+          "collision": false,
+          "completed": true,
+          "numerical_faults": 0,
+          "fixes_rejected": 1,
+          "fixes_accepted": 132,
+          "online_cpu_s": 30.51701199999999,
+          "mode_counts": {
+            "fresh": 133,
+            "degraded": 11
+          },
+          "status_counts": {
+            "0": 144
+          },
+          "max_cache_sizes": [
+            12,
+            12,
+            144
+          ]
+        },
+        "total_cpu_s": 45.631378
+      },
+      {
+        "scenario": {
+          "name": "P1_jan10_8101",
+          "probe": 1,
+          "utc": "2012-01-10T00:00:00",
+          "days": 3.0,
+          "seed": 8101,
+          "split": "development",
+          "outages": [
+            [
+              36.0,
+              42.0
+            ]
+          ],
+          "pulses": [
+            [
+              24.0,
+              36.0,
+              3e-07
+            ]
+          ],
+          "bias_m_s2": 8e-08,
+          "thrust_sigma": 0.03,
+          "pointing_sigma_rad": 0.005
+        },
+        "profile": "decay_guarded",
+        "arithmetic": "float64",
+        "classification": "Synthetic controlled vehicle; one reconstructed ARTEMIS spacecraft initial state; no future spacecraft samples",
+        "initial_state": [
+          -18991575.311241817,
+          3401834.206104337,
+          -858458.7962791702,
+          17.430072283197262,
+          216.49203774418532,
+          47.87283285036731
+        ],
+        "model": {
+          "epoch_jd_tdb": 2455936.5007660203,
+          "parameters": {
+            "gm_moon": 4902799967088.641,
+            "gm_earth": 398600435507022.7,
+            "gm_sun": 1.3271244004127942e+20,
+            "moon_radius_m": 1738000.0,
+            "moon_j2": 0,
+            "area_mass_m2_kg": 0.016,
+            "reflectivity": 1.0,
+            "earth_radius_m": 6378137.0
+          },
+          "extra": {
+            "earth_j2": true,
+            "other_planets": true,
+            "first_pn": true,
+            "tide_convention": "none",
+            "love_k2": 0.024116,
+            "earth_j2_value": 0.0010826358699107248
+          },
+          "lunar_degree": 60
+        },
+        "filter_settings": {
+          "bias_correlation_s": 7200.0,
+          "bias_random_walk_psd": 1e-18,
+          "acceleration_noise_psd": 1e-10,
+          "initial_bias_sigma_m_s2": 1e-07,
+          "maximum_bias_m_s2": 2e-06,
+          "nis_limit": 35.0,
+          "covariance_step_s": 1800.0,
+          "maneuver_fraction_sigma": 0.05,
+          "maneuver_pointing_sigma_rad": 0.02
+        },
+        "guard": {
+          "fresh_age_s": 3600.0,
+          "maximum_age_s": 28800.0,
+          "position_sigma_limit_m": 200.0,
+          "velocity_sigma_limit_m_s": 0.03,
+          "degraded_dv_limit_m_s": 0.03,
+          "clearance_sigma_factor": 3.0,
+          "bias_correlation_s": 7200.0
+        },
+        "metrics": {
+          "rms_m": 100.04054499689504,
+          "peak_m": 435.0212151411799,
+          "full_rms_m": 110.81529857081723,
+          "full_peak_m": 435.0212151411799,
+          "dv_m_s": 0.46875853356012087,
+          "burns": 86,
+          "direction_changes": 29,
+          "collision": false,
+          "completed": true,
+          "numerical_faults": 0,
+          "fixes_rejected": 2,
+          "fixes_accepted": 131,
+          "online_cpu_s": 27.891272999999956,
+          "mode_counts": {
+            "fresh": 133,
+            "degraded": 11
+          },
+          "status_counts": {
+            "0": 144
+          },
+          "max_cache_sizes": [
+            12,
+            12,
+            144
+          ]
+        },
+        "total_cpu_s": 42.765701
+      },
+      {
+        "scenario": {
+          "name": "P1_jan10_8102",
+          "probe": 1,
+          "utc": "2012-01-10T00:00:00",
+          "days": 3.0,
+          "seed": 8102,
+          "split": "development",
+          "outages": [
+            [
+              36.0,
+              42.0
+            ]
+          ],
+          "pulses": [
+            [
+              24.0,
+              36.0,
+              3e-07
+            ]
+          ],
+          "bias_m_s2": 8e-08,
+          "thrust_sigma": 0.03,
+          "pointing_sigma_rad": 0.005
+        },
+        "profile": "legacy",
+        "arithmetic": "float64",
+        "classification": "Synthetic controlled vehicle; one reconstructed ARTEMIS spacecraft initial state; no future spacecraft samples",
+        "initial_state": [
+          -18991575.311241817,
+          3401834.206104337,
+          -858458.7962791702,
+          17.430072283197262,
+          216.49203774418532,
+          47.87283285036731
+        ],
+        "model": {
+          "epoch_jd_tdb": 2455936.5007660203,
+          "parameters": {
+            "gm_moon": 4902799967088.641,
+            "gm_earth": 398600435507022.7,
+            "gm_sun": 1.3271244004127942e+20,
+            "moon_radius_m": 1738000.0,
+            "moon_j2": 0,
+            "area_mass_m2_kg": 0.016,
+            "reflectivity": 1.0,
+            "earth_radius_m": 6378137.0
+          },
+          "extra": {
+            "earth_j2": true,
+            "other_planets": true,
+            "first_pn": true,
+            "tide_convention": "none",
+            "love_k2": 0.024116,
+            "earth_j2_value": 0.0010826358699107248
+          },
+          "lunar_degree": 60
+        },
+        "filter_settings": {
+          "bias_correlation_s": 0.0,
+          "bias_random_walk_psd": 1e-18,
+          "acceleration_noise_psd": 1e-10,
+          "initial_bias_sigma_m_s2": 1e-07,
+          "maximum_bias_m_s2": 2e-06,
+          "nis_limit": 35.0,
+          "covariance_step_s": 1800.0,
+          "maneuver_fraction_sigma": 0.05,
+          "maneuver_pointing_sigma_rad": 0.02
+        },
+        "guard": null,
+        "metrics": {
+          "rms_m": 30.018183795572043,
+          "peak_m": 111.70586507863159,
+          "full_rms_m": 76.77516055345517,
+          "full_peak_m": 396.5372867335683,
+          "dv_m_s": 0.29938344130817734,
+          "burns": 78,
+          "direction_changes": 28,
+          "collision": false,
+          "completed": true,
+          "numerical_faults": 0,
+          "fixes_rejected": 1,
+          "fixes_accepted": 132,
+          "online_cpu_s": 25.525900999999898,
+          "mode_counts": {
+            "fresh": 133,
+            "inhibited": 11
+          },
+          "status_counts": {
+            "0": 133,
+            "2": 11
+          },
+          "max_cache_sizes": [
+            12,
+            0,
+            144
+          ]
+        },
+        "total_cpu_s": 40.128125999999995
+      },
+      {
+        "scenario": {
+          "name": "P1_jan10_8102",
+          "probe": 1,
+          "utc": "2012-01-10T00:00:00",
+          "days": 3.0,
+          "seed": 8102,
+          "split": "development",
+          "outages": [
+            [
+              36.0,
+              42.0
+            ]
+          ],
+          "pulses": [
+            [
+              24.0,
+              36.0,
+              3e-07
+            ]
+          ],
+          "bias_m_s2": 8e-08,
+          "thrust_sigma": 0.03,
+          "pointing_sigma_rad": 0.005
+        },
+        "profile": "decay_only",
+        "arithmetic": "float64",
+        "classification": "Synthetic controlled vehicle; one reconstructed ARTEMIS spacecraft initial state; no future spacecraft samples",
+        "initial_state": [
+          -18991575.311241817,
+          3401834.206104337,
+          -858458.7962791702,
+          17.430072283197262,
+          216.49203774418532,
+          47.87283285036731
+        ],
+        "model": {
+          "epoch_jd_tdb": 2455936.5007660203,
+          "parameters": {
+            "gm_moon": 4902799967088.641,
+            "gm_earth": 398600435507022.7,
+            "gm_sun": 1.3271244004127942e+20,
+            "moon_radius_m": 1738000.0,
+            "moon_j2": 0,
+            "area_mass_m2_kg": 0.016,
+            "reflectivity": 1.0,
+            "earth_radius_m": 6378137.0
+          },
+          "extra": {
+            "earth_j2": true,
+            "other_planets": true,
+            "first_pn": true,
+            "tide_convention": "none",
+            "love_k2": 0.024116,
+            "earth_j2_value": 0.0010826358699107248
+          },
+          "lunar_degree": 60
+        },
+        "filter_settings": {
+          "bias_correlation_s": 7200.0,
+          "bias_random_walk_psd": 1e-18,
+          "acceleration_noise_psd": 1e-10,
+          "initial_bias_sigma_m_s2": 1e-07,
+          "maximum_bias_m_s2": 2e-06,
+          "nis_limit": 35.0,
+          "covariance_step_s": 1800.0,
+          "maneuver_fraction_sigma": 0.05,
+          "maneuver_pointing_sigma_rad": 0.02
+        },
+        "guard": null,
+        "metrics": {
+          "rms_m": 35.579931448773316,
+          "peak_m": 139.7331293903436,
+          "full_rms_m": 78.81348116058567,
+          "full_peak_m": 396.5372867335683,
+          "dv_m_s": 0.22011480682523635,
+          "burns": 73,
+          "direction_changes": 28,
+          "collision": false,
+          "completed": true,
+          "numerical_faults": 0,
+          "fixes_rejected": 1,
+          "fixes_accepted": 132,
+          "online_cpu_s": 25.254892999999868,
+          "mode_counts": {
+            "fresh": 133,
+            "inhibited": 11
+          },
+          "status_counts": {
+            "0": 133,
+            "2": 11
+          },
+          "max_cache_sizes": [
+            12,
+            0,
+            144
+          ]
+        },
+        "total_cpu_s": 39.682393
+      },
+      {
+        "scenario": {
+          "name": "P1_jan10_8102",
+          "probe": 1,
+          "utc": "2012-01-10T00:00:00",
+          "days": 3.0,
+          "seed": 8102,
+          "split": "development",
+          "outages": [
+            [
+              36.0,
+              42.0
+            ]
+          ],
+          "pulses": [
+            [
+              24.0,
+              36.0,
+              3e-07
+            ]
+          ],
+          "bias_m_s2": 8e-08,
+          "thrust_sigma": 0.03,
+          "pointing_sigma_rad": 0.005
+        },
+        "profile": "guarded",
+        "arithmetic": "float64",
+        "classification": "Synthetic controlled vehicle; one reconstructed ARTEMIS spacecraft initial state; no future spacecraft samples",
+        "initial_state": [
+          -18991575.311241817,
+          3401834.206104337,
+          -858458.7962791702,
+          17.430072283197262,
+          216.49203774418532,
+          47.87283285036731
+        ],
+        "model": {
+          "epoch_jd_tdb": 2455936.5007660203,
+          "parameters": {
+            "gm_moon": 4902799967088.641,
+            "gm_earth": 398600435507022.7,
+            "gm_sun": 1.3271244004127942e+20,
+            "moon_radius_m": 1738000.0,
+            "moon_j2": 0,
+            "area_mass_m2_kg": 0.016,
+            "reflectivity": 1.0,
+            "earth_radius_m": 6378137.0
+          },
+          "extra": {
+            "earth_j2": true,
+            "other_planets": true,
+            "first_pn": true,
+            "tide_convention": "none",
+            "love_k2": 0.024116,
+            "earth_j2_value": 0.0010826358699107248
+          },
+          "lunar_degree": 60
+        },
+        "filter_settings": {
+          "bias_correlation_s": 0.0,
+          "bias_random_walk_psd": 1e-18,
+          "acceleration_noise_psd": 1e-10,
+          "initial_bias_sigma_m_s2": 1e-07,
+          "maximum_bias_m_s2": 2e-06,
+          "nis_limit": 35.0,
+          "covariance_step_s": 1800.0,
+          "maneuver_fraction_sigma": 0.05,
+          "maneuver_pointing_sigma_rad": 0.02
+        },
+        "guard": {
+          "fresh_age_s": 3600.0,
+          "maximum_age_s": 28800.0,
+          "position_sigma_limit_m": 200.0,
+          "velocity_sigma_limit_m_s": 0.03,
+          "degraded_dv_limit_m_s": 0.03,
+          "clearance_sigma_factor": 3.0,
+          "bias_correlation_s": 0.0
+        },
+        "metrics": {
+          "rms_m": 60.93726002845007,
+          "peak_m": 282.81763624762175,
+          "full_rms_m": 90.82114129916542,
+          "full_peak_m": 396.5372867335683,
+          "dv_m_s": 0.3291677589184989,
+          "burns": 90,
+          "direction_changes": 30,
+          "collision": false,
+          "completed": true,
+          "numerical_faults": 0,
+          "fixes_rejected": 1,
+          "fixes_accepted": 132,
+          "online_cpu_s": 28.767450000000032,
+          "mode_counts": {
+            "fresh": 133,
+            "degraded": 11
+          },
+          "status_counts": {
+            "0": 144
+          },
+          "max_cache_sizes": [
+            12,
+            12,
+            144
+          ]
+        },
+        "total_cpu_s": 43.969062
+      },
+      {
+        "scenario": {
+          "name": "P1_jan10_8102",
+          "probe": 1,
+          "utc": "2012-01-10T00:00:00",
+          "days": 3.0,
+          "seed": 8102,
+          "split": "development",
+          "outages": [
+            [
+              36.0,
+              42.0
+            ]
+          ],
+          "pulses": [
+            [
+              24.0,
+              36.0,
+              3e-07
+            ]
+          ],
+          "bias_m_s2": 8e-08,
+          "thrust_sigma": 0.03,
+          "pointing_sigma_rad": 0.005
+        },
+        "profile": "decay_guarded",
+        "arithmetic": "float64",
+        "classification": "Synthetic controlled vehicle; one reconstructed ARTEMIS spacecraft initial state; no future spacecraft samples",
+        "initial_state": [
+          -18991575.311241817,
+          3401834.206104337,
+          -858458.7962791702,
+          17.430072283197262,
+          216.49203774418532,
+          47.87283285036731
+        ],
+        "model": {
+          "epoch_jd_tdb": 2455936.5007660203,
+          "parameters": {
+            "gm_moon": 4902799967088.641,
+            "gm_earth": 398600435507022.7,
+            "gm_sun": 1.3271244004127942e+20,
+            "moon_radius_m": 1738000.0,
+            "moon_j2": 0,
+            "area_mass_m2_kg": 0.016,
+            "reflectivity": 1.0,
+            "earth_radius_m": 6378137.0
+          },
+          "extra": {
+            "earth_j2": true,
+            "other_planets": true,
+            "first_pn": true,
+            "tide_convention": "none",
+            "love_k2": 0.024116,
+            "earth_j2_value": 0.0010826358699107248
+          },
+          "lunar_degree": 60
+        },
+        "filter_settings": {
+          "bias_correlation_s": 7200.0,
+          "bias_random_walk_psd": 1e-18,
+          "acceleration_noise_psd": 1e-10,
+          "initial_bias_sigma_m_s2": 1e-07,
+          "maximum_bias_m_s2": 2e-06,
+          "nis_limit": 35.0,
+          "covariance_step_s": 1800.0,
+          "maneuver_fraction_sigma": 0.05,
+          "maneuver_pointing_sigma_rad": 0.02
+        },
+        "guard": {
+          "fresh_age_s": 3600.0,
+          "maximum_age_s": 28800.0,
+          "position_sigma_limit_m": 200.0,
+          "velocity_sigma_limit_m_s": 0.03,
+          "degraded_dv_limit_m_s": 0.03,
+          "clearance_sigma_factor": 3.0,
+          "bias_correlation_s": 7200.0
+        },
+        "metrics": {
+          "rms_m": 43.9704279265046,
+          "peak_m": 198.5629514984895,
+          "full_rms_m": 82.27568235247327,
+          "full_peak_m": 396.5372867335683,
+          "dv_m_s": 0.24754684860465626,
+          "burns": 77,
+          "direction_changes": 27,
+          "collision": false,
+          "completed": true,
+          "numerical_faults": 0,
+          "fixes_rejected": 1,
+          "fixes_accepted": 132,
+          "online_cpu_s": 25.876633000000012,
+          "mode_counts": {
+            "fresh": 133,
+            "degraded": 11
+          },
+          "status_counts": {
+            "0": 144
+          },
+          "max_cache_sizes": [
+            12,
+            12,
+            144
+          ]
+        },
+        "total_cpu_s": 40.146617
+      },
+      {
+        "scenario": {
+          "name": "P2_jan10_8101",
+          "probe": 2,
+          "utc": "2012-01-10T00:00:00",
+          "days": 3.0,
+          "seed": 8101,
+          "split": "development",
+          "outages": [
+            [
+              36.0,
+              42.0
+            ]
+          ],
+          "pulses": [
+            [
+              24.0,
+              36.0,
+              3e-07
+            ]
+          ],
+          "bias_m_s2": 8e-08,
+          "thrust_sigma": 0.03,
+          "pointing_sigma_rad": 0.005
+        },
+        "profile": "legacy",
+        "arithmetic": "float64",
+        "classification": "Synthetic controlled vehicle; one reconstructed ARTEMIS spacecraft initial state; no future spacecraft samples",
+        "initial_state": [
+          -8633755.03535394,
+          11833597.9099861,
+          5849694.021157178,
+          -39.40183724136792,
+          -417.8792365793619,
+          -100.38976032916113
+        ],
+        "model": {
+          "epoch_jd_tdb": 2455936.5007660203,
+          "parameters": {
+            "gm_moon": 4902799967088.641,
+            "gm_earth": 398600435507022.7,
+            "gm_sun": 1.3271244004127942e+20,
+            "moon_radius_m": 1738000.0,
+            "moon_j2": 0,
+            "area_mass_m2_kg": 0.016,
+            "reflectivity": 1.0,
+            "earth_radius_m": 6378137.0
+          },
+          "extra": {
+            "earth_j2": true,
+            "other_planets": true,
+            "first_pn": true,
+            "tide_convention": "none",
+            "love_k2": 0.024116,
+            "earth_j2_value": 0.0010826358699107248
+          },
+          "lunar_degree": 60
+        },
+        "filter_settings": {
+          "bias_correlation_s": 0.0,
+          "bias_random_walk_psd": 1e-18,
+          "acceleration_noise_psd": 1e-10,
+          "initial_bias_sigma_m_s2": 1e-07,
+          "maximum_bias_m_s2": 2e-06,
+          "nis_limit": 35.0,
+          "covariance_step_s": 1800.0,
+          "maneuver_fraction_sigma": 0.05,
+          "maneuver_pointing_sigma_rad": 0.02
+        },
+        "guard": null,
+        "metrics": {
+          "rms_m": 60.95435056235362,
+          "peak_m": 204.78849697006632,
+          "full_rms_m": 81.16338528822605,
+          "full_peak_m": 288.6716226171786,
+          "dv_m_s": 0.37512258278768124,
+          "burns": 88,
+          "direction_changes": 35,
+          "collision": false,
+          "completed": true,
+          "numerical_faults": 0,
+          "fixes_rejected": 1,
+          "fixes_accepted": 132,
+          "online_cpu_s": 27.273462000000038,
+          "mode_counts": {
+            "fresh": 133,
+            "inhibited": 11
+          },
+          "status_counts": {
+            "0": 133,
+            "2": 11
+          },
+          "max_cache_sizes": [
+            12,
+            0,
+            144
+          ]
+        },
+        "total_cpu_s": 41.273212999999984
+      },
+      {
+        "scenario": {
+          "name": "P2_jan10_8101",
+          "probe": 2,
+          "utc": "2012-01-10T00:00:00",
+          "days": 3.0,
+          "seed": 8101,
+          "split": "development",
+          "outages": [
+            [
+              36.0,
+              42.0
+            ]
+          ],
+          "pulses": [
+            [
+              24.0,
+              36.0,
+              3e-07
+            ]
+          ],
+          "bias_m_s2": 8e-08,
+          "thrust_sigma": 0.03,
+          "pointing_sigma_rad": 0.005
+        },
+        "profile": "decay_only",
+        "arithmetic": "float64",
+        "classification": "Synthetic controlled vehicle; one reconstructed ARTEMIS spacecraft initial state; no future spacecraft samples",
+        "initial_state": [
+          -8633755.03535394,
+          11833597.9099861,
+          5849694.021157178,
+          -39.40183724136792,
+          -417.8792365793619,
+          -100.38976032916113
+        ],
+        "model": {
+          "epoch_jd_tdb": 2455936.5007660203,
+          "parameters": {
+            "gm_moon": 4902799967088.641,
+            "gm_earth": 398600435507022.7,
+            "gm_sun": 1.3271244004127942e+20,
+            "moon_radius_m": 1738000.0,
+            "moon_j2": 0,
+            "area_mass_m2_kg": 0.016,
+            "reflectivity": 1.0,
+            "earth_radius_m": 6378137.0
+          },
+          "extra": {
+            "earth_j2": true,
+            "other_planets": true,
+            "first_pn": true,
+            "tide_convention": "none",
+            "love_k2": 0.024116,
+            "earth_j2_value": 0.0010826358699107248
+          },
+          "lunar_degree": 60
+        },
+        "filter_settings": {
+          "bias_correlation_s": 7200.0,
+          "bias_random_walk_psd": 1e-18,
+          "acceleration_noise_psd": 1e-10,
+          "initial_bias_sigma_m_s2": 1e-07,
+          "maximum_bias_m_s2": 2e-06,
+          "nis_limit": 35.0,
+          "covariance_step_s": 1800.0,
+          "maneuver_fraction_sigma": 0.05,
+          "maneuver_pointing_sigma_rad": 0.02
+        },
+        "guard": null,
+        "metrics": {
+          "rms_m": 91.72940571355473,
+          "peak_m": 336.62806405807316,
+          "full_rms_m": 102.7074998605457,
+          "full_peak_m": 336.62806405807316,
+          "dv_m_s": 0.3812767665094066,
+          "burns": 77,
+          "direction_changes": 24,
+          "collision": false,
+          "completed": true,
+          "numerical_faults": 0,
+          "fixes_rejected": 1,
+          "fixes_accepted": 132,
+          "online_cpu_s": 26.23535700000012,
+          "mode_counts": {
+            "fresh": 133,
+            "inhibited": 11
+          },
+          "status_counts": {
+            "0": 133,
+            "2": 11
+          },
+          "max_cache_sizes": [
+            12,
+            0,
+            144
+          ]
+        },
+        "total_cpu_s": 40.138622999999995
+      },
+      {
+        "scenario": {
+          "name": "P2_jan10_8101",
+          "probe": 2,
+          "utc": "2012-01-10T00:00:00",
+          "days": 3.0,
+          "seed": 8101,
+          "split": "development",
+          "outages": [
+            [
+              36.0,
+              42.0
+            ]
+          ],
+          "pulses": [
+            [
+              24.0,
+              36.0,
+              3e-07
+            ]
+          ],
+          "bias_m_s2": 8e-08,
+          "thrust_sigma": 0.03,
+          "pointing_sigma_rad": 0.005
+        },
+        "profile": "guarded",
+        "arithmetic": "float64",
+        "classification": "Synthetic controlled vehicle; one reconstructed ARTEMIS spacecraft initial state; no future spacecraft samples",
+        "initial_state": [
+          -8633755.03535394,
+          11833597.9099861,
+          5849694.021157178,
+          -39.40183724136792,
+          -417.8792365793619,
+          -100.38976032916113
+        ],
+        "model": {
+          "epoch_jd_tdb": 2455936.5007660203,
+          "parameters": {
+            "gm_moon": 4902799967088.641,
+            "gm_earth": 398600435507022.7,
+            "gm_sun": 1.3271244004127942e+20,
+            "moon_radius_m": 1738000.0,
+            "moon_j2": 0,
+            "area_mass_m2_kg": 0.016,
+            "reflectivity": 1.0,
+            "earth_radius_m": 6378137.0
+          },
+          "extra": {
+            "earth_j2": true,
+            "other_planets": true,
+            "first_pn": true,
+            "tide_convention": "none",
+            "love_k2": 0.024116,
+            "earth_j2_value": 0.0010826358699107248
+          },
+          "lunar_degree": 60
+        },
+        "filter_settings": {
+          "bias_correlation_s": 0.0,
+          "bias_random_walk_psd": 1e-18,
+          "acceleration_noise_psd": 1e-10,
+          "initial_bias_sigma_m_s2": 1e-07,
+          "maximum_bias_m_s2": 2e-06,
+          "nis_limit": 35.0,
+          "covariance_step_s": 1800.0,
+          "maneuver_fraction_sigma": 0.05,
+          "maneuver_pointing_sigma_rad": 0.02
+        },
+        "guard": {
+          "fresh_age_s": 3600.0,
+          "maximum_age_s": 28800.0,
+          "position_sigma_limit_m": 200.0,
+          "velocity_sigma_limit_m_s": 0.03,
+          "degraded_dv_limit_m_s": 0.03,
+          "clearance_sigma_factor": 3.0,
+          "bias_correlation_s": 0.0
+        },
+        "metrics": {
+          "rms_m": 63.79004363461683,
+          "peak_m": 220.72307171396002,
+          "full_rms_m": 82.69430524159796,
+          "full_peak_m": 288.6716226171786,
+          "dv_m_s": 0.3917087466837365,
+          "burns": 99,
+          "direction_changes": 39,
+          "collision": false,
+          "completed": true,
+          "numerical_faults": 0,
+          "fixes_rejected": 1,
+          "fixes_accepted": 132,
+          "online_cpu_s": 29.209494999999748,
+          "mode_counts": {
+            "fresh": 133,
+            "degraded": 11
+          },
+          "status_counts": {
+            "0": 144
+          },
+          "max_cache_sizes": [
+            12,
+            12,
+            144
+          ]
+        },
+        "total_cpu_s": 43.434668
+      },
+      {
+        "scenario": {
+          "name": "P2_jan10_8101",
+          "probe": 2,
+          "utc": "2012-01-10T00:00:00",
+          "days": 3.0,
+          "seed": 8101,
+          "split": "development",
+          "outages": [
+            [
+              36.0,
+              42.0
+            ]
+          ],
+          "pulses": [
+            [
+              24.0,
+              36.0,
+              3e-07
+            ]
+          ],
+          "bias_m_s2": 8e-08,
+          "thrust_sigma": 0.03,
+          "pointing_sigma_rad": 0.005
+        },
+        "profile": "decay_guarded",
+        "arithmetic": "float64",
+        "classification": "Synthetic controlled vehicle; one reconstructed ARTEMIS spacecraft initial state; no future spacecraft samples",
+        "initial_state": [
+          -8633755.03535394,
+          11833597.9099861,
+          5849694.021157178,
+          -39.40183724136792,
+          -417.8792365793619,
+          -100.38976032916113
+        ],
+        "model": {
+          "epoch_jd_tdb": 2455936.5007660203,
+          "parameters": {
+            "gm_moon": 4902799967088.641,
+            "gm_earth": 398600435507022.7,
+            "gm_sun": 1.3271244004127942e+20,
+            "moon_radius_m": 1738000.0,
+            "moon_j2": 0,
+            "area_mass_m2_kg": 0.016,
+            "reflectivity": 1.0,
+            "earth_radius_m": 6378137.0
+          },
+          "extra": {
+            "earth_j2": true,
+            "other_planets": true,
+            "first_pn": true,
+            "tide_convention": "none",
+            "love_k2": 0.024116,
+            "earth_j2_value": 0.0010826358699107248
+          },
+          "lunar_degree": 60
+        },
+        "filter_settings": {
+          "bias_correlation_s": 7200.0,
+          "bias_random_walk_psd": 1e-18,
+          "acceleration_noise_psd": 1e-10,
+          "initial_bias_sigma_m_s2": 1e-07,
+          "maximum_bias_m_s2": 2e-06,
+          "nis_limit": 35.0,
+          "covariance_step_s": 1800.0,
+          "maneuver_fraction_sigma": 0.05,
+          "maneuver_pointing_sigma_rad": 0.02
+        },
+        "guard": {
+          "fresh_age_s": 3600.0,
+          "maximum_age_s": 28800.0,
+          "position_sigma_limit_m": 200.0,
+          "velocity_sigma_limit_m_s": 0.03,
+          "degraded_dv_limit_m_s": 0.03,
+          "clearance_sigma_factor": 3.0,
+          "bias_correlation_s": 7200.0
+        },
+        "metrics": {
+          "rms_m": 56.92112700135948,
+          "peak_m": 171.40768114872952,
+          "full_rms_m": 78.95926192505807,
+          "full_peak_m": 288.6716226171786,
+          "dv_m_s": 0.3593846827813045,
+          "burns": 83,
+          "direction_changes": 27,
+          "collision": false,
+          "completed": true,
+          "numerical_faults": 0,
+          "fixes_rejected": 1,
+          "fixes_accepted": 132,
+          "online_cpu_s": 28.042256999999992,
+          "mode_counts": {
+            "fresh": 133,
+            "degraded": 11
+          },
+          "status_counts": {
+            "0": 144
+          },
+          "max_cache_sizes": [
+            12,
+            12,
+            144
+          ]
+        },
+        "total_cpu_s": 42.229485
+      },
+      {
+        "scenario": {
+          "name": "P2_jan10_8102",
+          "probe": 2,
+          "utc": "2012-01-10T00:00:00",
+          "days": 3.0,
+          "seed": 8102,
+          "split": "development",
+          "outages": [
+            [
+              36.0,
+              42.0
+            ]
+          ],
+          "pulses": [
+            [
+              24.0,
+              36.0,
+              3e-07
+            ]
+          ],
+          "bias_m_s2": 8e-08,
+          "thrust_sigma": 0.03,
+          "pointing_sigma_rad": 0.005
+        },
+        "profile": "legacy",
+        "arithmetic": "float64",
+        "classification": "Synthetic controlled vehicle; one reconstructed ARTEMIS spacecraft initial state; no future spacecraft samples",
+        "initial_state": [
+          -8633755.03535394,
+          11833597.9099861,
+          5849694.021157178,
+          -39.40183724136792,
+          -417.8792365793619,
+          -100.38976032916113
+        ],
+        "model": {
+          "epoch_jd_tdb": 2455936.5007660203,
+          "parameters": {
+            "gm_moon": 4902799967088.641,
+            "gm_earth": 398600435507022.7,
+            "gm_sun": 1.3271244004127942e+20,
+            "moon_radius_m": 1738000.0,
+            "moon_j2": 0,
+            "area_mass_m2_kg": 0.016,
+            "reflectivity": 1.0,
+            "earth_radius_m": 6378137.0
+          },
+          "extra": {
+            "earth_j2": true,
+            "other_planets": true,
+            "first_pn": true,
+            "tide_convention": "none",
+            "love_k2": 0.024116,
+            "earth_j2_value": 0.0010826358699107248
+          },
+          "lunar_degree": 60
+        },
+        "filter_settings": {
+          "bias_correlation_s": 0.0,
+          "bias_random_walk_psd": 1e-18,
+          "acceleration_noise_psd": 1e-10,
+          "initial_bias_sigma_m_s2": 1e-07,
+          "maximum_bias_m_s2": 2e-06,
+          "nis_limit": 35.0,
+          "covariance_step_s": 1800.0,
+          "maneuver_fraction_sigma": 0.05,
+          "maneuver_pointing_sigma_rad": 0.02
+        },
+        "guard": null,
+        "metrics": {
+          "rms_m": 68.3608891503547,
+          "peak_m": 221.2600736408058,
+          "full_rms_m": 93.33027493573566,
+          "full_peak_m": 396.5372867347067,
+          "dv_m_s": 0.322630708041542,
+          "burns": 88,
+          "direction_changes": 40,
+          "collision": false,
+          "completed": true,
+          "numerical_faults": 0,
+          "fixes_rejected": 1,
+          "fixes_accepted": 132,
+          "online_cpu_s": 27.526640999999756,
+          "mode_counts": {
+            "fresh": 133,
+            "inhibited": 11
+          },
+          "status_counts": {
+            "0": 133,
+            "2": 11
+          },
+          "max_cache_sizes": [
+            12,
+            0,
+            144
+          ]
+        },
+        "total_cpu_s": 41.66379600000002
+      },
+      {
+        "scenario": {
+          "name": "P2_jan10_8102",
+          "probe": 2,
+          "utc": "2012-01-10T00:00:00",
+          "days": 3.0,
+          "seed": 8102,
+          "split": "development",
+          "outages": [
+            [
+              36.0,
+              42.0
+            ]
+          ],
+          "pulses": [
+            [
+              24.0,
+              36.0,
+              3e-07
+            ]
+          ],
+          "bias_m_s2": 8e-08,
+          "thrust_sigma": 0.03,
+          "pointing_sigma_rad": 0.005
+        },
+        "profile": "decay_only",
+        "arithmetic": "float64",
+        "classification": "Synthetic controlled vehicle; one reconstructed ARTEMIS spacecraft initial state; no future spacecraft samples",
+        "initial_state": [
+          -8633755.03535394,
+          11833597.9099861,
+          5849694.021157178,
+          -39.40183724136792,
+          -417.8792365793619,
+          -100.38976032916113
+        ],
+        "model": {
+          "epoch_jd_tdb": 2455936.5007660203,
+          "parameters": {
+            "gm_moon": 4902799967088.641,
+            "gm_earth": 398600435507022.7,
+            "gm_sun": 1.3271244004127942e+20,
+            "moon_radius_m": 1738000.0,
+            "moon_j2": 0,
+            "area_mass_m2_kg": 0.016,
+            "reflectivity": 1.0,
+            "earth_radius_m": 6378137.0
+          },
+          "extra": {
+            "earth_j2": true,
+            "other_planets": true,
+            "first_pn": true,
+            "tide_convention": "none",
+            "love_k2": 0.024116,
+            "earth_j2_value": 0.0010826358699107248
+          },
+          "lunar_degree": 60
+        },
+        "filter_settings": {
+          "bias_correlation_s": 7200.0,
+          "bias_random_walk_psd": 1e-18,
+          "acceleration_noise_psd": 1e-10,
+          "initial_bias_sigma_m_s2": 1e-07,
+          "maximum_bias_m_s2": 2e-06,
+          "nis_limit": 35.0,
+          "covariance_step_s": 1800.0,
+          "maneuver_fraction_sigma": 0.05,
+          "maneuver_pointing_sigma_rad": 0.02
+        },
+        "guard": null,
+        "metrics": {
+          "rms_m": 145.17161647677597,
+          "peak_m": 514.2077577116563,
+          "full_rms_m": 149.59207329684443,
+          "full_peak_m": 514.2077577116563,
+          "dv_m_s": 0.34378706314933516,
+          "burns": 74,
+          "direction_changes": 21,
+          "collision": false,
+          "completed": true,
+          "numerical_faults": 0,
+          "fixes_rejected": 1,
+          "fixes_accepted": 132,
+          "online_cpu_s": 25.847279999999813,
+          "mode_counts": {
+            "fresh": 133,
+            "inhibited": 11
+          },
+          "status_counts": {
+            "0": 133,
+            "2": 11
+          },
+          "max_cache_sizes": [
+            12,
+            0,
+            144
+          ]
+        },
+        "total_cpu_s": 39.673775000000006
+      },
+      {
+        "scenario": {
+          "name": "P2_jan10_8102",
+          "probe": 2,
+          "utc": "2012-01-10T00:00:00",
+          "days": 3.0,
+          "seed": 8102,
+          "split": "development",
+          "outages": [
+            [
+              36.0,
+              42.0
+            ]
+          ],
+          "pulses": [
+            [
+              24.0,
+              36.0,
+              3e-07
+            ]
+          ],
+          "bias_m_s2": 8e-08,
+          "thrust_sigma": 0.03,
+          "pointing_sigma_rad": 0.005
+        },
+        "profile": "guarded",
+        "arithmetic": "float64",
+        "classification": "Synthetic controlled vehicle; one reconstructed ARTEMIS spacecraft initial state; no future spacecraft samples",
+        "initial_state": [
+          -8633755.03535394,
+          11833597.9099861,
+          5849694.021157178,
+          -39.40183724136792,
+          -417.8792365793619,
+          -100.38976032916113
+        ],
+        "model": {
+          "epoch_jd_tdb": 2455936.5007660203,
+          "parameters": {
+            "gm_moon": 4902799967088.641,
+            "gm_earth": 398600435507022.7,
+            "gm_sun": 1.3271244004127942e+20,
+            "moon_radius_m": 1738000.0,
+            "moon_j2": 0,
+            "area_mass_m2_kg": 0.016,
+            "reflectivity": 1.0,
+            "earth_radius_m": 6378137.0
+          },
+          "extra": {
+            "earth_j2": true,
+            "other_planets": true,
+            "first_pn": true,
+            "tide_convention": "none",
+            "love_k2": 0.024116,
+            "earth_j2_value": 0.0010826358699107248
+          },
+          "lunar_degree": 60
+        },
+        "filter_settings": {
+          "bias_correlation_s": 0.0,
+          "bias_random_walk_psd": 1e-18,
+          "acceleration_noise_psd": 1e-10,
+          "initial_bias_sigma_m_s2": 1e-07,
+          "maximum_bias_m_s2": 2e-06,
+          "nis_limit": 35.0,
+          "covariance_step_s": 1800.0,
+          "maneuver_fraction_sigma": 0.05,
+          "maneuver_pointing_sigma_rad": 0.02
+        },
+        "guard": {
+          "fresh_age_s": 3600.0,
+          "maximum_age_s": 28800.0,
+          "position_sigma_limit_m": 200.0,
+          "velocity_sigma_limit_m_s": 0.03,
+          "degraded_dv_limit_m_s": 0.03,
+          "clearance_sigma_factor": 3.0,
+          "bias_correlation_s": 0.0
+        },
+        "metrics": {
+          "rms_m": 44.92985375728865,
+          "peak_m": 133.148626630309,
+          "full_rms_m": 80.63141698483373,
+          "full_peak_m": 396.5372867347067,
+          "dv_m_s": 0.3377859916221916,
+          "burns": 97,
+          "direction_changes": 43,
+          "collision": false,
+          "completed": true,
+          "numerical_faults": 0,
+          "fixes_rejected": 1,
+          "fixes_accepted": 132,
+          "online_cpu_s": 29.132889999999918,
+          "mode_counts": {
+            "fresh": 133,
+            "degraded": 11
+          },
+          "status_counts": {
+            "0": 144
+          },
+          "max_cache_sizes": [
+            12,
+            12,
+            144
+          ]
+        },
+        "total_cpu_s": 43.046232
+      },
+      {
+        "scenario": {
+          "name": "P2_jan10_8102",
+          "probe": 2,
+          "utc": "2012-01-10T00:00:00",
+          "days": 3.0,
+          "seed": 8102,
+          "split": "development",
+          "outages": [
+            [
+              36.0,
+              42.0
+            ]
+          ],
+          "pulses": [
+            [
+              24.0,
+              36.0,
+              3e-07
+            ]
+          ],
+          "bias_m_s2": 8e-08,
+          "thrust_sigma": 0.03,
+          "pointing_sigma_rad": 0.005
+        },
+        "profile": "decay_guarded",
+        "arithmetic": "float64",
+        "classification": "Synthetic controlled vehicle; one reconstructed ARTEMIS spacecraft initial state; no future spacecraft samples",
+        "initial_state": [
+          -8633755.03535394,
+          11833597.9099861,
+          5849694.021157178,
+          -39.40183724136792,
+          -417.8792365793619,
+          -100.38976032916113
+        ],
+        "model": {
+          "epoch_jd_tdb": 2455936.5007660203,
+          "parameters": {
+            "gm_moon": 4902799967088.641,
+            "gm_earth": 398600435507022.7,
+            "gm_sun": 1.3271244004127942e+20,
+            "moon_radius_m": 1738000.0,
+            "moon_j2": 0,
+            "area_mass_m2_kg": 0.016,
+            "reflectivity": 1.0,
+            "earth_radius_m": 6378137.0
+          },
+          "extra": {
+            "earth_j2": true,
+            "other_planets": true,
+            "first_pn": true,
+            "tide_convention": "none",
+            "love_k2": 0.024116,
+            "earth_j2_value": 0.0010826358699107248
+          },
+          "lunar_degree": 60
+        },
+        "filter_settings": {
+          "bias_correlation_s": 7200.0,
+          "bias_random_walk_psd": 1e-18,
+          "acceleration_noise_psd": 1e-10,
+          "initial_bias_sigma_m_s2": 1e-07,
+          "maximum_bias_m_s2": 2e-06,
+          "nis_limit": 35.0,
+          "covariance_step_s": 1800.0,
+          "maneuver_fraction_sigma": 0.05,
+          "maneuver_pointing_sigma_rad": 0.02
+        },
+        "guard": {
+          "fresh_age_s": 3600.0,
+          "maximum_age_s": 28800.0,
+          "position_sigma_limit_m": 200.0,
+          "velocity_sigma_limit_m_s": 0.03,
+          "degraded_dv_limit_m_s": 0.03,
+          "clearance_sigma_factor": 3.0,
+          "bias_correlation_s": 7200.0
+        },
+        "metrics": {
+          "rms_m": 77.04905141963035,
+          "peak_m": 231.853960265729,
+          "full_rms_m": 98.79747050410246,
+          "full_peak_m": 396.5372867347067,
+          "dv_m_s": 0.3070955258979091,
+          "burns": 76,
+          "direction_changes": 27,
+          "collision": false,
+          "completed": true,
+          "numerical_faults": 0,
+          "fixes_rejected": 1,
+          "fixes_accepted": 132,
+          "online_cpu_s": 27.150745999999884,
+          "mode_counts": {
+            "fresh": 133,
+            "degraded": 11
+          },
+          "status_counts": {
+            "0": 144
+          },
+          "max_cache_sizes": [
+            12,
+            12,
+            144
+          ]
+        },
+        "total_cpu_s": 40.764909999999986
+      }
+    ],
+    "earlier/precision": [
+      {
+        "scenario": {
+          "name": "P1_jan10_8101",
+          "probe": 1,
+          "utc": "2012-01-10T00:00:00",
+          "days": 3.0,
+          "seed": 8101,
+          "split": "development",
+          "outages": [
+            [
+              36.0,
+              42.0
+            ]
+          ],
+          "pulses": [
+            [
+              24.0,
+              36.0,
+              3e-07
+            ]
+          ],
+          "bias_m_s2": 8e-08,
+          "thrust_sigma": 0.03,
+          "pointing_sigma_rad": 0.005
+        },
+        "profile": "legacy",
+        "arithmetic": "32",
+        "classification": "Synthetic controlled vehicle; one reconstructed ARTEMIS spacecraft initial state; no future spacecraft samples",
+        "initial_state": [
+          -18991575.311241817,
+          3401834.206104337,
+          -858458.7962791702,
+          17.430072283197262,
+          216.49203774418532,
+          47.87283285036731
+        ],
+        "model": {
+          "epoch_jd_tdb": 2455936.5007660203,
+          "parameters": {
+            "gm_moon": 4902799967088.641,
+            "gm_earth": 398600435507022.7,
+            "gm_sun": 1.3271244004127942e+20,
+            "moon_radius_m": 1738000.0,
+            "moon_j2": 0,
+            "area_mass_m2_kg": 0.016,
+            "reflectivity": 1.0,
+            "earth_radius_m": 6378137.0
+          },
+          "extra": {
+            "earth_j2": true,
+            "other_planets": true,
+            "first_pn": true,
+            "tide_convention": "none",
+            "love_k2": 0.024116,
+            "earth_j2_value": 0.0010826358699107248
+          },
+          "lunar_degree": 60
+        },
+        "filter_settings": {
+          "bias_correlation_s": 0.0,
+          "bias_random_walk_psd": 1e-18,
+          "acceleration_noise_psd": 1e-10,
+          "initial_bias_sigma_m_s2": 1e-07,
+          "maximum_bias_m_s2": 2e-06,
+          "nis_limit": 35.0,
+          "covariance_step_s": 1800.0,
+          "maneuver_fraction_sigma": 0.05,
+          "maneuver_pointing_sigma_rad": 0.02
+        },
+        "guard": null,
+        "metrics": {
+          "rms_m": 36.98689203512013,
+          "peak_m": 141.75333562186626,
+          "full_rms_m": 70.71093018475952,
+          "full_peak_m": 288.6716226186547,
+          "dv_m_s": 0.42681489028424463,
+          "burns": 94,
+          "direction_changes": 32,
+          "collision": false,
+          "completed": true,
+          "numerical_faults": 0,
+          "fixes_rejected": 1,
+          "fixes_accepted": 132,
+          "online_cpu_s": 28.485413999999967,
+          "mode_counts": {
+            "fresh": 133,
+            "inhibited": 11
+          },
+          "status_counts": {
+            "0": 133,
+            "2": 11
+          },
+          "max_cache_sizes": [
+            12,
+            0,
+            144
+          ]
+        },
+        "total_cpu_s": 44.166049
+      },
+      {
+        "scenario": {
+          "name": "P1_jan10_8102",
+          "probe": 1,
+          "utc": "2012-01-10T00:00:00",
+          "days": 3.0,
+          "seed": 8102,
+          "split": "development",
+          "outages": [
+            [
+              36.0,
+              42.0
+            ]
+          ],
+          "pulses": [
+            [
+              24.0,
+              36.0,
+              3e-07
+            ]
+          ],
+          "bias_m_s2": 8e-08,
+          "thrust_sigma": 0.03,
+          "pointing_sigma_rad": 0.005
+        },
+        "profile": "legacy",
+        "arithmetic": "32",
+        "classification": "Synthetic controlled vehicle; one reconstructed ARTEMIS spacecraft initial state; no future spacecraft samples",
+        "initial_state": [
+          -18991575.311241817,
+          3401834.206104337,
+          -858458.7962791702,
+          17.430072283197262,
+          216.49203774418532,
+          47.87283285036731
+        ],
+        "model": {
+          "epoch_jd_tdb": 2455936.5007660203,
+          "parameters": {
+            "gm_moon": 4902799967088.641,
+            "gm_earth": 398600435507022.7,
+            "gm_sun": 1.3271244004127942e+20,
+            "moon_radius_m": 1738000.0,
+            "moon_j2": 0,
+            "area_mass_m2_kg": 0.016,
+            "reflectivity": 1.0,
+            "earth_radius_m": 6378137.0
+          },
+          "extra": {
+            "earth_j2": true,
+            "other_planets": true,
+            "first_pn": true,
+            "tide_convention": "none",
+            "love_k2": 0.024116,
+            "earth_j2_value": 0.0010826358699107248
+          },
+          "lunar_degree": 60
+        },
+        "filter_settings": {
+          "bias_correlation_s": 0.0,
+          "bias_random_walk_psd": 1e-18,
+          "acceleration_noise_psd": 1e-10,
+          "initial_bias_sigma_m_s2": 1e-07,
+          "maximum_bias_m_s2": 2e-06,
+          "nis_limit": 35.0,
+          "covariance_step_s": 1800.0,
+          "maneuver_fraction_sigma": 0.05,
+          "maneuver_pointing_sigma_rad": 0.02
+        },
+        "guard": null,
+        "metrics": {
+          "rms_m": 30.018402976874956,
+          "peak_m": 111.70789612176252,
+          "full_rms_m": 76.77525155493105,
+          "full_peak_m": 396.5372867335683,
+          "dv_m_s": 0.29937800425643263,
+          "burns": 78,
+          "direction_changes": 28,
+          "collision": false,
+          "completed": true,
+          "numerical_faults": 0,
+          "fixes_rejected": 1,
+          "fixes_accepted": 132,
+          "online_cpu_s": 26.33153000000001,
+          "mode_counts": {
+            "fresh": 133,
+            "inhibited": 11
+          },
+          "status_counts": {
+            "0": 133,
+            "2": 11
+          },
+          "max_cache_sizes": [
+            12,
+            0,
+            144
+          ]
+        },
+        "total_cpu_s": 41.647437999999994
+      },
+      {
+        "scenario": {
+          "name": "P2_jan10_8101",
+          "probe": 2,
+          "utc": "2012-01-10T00:00:00",
+          "days": 3.0,
+          "seed": 8101,
+          "split": "development",
+          "outages": [
+            [
+              36.0,
+              42.0
+            ]
+          ],
+          "pulses": [
+            [
+              24.0,
+              36.0,
+              3e-07
+            ]
+          ],
+          "bias_m_s2": 8e-08,
+          "thrust_sigma": 0.03,
+          "pointing_sigma_rad": 0.005
+        },
+        "profile": "legacy",
+        "arithmetic": "32",
+        "classification": "Synthetic controlled vehicle; one reconstructed ARTEMIS spacecraft initial state; no future spacecraft samples",
+        "initial_state": [
+          -8633755.03535394,
+          11833597.9099861,
+          5849694.021157178,
+          -39.40183724136792,
+          -417.8792365793619,
+          -100.38976032916113
+        ],
+        "model": {
+          "epoch_jd_tdb": 2455936.5007660203,
+          "parameters": {
+            "gm_moon": 4902799967088.641,
+            "gm_earth": 398600435507022.7,
+            "gm_sun": 1.3271244004127942e+20,
+            "moon_radius_m": 1738000.0,
+            "moon_j2": 0,
+            "area_mass_m2_kg": 0.016,
+            "reflectivity": 1.0,
+            "earth_radius_m": 6378137.0
+          },
+          "extra": {
+            "earth_j2": true,
+            "other_planets": true,
+            "first_pn": true,
+            "tide_convention": "none",
+            "love_k2": 0.024116,
+            "earth_j2_value": 0.0010826358699107248
+          },
+          "lunar_degree": 60
+        },
+        "filter_settings": {
+          "bias_correlation_s": 0.0,
+          "bias_random_walk_psd": 1e-18,
+          "acceleration_noise_psd": 1e-10,
+          "initial_bias_sigma_m_s2": 1e-07,
+          "maximum_bias_m_s2": 2e-06,
+          "nis_limit": 35.0,
+          "covariance_step_s": 1800.0,
+          "maneuver_fraction_sigma": 0.05,
+          "maneuver_pointing_sigma_rad": 0.02
+        },
+        "guard": null,
+        "metrics": {
+          "rms_m": 60.96303878022678,
+          "peak_m": 204.82567833620007,
+          "full_rms_m": 81.16895156727003,
+          "full_peak_m": 288.6716226171786,
+          "dv_m_s": 0.3751338898674145,
+          "burns": 88,
+          "direction_changes": 35,
+          "collision": false,
+          "completed": true,
+          "numerical_faults": 0,
+          "fixes_rejected": 1,
+          "fixes_accepted": 132,
+          "online_cpu_s": 29.741196000000038,
+          "mode_counts": {
+            "fresh": 133,
+            "inhibited": 11
+          },
+          "status_counts": {
+            "0": 133,
+            "2": 11
+          },
+          "max_cache_sizes": [
+            12,
+            0,
+            144
+          ]
+        },
+        "total_cpu_s": 45.326667
+      },
+      {
+        "scenario": {
+          "name": "P2_jan10_8102",
+          "probe": 2,
+          "utc": "2012-01-10T00:00:00",
+          "days": 3.0,
+          "seed": 8102,
+          "split": "development",
+          "outages": [
+            [
+              36.0,
+              42.0
+            ]
+          ],
+          "pulses": [
+            [
+              24.0,
+              36.0,
+              3e-07
+            ]
+          ],
+          "bias_m_s2": 8e-08,
+          "thrust_sigma": 0.03,
+          "pointing_sigma_rad": 0.005
+        },
+        "profile": "legacy",
+        "arithmetic": "32",
+        "classification": "Synthetic controlled vehicle; one reconstructed ARTEMIS spacecraft initial state; no future spacecraft samples",
+        "initial_state": [
+          -8633755.03535394,
+          11833597.9099861,
+          5849694.021157178,
+          -39.40183724136792,
+          -417.8792365793619,
+          -100.38976032916113
+        ],
+        "model": {
+          "epoch_jd_tdb": 2455936.5007660203,
+          "parameters": {
+            "gm_moon": 4902799967088.641,
+            "gm_earth": 398600435507022.7,
+            "gm_sun": 1.3271244004127942e+20,
+            "moon_radius_m": 1738000.0,
+            "moon_j2": 0,
+            "area_mass_m2_kg": 0.016,
+            "reflectivity": 1.0,
+            "earth_radius_m": 6378137.0
+          },
+          "extra": {
+            "earth_j2": true,
+            "other_planets": true,
+            "first_pn": true,
+            "tide_convention": "none",
+            "love_k2": 0.024116,
+            "earth_j2_value": 0.0010826358699107248
+          },
+          "lunar_degree": 60
+        },
+        "filter_settings": {
+          "bias_correlation_s": 0.0,
+          "bias_random_walk_psd": 1e-18,
+          "acceleration_noise_psd": 1e-10,
+          "initial_bias_sigma_m_s2": 1e-07,
+          "maximum_bias_m_s2": 2e-06,
+          "nis_limit": 35.0,
+          "covariance_step_s": 1800.0,
+          "maneuver_fraction_sigma": 0.05,
+          "maneuver_pointing_sigma_rad": 0.02
+        },
+        "guard": null,
+        "metrics": {
+          "rms_m": 68.35272892828016,
+          "peak_m": 221.2275370848497,
+          "full_rms_m": 93.32521395607861,
+          "full_peak_m": 396.5372867347067,
+          "dv_m_s": 0.3226222803542277,
+          "burns": 88,
+          "direction_changes": 40,
+          "collision": false,
+          "completed": true,
+          "numerical_faults": 0,
+          "fixes_rejected": 1,
+          "fixes_accepted": 132,
+          "online_cpu_s": 29.977102999999996,
+          "mode_counts": {
+            "fresh": 133,
+            "inhibited": 11
+          },
+          "status_counts": {
+            "0": 133,
+            "2": 11
+          },
+          "max_cache_sizes": [
+            12,
+            0,
+            144
+          ]
+        },
+        "total_cpu_s": 45.614876
+      }
+    ],
+    "earlier/fresh": [
+      {
+        "scenario": {
+          "name": "P1_jan15_9201",
+          "probe": 1,
+          "utc": "2012-01-15T00:00:00",
+          "days": 3.0,
+          "seed": 9201,
+          "split": "fresh",
+          "outages": [
+            [
+              36.0,
+              42.0
+            ]
+          ],
+          "pulses": [
+            [
+              24.0,
+              36.0,
+              3e-07
+            ]
+          ],
+          "bias_m_s2": 8e-08,
+          "thrust_sigma": 0.03,
+          "pointing_sigma_rad": 0.005
+        },
+        "profile": "legacy",
+        "arithmetic": "float64",
+        "classification": "Synthetic controlled vehicle; one reconstructed ARTEMIS spacecraft initial state; no future spacecraft samples",
+        "initial_state": [
+          -11022204.42392619,
+          9373663.17944626,
+          1236865.203633446,
+          462.2120849490333,
+          10.263933986220607,
+          44.65009552327442
+        ],
+        "model": {
+          "epoch_jd_tdb": 2455941.500766022,
+          "parameters": {
+            "gm_moon": 4902799967088.641,
+            "gm_earth": 398600435507022.7,
+            "gm_sun": 1.3271244004127942e+20,
+            "moon_radius_m": 1738000.0,
+            "moon_j2": 0,
+            "area_mass_m2_kg": 0.016,
+            "reflectivity": 1.0,
+            "earth_radius_m": 6378137.0
+          },
+          "extra": {
+            "earth_j2": true,
+            "other_planets": true,
+            "first_pn": true,
+            "tide_convention": "none",
+            "love_k2": 0.024116,
+            "earth_j2_value": 0.0010826358699107248
+          },
+          "lunar_degree": 60
+        },
+        "filter_settings": {
+          "bias_correlation_s": 0.0,
+          "bias_random_walk_psd": 1e-18,
+          "acceleration_noise_psd": 1e-10,
+          "initial_bias_sigma_m_s2": 1e-07,
+          "maximum_bias_m_s2": 2e-06,
+          "nis_limit": 35.0,
+          "covariance_step_s": 1800.0,
+          "maneuver_fraction_sigma": 0.05,
+          "maneuver_pointing_sigma_rad": 0.02
+        },
+        "guard": null,
+        "metrics": {
+          "rms_m": 39.66678966142928,
+          "peak_m": 145.49623128847958,
+          "full_rms_m": 87.7730978363282,
+          "full_peak_m": 445.96737234468713,
+          "dv_m_s": 0.4629272237065978,
+          "burns": 87,
+          "direction_changes": 29,
+          "collision": false,
+          "completed": true,
+          "numerical_faults": 0,
+          "fixes_rejected": 1,
+          "fixes_accepted": 132,
+          "online_cpu_s": 26.521190000000036,
+          "mode_counts": {
+            "fresh": 133,
+            "inhibited": 11
+          },
+          "status_counts": {
+            "0": 133,
+            "2": 11
+          },
+          "max_cache_sizes": [
+            12,
+            0,
+            144
+          ]
+        },
+        "total_cpu_s": 40.928653000000004
+      },
+      {
+        "scenario": {
+          "name": "P1_jan15_9201",
+          "probe": 1,
+          "utc": "2012-01-15T00:00:00",
+          "days": 3.0,
+          "seed": 9201,
+          "split": "fresh",
+          "outages": [
+            [
+              36.0,
+              42.0
+            ]
+          ],
+          "pulses": [
+            [
+              24.0,
+              36.0,
+              3e-07
+            ]
+          ],
+          "bias_m_s2": 8e-08,
+          "thrust_sigma": 0.03,
+          "pointing_sigma_rad": 0.005
+        },
+        "profile": "legacy",
+        "arithmetic": "32",
+        "classification": "Synthetic controlled vehicle; one reconstructed ARTEMIS spacecraft initial state; no future spacecraft samples",
+        "initial_state": [
+          -11022204.42392619,
+          9373663.17944626,
+          1236865.203633446,
+          462.2120849490333,
+          10.263933986220607,
+          44.65009552327442
+        ],
+        "model": {
+          "epoch_jd_tdb": 2455941.500766022,
+          "parameters": {
+            "gm_moon": 4902799967088.641,
+            "gm_earth": 398600435507022.7,
+            "gm_sun": 1.3271244004127942e+20,
+            "moon_radius_m": 1738000.0,
+            "moon_j2": 0,
+            "area_mass_m2_kg": 0.016,
+            "reflectivity": 1.0,
+            "earth_radius_m": 6378137.0
+          },
+          "extra": {
+            "earth_j2": true,
+            "other_planets": true,
+            "first_pn": true,
+            "tide_convention": "none",
+            "love_k2": 0.024116,
+            "earth_j2_value": 0.0010826358699107248
+          },
+          "lunar_degree": 60
+        },
+        "filter_settings": {
+          "bias_correlation_s": 0.0,
+          "bias_random_walk_psd": 1e-18,
+          "acceleration_noise_psd": 1e-10,
+          "initial_bias_sigma_m_s2": 1e-07,
+          "maximum_bias_m_s2": 2e-06,
+          "nis_limit": 35.0,
+          "covariance_step_s": 1800.0,
+          "maneuver_fraction_sigma": 0.05,
+          "maneuver_pointing_sigma_rad": 0.02
+        },
+        "guard": null,
+        "metrics": {
+          "rms_m": 39.66652076764797,
+          "peak_m": 145.49517217144657,
+          "full_rms_m": 87.77314177254195,
+          "full_peak_m": 445.96737234468713,
+          "dv_m_s": 0.4629202765082921,
+          "burns": 87,
+          "direction_changes": 29,
+          "collision": false,
+          "completed": true,
+          "numerical_faults": 0,
+          "fixes_rejected": 1,
+          "fixes_accepted": 132,
+          "online_cpu_s": 25.577305999999982,
+          "mode_counts": {
+            "fresh": 133,
+            "inhibited": 11
+          },
+          "status_counts": {
+            "0": 133,
+            "2": 11
+          },
+          "max_cache_sizes": [
+            12,
+            0,
+            144
+          ]
+        },
+        "total_cpu_s": 39.970228
+      },
+      {
+        "scenario": {
+          "name": "P1_jan15_9202",
+          "probe": 1,
+          "utc": "2012-01-15T00:00:00",
+          "days": 3.0,
+          "seed": 9202,
+          "split": "fresh",
+          "outages": [
+            [
+              36.0,
+              42.0
+            ]
+          ],
+          "pulses": [
+            [
+              24.0,
+              36.0,
+              3e-07
+            ]
+          ],
+          "bias_m_s2": 8e-08,
+          "thrust_sigma": 0.03,
+          "pointing_sigma_rad": 0.005
+        },
+        "profile": "legacy",
+        "arithmetic": "float64",
+        "classification": "Synthetic controlled vehicle; one reconstructed ARTEMIS spacecraft initial state; no future spacecraft samples",
+        "initial_state": [
+          -11022204.42392619,
+          9373663.17944626,
+          1236865.203633446,
+          462.2120849490333,
+          10.263933986220607,
+          44.65009552327442
+        ],
+        "model": {
+          "epoch_jd_tdb": 2455941.500766022,
+          "parameters": {
+            "gm_moon": 4902799967088.641,
+            "gm_earth": 398600435507022.7,
+            "gm_sun": 1.3271244004127942e+20,
+            "moon_radius_m": 1738000.0,
+            "moon_j2": 0,
+            "area_mass_m2_kg": 0.016,
+            "reflectivity": 1.0,
+            "earth_radius_m": 6378137.0
+          },
+          "extra": {
+            "earth_j2": true,
+            "other_planets": true,
+            "first_pn": true,
+            "tide_convention": "none",
+            "love_k2": 0.024116,
+            "earth_j2_value": 0.0010826358699107248
+          },
+          "lunar_degree": 60
+        },
+        "filter_settings": {
+          "bias_correlation_s": 0.0,
+          "bias_random_walk_psd": 1e-18,
+          "acceleration_noise_psd": 1e-10,
+          "initial_bias_sigma_m_s2": 1e-07,
+          "maximum_bias_m_s2": 2e-06,
+          "nis_limit": 35.0,
+          "covariance_step_s": 1800.0,
+          "maneuver_fraction_sigma": 0.05,
+          "maneuver_pointing_sigma_rad": 0.02
+        },
+        "guard": null,
+        "metrics": {
+          "rms_m": 24.658860735433734,
+          "peak_m": 43.6685487725232,
+          "full_rms_m": 75.25138494408401,
+          "full_peak_m": 426.85768777287086,
+          "dv_m_s": 0.38329372194171946,
+          "burns": 89,
+          "direction_changes": 34,
+          "collision": false,
+          "completed": true,
+          "numerical_faults": 0,
+          "fixes_rejected": 1,
+          "fixes_accepted": 132,
+          "online_cpu_s": 26.881971000000004,
+          "mode_counts": {
+            "fresh": 133,
+            "inhibited": 11
+          },
+          "status_counts": {
+            "0": 133,
+            "2": 11
+          },
+          "max_cache_sizes": [
+            12,
+            0,
+            144
+          ]
+        },
+        "total_cpu_s": 41.435073
+      },
+      {
+        "scenario": {
+          "name": "P1_jan15_9202",
+          "probe": 1,
+          "utc": "2012-01-15T00:00:00",
+          "days": 3.0,
+          "seed": 9202,
+          "split": "fresh",
+          "outages": [
+            [
+              36.0,
+              42.0
+            ]
+          ],
+          "pulses": [
+            [
+              24.0,
+              36.0,
+              3e-07
+            ]
+          ],
+          "bias_m_s2": 8e-08,
+          "thrust_sigma": 0.03,
+          "pointing_sigma_rad": 0.005
+        },
+        "profile": "legacy",
+        "arithmetic": "32",
+        "classification": "Synthetic controlled vehicle; one reconstructed ARTEMIS spacecraft initial state; no future spacecraft samples",
+        "initial_state": [
+          -11022204.42392619,
+          9373663.17944626,
+          1236865.203633446,
+          462.2120849490333,
+          10.263933986220607,
+          44.65009552327442
+        ],
+        "model": {
+          "epoch_jd_tdb": 2455941.500766022,
+          "parameters": {
+            "gm_moon": 4902799967088.641,
+            "gm_earth": 398600435507022.7,
+            "gm_sun": 1.3271244004127942e+20,
+            "moon_radius_m": 1738000.0,
+            "moon_j2": 0,
+            "area_mass_m2_kg": 0.016,
+            "reflectivity": 1.0,
+            "earth_radius_m": 6378137.0
+          },
+          "extra": {
+            "earth_j2": true,
+            "other_planets": true,
+            "first_pn": true,
+            "tide_convention": "none",
+            "love_k2": 0.024116,
+            "earth_j2_value": 0.0010826358699107248
+          },
+          "lunar_degree": 60
+        },
+        "filter_settings": {
+          "bias_correlation_s": 0.0,
+          "bias_random_walk_psd": 1e-18,
+          "acceleration_noise_psd": 1e-10,
+          "initial_bias_sigma_m_s2": 1e-07,
+          "maximum_bias_m_s2": 2e-06,
+          "nis_limit": 35.0,
+          "covariance_step_s": 1800.0,
+          "maneuver_fraction_sigma": 0.05,
+          "maneuver_pointing_sigma_rad": 0.02
+        },
+        "guard": null,
+        "metrics": {
+          "rms_m": 24.65900127280687,
+          "peak_m": 43.66795163373581,
+          "full_rms_m": 75.25134875916459,
+          "full_peak_m": 426.85768777287086,
+          "dv_m_s": 0.38329283318948626,
+          "burns": 89,
+          "direction_changes": 34,
+          "collision": false,
+          "completed": true,
+          "numerical_faults": 0,
+          "fixes_rejected": 1,
+          "fixes_accepted": 132,
+          "online_cpu_s": 26.357935,
+          "mode_counts": {
+            "fresh": 133,
+            "inhibited": 11
+          },
+          "status_counts": {
+            "0": 133,
+            "2": 11
+          },
+          "max_cache_sizes": [
+            12,
+            0,
+            144
+          ]
+        },
+        "total_cpu_s": 40.985185
+      },
+      {
+        "scenario": {
+          "name": "P2_jan15_9201",
+          "probe": 2,
+          "utc": "2012-01-15T00:00:00",
+          "days": 3.0,
+          "seed": 9201,
+          "split": "fresh",
+          "outages": [
+            [
+              36.0,
+              42.0
+            ]
+          ],
+          "pulses": [
+            [
+              24.0,
+              60.0,
+              3e-07
+            ]
+          ],
+          "bias_m_s2": 8e-08,
+          "thrust_sigma": 0.03,
+          "pointing_sigma_rad": 0.005
+        },
+        "profile": "legacy",
+        "arithmetic": "float64",
+        "classification": "Synthetic controlled vehicle; one reconstructed ARTEMIS spacecraft initial state; no future spacecraft samples",
+        "initial_state": [
+          -9666410.480445892,
+          8901149.26009285,
+          5061773.79437194,
+          2.3668087843669445,
+          -490.554858128079,
+          -145.01086157393462
+        ],
+        "model": {
+          "epoch_jd_tdb": 2455941.500766022,
+          "parameters": {
+            "gm_moon": 4902799967088.641,
+            "gm_earth": 398600435507022.7,
+            "gm_sun": 1.3271244004127942e+20,
+            "moon_radius_m": 1738000.0,
+            "moon_j2": 0,
+            "area_mass_m2_kg": 0.016,
+            "reflectivity": 1.0,
+            "earth_radius_m": 6378137.0
+          },
+          "extra": {
+            "earth_j2": true,
+            "other_planets": true,
+            "first_pn": true,
+            "tide_convention": "none",
+            "love_k2": 0.024116,
+            "earth_j2_value": 0.0010826358699107248
+          },
+          "lunar_degree": 60
+        },
+        "filter_settings": {
+          "bias_correlation_s": 0.0,
+          "bias_random_walk_psd": 1e-18,
+          "acceleration_noise_psd": 1e-10,
+          "initial_bias_sigma_m_s2": 1e-07,
+          "maximum_bias_m_s2": 2e-06,
+          "nis_limit": 35.0,
+          "covariance_step_s": 1800.0,
+          "maneuver_fraction_sigma": 0.05,
+          "maneuver_pointing_sigma_rad": 0.02
+        },
+        "guard": null,
+        "metrics": {
+          "rms_m": 39.47681210189822,
+          "peak_m": 114.33804551014568,
+          "full_rms_m": 90.67375577067764,
+          "full_peak_m": 445.9673723448819,
+          "dv_m_s": 0.37454621461926496,
+          "burns": 92,
+          "direction_changes": 25,
+          "collision": false,
+          "completed": true,
+          "numerical_faults": 0,
+          "fixes_rejected": 1,
+          "fixes_accepted": 132,
+          "online_cpu_s": 27.279384999999948,
+          "mode_counts": {
+            "fresh": 133,
+            "inhibited": 11
+          },
+          "status_counts": {
+            "0": 133,
+            "2": 11
+          },
+          "max_cache_sizes": [
+            12,
+            0,
+            144
+          ]
+        },
+        "total_cpu_s": 41.894289
+      },
+      {
+        "scenario": {
+          "name": "P2_jan15_9201",
+          "probe": 2,
+          "utc": "2012-01-15T00:00:00",
+          "days": 3.0,
+          "seed": 9201,
+          "split": "fresh",
+          "outages": [
+            [
+              36.0,
+              42.0
+            ]
+          ],
+          "pulses": [
+            [
+              24.0,
+              60.0,
+              3e-07
+            ]
+          ],
+          "bias_m_s2": 8e-08,
+          "thrust_sigma": 0.03,
+          "pointing_sigma_rad": 0.005
+        },
+        "profile": "legacy",
+        "arithmetic": "32",
+        "classification": "Synthetic controlled vehicle; one reconstructed ARTEMIS spacecraft initial state; no future spacecraft samples",
+        "initial_state": [
+          -9666410.480445892,
+          8901149.26009285,
+          5061773.79437194,
+          2.3668087843669445,
+          -490.554858128079,
+          -145.01086157393462
+        ],
+        "model": {
+          "epoch_jd_tdb": 2455941.500766022,
+          "parameters": {
+            "gm_moon": 4902799967088.641,
+            "gm_earth": 398600435507022.7,
+            "gm_sun": 1.3271244004127942e+20,
+            "moon_radius_m": 1738000.0,
+            "moon_j2": 0,
+            "area_mass_m2_kg": 0.016,
+            "reflectivity": 1.0,
+            "earth_radius_m": 6378137.0
+          },
+          "extra": {
+            "earth_j2": true,
+            "other_planets": true,
+            "first_pn": true,
+            "tide_convention": "none",
+            "love_k2": 0.024116,
+            "earth_j2_value": 0.0010826358699107248
+          },
+          "lunar_degree": 60
+        },
+        "filter_settings": {
+          "bias_correlation_s": 0.0,
+          "bias_random_walk_psd": 1e-18,
+          "acceleration_noise_psd": 1e-10,
+          "initial_bias_sigma_m_s2": 1e-07,
+          "maximum_bias_m_s2": 2e-06,
+          "nis_limit": 35.0,
+          "covariance_step_s": 1800.0,
+          "maneuver_fraction_sigma": 0.05,
+          "maneuver_pointing_sigma_rad": 0.02
+        },
+        "guard": null,
+        "metrics": {
+          "rms_m": 39.47674500790506,
+          "peak_m": 114.33722883434868,
+          "full_rms_m": 90.67385401046957,
+          "full_peak_m": 445.9673723448819,
+          "dv_m_s": 0.37454567385822707,
+          "burns": 92,
+          "direction_changes": 25,
+          "collision": false,
+          "completed": true,
+          "numerical_faults": 0,
+          "fixes_rejected": 1,
+          "fixes_accepted": 132,
+          "online_cpu_s": 26.844834,
+          "mode_counts": {
+            "fresh": 133,
+            "inhibited": 11
+          },
+          "status_counts": {
+            "0": 133,
+            "2": 11
+          },
+          "max_cache_sizes": [
+            12,
+            0,
+            144
+          ]
+        },
+        "total_cpu_s": 41.56356699999999
+      },
+      {
+        "scenario": {
+          "name": "P2_jan15_9202",
+          "probe": 2,
+          "utc": "2012-01-15T00:00:00",
+          "days": 3.0,
+          "seed": 9202,
+          "split": "fresh",
+          "outages": [
+            [
+              36.0,
+              42.0
+            ]
+          ],
+          "pulses": [
+            [
+              24.0,
+              60.0,
+              3e-07
+            ]
+          ],
+          "bias_m_s2": 8e-08,
+          "thrust_sigma": 0.03,
+          "pointing_sigma_rad": 0.005
+        },
+        "profile": "legacy",
+        "arithmetic": "float64",
+        "classification": "Synthetic controlled vehicle; one reconstructed ARTEMIS spacecraft initial state; no future spacecraft samples",
+        "initial_state": [
+          -9666410.480445892,
+          8901149.26009285,
+          5061773.79437194,
+          2.3668087843669445,
+          -490.554858128079,
+          -145.01086157393462
+        ],
+        "model": {
+          "epoch_jd_tdb": 2455941.500766022,
+          "parameters": {
+            "gm_moon": 4902799967088.641,
+            "gm_earth": 398600435507022.7,
+            "gm_sun": 1.3271244004127942e+20,
+            "moon_radius_m": 1738000.0,
+            "moon_j2": 0,
+            "area_mass_m2_kg": 0.016,
+            "reflectivity": 1.0,
+            "earth_radius_m": 6378137.0
+          },
+          "extra": {
+            "earth_j2": true,
+            "other_planets": true,
+            "first_pn": true,
+            "tide_convention": "none",
+            "love_k2": 0.024116,
+            "earth_j2_value": 0.0010826358699107248
+          },
+          "lunar_degree": 60
+        },
+        "filter_settings": {
+          "bias_correlation_s": 0.0,
+          "bias_random_walk_psd": 1e-18,
+          "acceleration_noise_psd": 1e-10,
+          "initial_bias_sigma_m_s2": 1e-07,
+          "maximum_bias_m_s2": 2e-06,
+          "nis_limit": 35.0,
+          "covariance_step_s": 1800.0,
+          "maneuver_fraction_sigma": 0.05,
+          "maneuver_pointing_sigma_rad": 0.02
+        },
+        "guard": null,
+        "metrics": {
+          "rms_m": 64.71282471862881,
+          "peak_m": 238.41343014441495,
+          "full_rms_m": 93.7482381835028,
+          "full_peak_m": 426.85768777287086,
+          "dv_m_s": 0.36195073542798234,
+          "burns": 93,
+          "direction_changes": 34,
+          "collision": false,
+          "completed": true,
+          "numerical_faults": 0,
+          "fixes_rejected": 1,
+          "fixes_accepted": 132,
+          "online_cpu_s": 28.01337900000003,
+          "mode_counts": {
+            "fresh": 133,
+            "inhibited": 11
+          },
+          "status_counts": {
+            "0": 133,
+            "2": 11
+          },
+          "max_cache_sizes": [
+            12,
+            0,
+            144
+          ]
+        },
+        "total_cpu_s": 42.917023
+      },
+      {
+        "scenario": {
+          "name": "P2_jan15_9202",
+          "probe": 2,
+          "utc": "2012-01-15T00:00:00",
+          "days": 3.0,
+          "seed": 9202,
+          "split": "fresh",
+          "outages": [
+            [
+              36.0,
+              42.0
+            ]
+          ],
+          "pulses": [
+            [
+              24.0,
+              60.0,
+              3e-07
+            ]
+          ],
+          "bias_m_s2": 8e-08,
+          "thrust_sigma": 0.03,
+          "pointing_sigma_rad": 0.005
+        },
+        "profile": "legacy",
+        "arithmetic": "32",
+        "classification": "Synthetic controlled vehicle; one reconstructed ARTEMIS spacecraft initial state; no future spacecraft samples",
+        "initial_state": [
+          -9666410.480445892,
+          8901149.26009285,
+          5061773.79437194,
+          2.3668087843669445,
+          -490.554858128079,
+          -145.01086157393462
+        ],
+        "model": {
+          "epoch_jd_tdb": 2455941.500766022,
+          "parameters": {
+            "gm_moon": 4902799967088.641,
+            "gm_earth": 398600435507022.7,
+            "gm_sun": 1.3271244004127942e+20,
+            "moon_radius_m": 1738000.0,
+            "moon_j2": 0,
+            "area_mass_m2_kg": 0.016,
+            "reflectivity": 1.0,
+            "earth_radius_m": 6378137.0
+          },
+          "extra": {
+            "earth_j2": true,
+            "other_planets": true,
+            "first_pn": true,
+            "tide_convention": "none",
+            "love_k2": 0.024116,
+            "earth_j2_value": 0.0010826358699107248
+          },
+          "lunar_degree": 60
+        },
+        "filter_settings": {
+          "bias_correlation_s": 0.0,
+          "bias_random_walk_psd": 1e-18,
+          "acceleration_noise_psd": 1e-10,
+          "initial_bias_sigma_m_s2": 1e-07,
+          "maximum_bias_m_s2": 2e-06,
+          "nis_limit": 35.0,
+          "covariance_step_s": 1800.0,
+          "maneuver_fraction_sigma": 0.05,
+          "maneuver_pointing_sigma_rad": 0.02
+        },
+        "guard": null,
+        "metrics": {
+          "rms_m": 64.71286040400423,
+          "peak_m": 238.4134023742704,
+          "full_rms_m": 93.74837882514123,
+          "full_peak_m": 426.85768777287086,
+          "dv_m_s": 0.36195345167290166,
+          "burns": 93,
+          "direction_changes": 34,
+          "collision": false,
+          "completed": true,
+          "numerical_faults": 0,
+          "fixes_rejected": 1,
+          "fixes_accepted": 132,
+          "online_cpu_s": 27.35535200000008,
+          "mode_counts": {
+            "fresh": 133,
+            "inhibited": 11
+          },
+          "status_counts": {
+            "0": 133,
+            "2": 11
+          },
+          "max_cache_sizes": [
+            12,
+            0,
+            144
+          ]
+        },
+        "total_cpu_s": 42.236102
+      },
+      {
+        "scenario": {
+          "name": "P1_jan18_9201",
+          "probe": 1,
+          "utc": "2012-01-18T00:00:00",
+          "days": 7.0,
+          "seed": 9201,
+          "split": "fresh",
+          "outages": [
+            [
+              36.0,
+              44.0
+            ],
+            [
+              108.0,
+              120.0
+            ]
+          ],
+          "pulses": [
+            [
+              24.0,
+              36.0,
+              3e-07
+            ],
+            [
+              96.0,
+              132.0,
+              2e-07
+            ]
+          ],
+          "bias_m_s2": 1.2e-07,
+          "thrust_sigma": 0.06,
+          "pointing_sigma_rad": 0.005
+        },
+        "profile": "legacy",
+        "arithmetic": "float64",
+        "classification": "Synthetic controlled vehicle; one reconstructed ARTEMIS spacecraft initial state; no future spacecraft samples",
+        "initial_state": [
+          -18391376.60131647,
+          3324272.339402902,
+          -889078.7249983696,
+          -92.38735163139744,
+          235.70693313006402,
+          45.328102014749405
+        ],
+        "model": {
+          "epoch_jd_tdb": 2455944.500766023,
+          "parameters": {
+            "gm_moon": 4902799967088.641,
+            "gm_earth": 398600435507022.7,
+            "gm_sun": 1.3271244004127942e+20,
+            "moon_radius_m": 1738000.0,
+            "moon_j2": 0,
+            "area_mass_m2_kg": 0.016,
+            "reflectivity": 1.0,
+            "earth_radius_m": 6378137.0
+          },
+          "extra": {
+            "earth_j2": true,
+            "other_planets": true,
+            "first_pn": true,
+            "tide_convention": "none",
+            "love_k2": 0.024116,
+            "earth_j2_value": 0.0010826358699107248
+          },
+          "lunar_degree": 60
+        },
+        "filter_settings": {
+          "bias_correlation_s": 0.0,
+          "bias_random_walk_psd": 1e-18,
+          "acceleration_noise_psd": 1e-10,
+          "initial_bias_sigma_m_s2": 1e-07,
+          "maximum_bias_m_s2": 2e-06,
+          "nis_limit": 35.0,
+          "covariance_step_s": 1800.0,
+          "maneuver_fraction_sigma": 0.05,
+          "maneuver_pointing_sigma_rad": 0.02
+        },
+        "guard": null,
+        "metrics": {
+          "rms_m": 76.91727308185327,
+          "peak_m": 303.62736432227086,
+          "full_rms_m": 91.88357045225285,
+          "full_peak_m": 445.9673723450289,
+          "dv_m_s": 0.8416978377761783,
+          "burns": 198,
+          "direction_changes": 63,
+          "collision": false,
+          "completed": true,
+          "numerical_faults": 1,
+          "fixes_rejected": 1,
+          "fixes_accepted": 296,
+          "online_cpu_s": 72.71562399999983,
+          "mode_counts": {
+            "fresh": 298,
+            "inhibited": 38
+          },
+          "status_counts": {
+            "0": 297,
+            "2": 38,
+            "32": 1
+          },
+          "max_cache_sizes": [
+            12,
+            0,
+            256
+          ]
+        },
+        "total_cpu_s": 107.78220400000001
+      },
+      {
+        "scenario": {
+          "name": "P1_jan18_9201",
+          "probe": 1,
+          "utc": "2012-01-18T00:00:00",
+          "days": 7.0,
+          "seed": 9201,
+          "split": "fresh",
+          "outages": [
+            [
+              36.0,
+              44.0
+            ],
+            [
+              108.0,
+              120.0
+            ]
+          ],
+          "pulses": [
+            [
+              24.0,
+              36.0,
+              3e-07
+            ],
+            [
+              96.0,
+              132.0,
+              2e-07
+            ]
+          ],
+          "bias_m_s2": 1.2e-07,
+          "thrust_sigma": 0.06,
+          "pointing_sigma_rad": 0.005
+        },
+        "profile": "legacy",
+        "arithmetic": "32",
+        "classification": "Synthetic controlled vehicle; one reconstructed ARTEMIS spacecraft initial state; no future spacecraft samples",
+        "initial_state": [
+          -18391376.60131647,
+          3324272.339402902,
+          -889078.7249983696,
+          -92.38735163139744,
+          235.70693313006402,
+          45.328102014749405
+        ],
+        "model": {
+          "epoch_jd_tdb": 2455944.500766023,
+          "parameters": {
+            "gm_moon": 4902799967088.641,
+            "gm_earth": 398600435507022.7,
+            "gm_sun": 1.3271244004127942e+20,
+            "moon_radius_m": 1738000.0,
+            "moon_j2": 0,
+            "area_mass_m2_kg": 0.016,
+            "reflectivity": 1.0,
+            "earth_radius_m": 6378137.0
+          },
+          "extra": {
+            "earth_j2": true,
+            "other_planets": true,
+            "first_pn": true,
+            "tide_convention": "none",
+            "love_k2": 0.024116,
+            "earth_j2_value": 0.0010826358699107248
+          },
+          "lunar_degree": 60
+        },
+        "filter_settings": {
+          "bias_correlation_s": 0.0,
+          "bias_random_walk_psd": 1e-18,
+          "acceleration_noise_psd": 1e-10,
+          "initial_bias_sigma_m_s2": 1e-07,
+          "maximum_bias_m_s2": 2e-06,
+          "nis_limit": 35.0,
+          "covariance_step_s": 1800.0,
+          "maneuver_fraction_sigma": 0.05,
+          "maneuver_pointing_sigma_rad": 0.02
+        },
+        "guard": null,
+        "metrics": {
+          "rms_m": 76.91690024784582,
+          "peak_m": 303.62511831067604,
+          "full_rms_m": 91.88328474385985,
+          "full_peak_m": 445.9673723450289,
+          "dv_m_s": 0.841670118015792,
+          "burns": 198,
+          "direction_changes": 62,
+          "collision": false,
+          "completed": true,
+          "numerical_faults": 1,
+          "fixes_rejected": 1,
+          "fixes_accepted": 296,
+          "online_cpu_s": 71.5438239999999,
+          "mode_counts": {
+            "fresh": 298,
+            "inhibited": 38
+          },
+          "status_counts": {
+            "0": 297,
+            "2": 38,
+            "32": 1
+          },
+          "max_cache_sizes": [
+            12,
+            0,
+            256
+          ]
+        },
+        "total_cpu_s": 106.757914
+      },
+      {
+        "scenario": {
+          "name": "P1_jan18_9202",
+          "probe": 1,
+          "utc": "2012-01-18T00:00:00",
+          "days": 7.0,
+          "seed": 9202,
+          "split": "fresh",
+          "outages": [
+            [
+              36.0,
+              44.0
+            ],
+            [
+              108.0,
+              120.0
+            ]
+          ],
+          "pulses": [
+            [
+              24.0,
+              36.0,
+              3e-07
+            ],
+            [
+              96.0,
+              132.0,
+              2e-07
+            ]
+          ],
+          "bias_m_s2": 1.2e-07,
+          "thrust_sigma": 0.06,
+          "pointing_sigma_rad": 0.005
+        },
+        "profile": "legacy",
+        "arithmetic": "float64",
+        "classification": "Synthetic controlled vehicle; one reconstructed ARTEMIS spacecraft initial state; no future spacecraft samples",
+        "initial_state": [
+          -18391376.60131647,
+          3324272.339402902,
+          -889078.7249983696,
+          -92.38735163139744,
+          235.70693313006402,
+          45.328102014749405
+        ],
+        "model": {
+          "epoch_jd_tdb": 2455944.500766023,
+          "parameters": {
+            "gm_moon": 4902799967088.641,
+            "gm_earth": 398600435507022.7,
+            "gm_sun": 1.3271244004127942e+20,
+            "moon_radius_m": 1738000.0,
+            "moon_j2": 0,
+            "area_mass_m2_kg": 0.016,
+            "reflectivity": 1.0,
+            "earth_radius_m": 6378137.0
+          },
+          "extra": {
+            "earth_j2": true,
+            "other_planets": true,
+            "first_pn": true,
+            "tide_convention": "none",
+            "love_k2": 0.024116,
+            "earth_j2_value": 0.0010826358699107248
+          },
+          "lunar_degree": 60
+        },
+        "filter_settings": {
+          "bias_correlation_s": 0.0,
+          "bias_random_walk_psd": 1e-18,
+          "acceleration_noise_psd": 1e-10,
+          "initial_bias_sigma_m_s2": 1e-07,
+          "maximum_bias_m_s2": 2e-06,
+          "nis_limit": 35.0,
+          "covariance_step_s": 1800.0,
+          "maneuver_fraction_sigma": 0.05,
+          "maneuver_pointing_sigma_rad": 0.02
+        },
+        "guard": null,
+        "metrics": {
+          "rms_m": 463647.46067170595,
+          "peak_m": 2467748.42753188,
+          "full_rms_m": 446790.39449525374,
+          "full_peak_m": 2467748.42753188,
+          "dv_m_s": 26.662672023599146,
+          "burns": 243,
+          "direction_changes": 22,
+          "collision": false,
+          "completed": true,
+          "numerical_faults": 1,
+          "fixes_rejected": 34,
+          "fixes_accepted": 263,
+          "online_cpu_s": 83.185205,
+          "mode_counts": {
+            "fresh": 265,
+            "inhibited": 71
+          },
+          "status_counts": {
+            "0": 264,
+            "2": 71,
+            "32": 1
+          },
+          "max_cache_sizes": [
+            12,
+            0,
+            256
+          ]
+        },
+        "total_cpu_s": 121.433775
+      },
+      {
+        "scenario": {
+          "name": "P1_jan18_9202",
+          "probe": 1,
+          "utc": "2012-01-18T00:00:00",
+          "days": 7.0,
+          "seed": 9202,
+          "split": "fresh",
+          "outages": [
+            [
+              36.0,
+              44.0
+            ],
+            [
+              108.0,
+              120.0
+            ]
+          ],
+          "pulses": [
+            [
+              24.0,
+              36.0,
+              3e-07
+            ],
+            [
+              96.0,
+              132.0,
+              2e-07
+            ]
+          ],
+          "bias_m_s2": 1.2e-07,
+          "thrust_sigma": 0.06,
+          "pointing_sigma_rad": 0.005
+        },
+        "profile": "legacy",
+        "arithmetic": "32",
+        "classification": "Synthetic controlled vehicle; one reconstructed ARTEMIS spacecraft initial state; no future spacecraft samples",
+        "initial_state": [
+          -18391376.60131647,
+          3324272.339402902,
+          -889078.7249983696,
+          -92.38735163139744,
+          235.70693313006402,
+          45.328102014749405
+        ],
+        "model": {
+          "epoch_jd_tdb": 2455944.500766023,
+          "parameters": {
+            "gm_moon": 4902799967088.641,
+            "gm_earth": 398600435507022.7,
+            "gm_sun": 1.3271244004127942e+20,
+            "moon_radius_m": 1738000.0,
+            "moon_j2": 0,
+            "area_mass_m2_kg": 0.016,
+            "reflectivity": 1.0,
+            "earth_radius_m": 6378137.0
+          },
+          "extra": {
+            "earth_j2": true,
+            "other_planets": true,
+            "first_pn": true,
+            "tide_convention": "none",
+            "love_k2": 0.024116,
+            "earth_j2_value": 0.0010826358699107248
+          },
+          "lunar_degree": 60
+        },
+        "filter_settings": {
+          "bias_correlation_s": 0.0,
+          "bias_random_walk_psd": 1e-18,
+          "acceleration_noise_psd": 1e-10,
+          "initial_bias_sigma_m_s2": 1e-07,
+          "maximum_bias_m_s2": 2e-06,
+          "nis_limit": 35.0,
+          "covariance_step_s": 1800.0,
+          "maneuver_fraction_sigma": 0.05,
+          "maneuver_pointing_sigma_rad": 0.02
+        },
+        "guard": null,
+        "metrics": {
+          "rms_m": 389939.2702076546,
+          "peak_m": 1983442.0038780442,
+          "full_rms_m": 375762.0510542594,
+          "full_peak_m": 1983442.0038780442,
+          "dv_m_s": 22.019579657181293,
+          "burns": 212,
+          "direction_changes": 20,
+          "collision": false,
+          "completed": true,
+          "numerical_faults": 32,
+          "fixes_rejected": 34,
+          "fixes_accepted": 263,
+          "online_cpu_s": 77.65432400000019,
+          "mode_counts": {
+            "fresh": 265,
+            "inhibited": 71
+          },
+          "status_counts": {
+            "0": 233,
+            "2": 71,
+            "32": 1,
+            "1": 31
+          },
+          "max_cache_sizes": [
+            12,
+            0,
+            256
+          ]
+        },
+        "total_cpu_s": 114.807261
+      },
+      {
+        "scenario": {
+          "name": "P2_jan18_9201",
+          "probe": 2,
+          "utc": "2012-01-18T00:00:00",
+          "days": 7.0,
+          "seed": 9201,
+          "split": "fresh",
+          "outages": [
+            [
+              36.0,
+              44.0
+            ],
+            [
+              108.0,
+              120.0
+            ]
+          ],
+          "pulses": [
+            [
+              24.0,
+              60.0,
+              3e-07
+            ],
+            [
+              96.0,
+              108.0,
+              2e-07
+            ]
+          ],
+          "bias_m_s2": 1.2e-07,
+          "thrust_sigma": 0.06,
+          "pointing_sigma_rad": 0.005
+        },
+        "profile": "legacy",
+        "arithmetic": "float64",
+        "classification": "Synthetic controlled vehicle; one reconstructed ARTEMIS spacecraft initial state; no future spacecraft samples",
+        "initial_state": [
+          3135039.3692585058,
+          15128625.705436978,
+          3715334.17131193,
+          -231.05549936426993,
+          322.49423009197136,
+          161.2006730102715
+        ],
+        "model": {
+          "epoch_jd_tdb": 2455944.500766023,
+          "parameters": {
+            "gm_moon": 4902799967088.641,
+            "gm_earth": 398600435507022.7,
+            "gm_sun": 1.3271244004127942e+20,
+            "moon_radius_m": 1738000.0,
+            "moon_j2": 0,
+            "area_mass_m2_kg": 0.016,
+            "reflectivity": 1.0,
+            "earth_radius_m": 6378137.0
+          },
+          "extra": {
+            "earth_j2": true,
+            "other_planets": true,
+            "first_pn": true,
+            "tide_convention": "none",
+            "love_k2": 0.024116,
+            "earth_j2_value": 0.0010826358699107248
+          },
+          "lunar_degree": 60
+        },
+        "filter_settings": {
+          "bias_correlation_s": 0.0,
+          "bias_random_walk_psd": 1e-18,
+          "acceleration_noise_psd": 1e-10,
+          "initial_bias_sigma_m_s2": 1e-07,
+          "maximum_bias_m_s2": 2e-06,
+          "nis_limit": 35.0,
+          "covariance_step_s": 1800.0,
+          "maneuver_fraction_sigma": 0.05,
+          "maneuver_pointing_sigma_rad": 0.02
+        },
+        "guard": null,
+        "metrics": {
+          "rms_m": 42.80767938566128,
+          "peak_m": 147.45989918048585,
+          "full_rms_m": 68.37743447832341,
+          "full_peak_m": 445.96737234468713,
+          "dv_m_s": 0.44546957968669876,
+          "burns": 190,
+          "direction_changes": 71,
+          "collision": false,
+          "completed": true,
+          "numerical_faults": 0,
+          "fixes_rejected": 1,
+          "fixes_accepted": 296,
+          "online_cpu_s": 75.52238200000019,
+          "mode_counts": {
+            "fresh": 298,
+            "inhibited": 38
+          },
+          "status_counts": {
+            "0": 298,
+            "2": 38
+          },
+          "max_cache_sizes": [
+            12,
+            0,
+            256
+          ]
+        },
+        "total_cpu_s": 110.875067
+      },
+      {
+        "scenario": {
+          "name": "P2_jan18_9201",
+          "probe": 2,
+          "utc": "2012-01-18T00:00:00",
+          "days": 7.0,
+          "seed": 9201,
+          "split": "fresh",
+          "outages": [
+            [
+              36.0,
+              44.0
+            ],
+            [
+              108.0,
+              120.0
+            ]
+          ],
+          "pulses": [
+            [
+              24.0,
+              60.0,
+              3e-07
+            ],
+            [
+              96.0,
+              108.0,
+              2e-07
+            ]
+          ],
+          "bias_m_s2": 1.2e-07,
+          "thrust_sigma": 0.06,
+          "pointing_sigma_rad": 0.005
+        },
+        "profile": "legacy",
+        "arithmetic": "32",
+        "classification": "Synthetic controlled vehicle; one reconstructed ARTEMIS spacecraft initial state; no future spacecraft samples",
+        "initial_state": [
+          3135039.3692585058,
+          15128625.705436978,
+          3715334.17131193,
+          -231.05549936426993,
+          322.49423009197136,
+          161.2006730102715
+        ],
+        "model": {
+          "epoch_jd_tdb": 2455944.500766023,
+          "parameters": {
+            "gm_moon": 4902799967088.641,
+            "gm_earth": 398600435507022.7,
+            "gm_sun": 1.3271244004127942e+20,
+            "moon_radius_m": 1738000.0,
+            "moon_j2": 0,
+            "area_mass_m2_kg": 0.016,
+            "reflectivity": 1.0,
+            "earth_radius_m": 6378137.0
+          },
+          "extra": {
+            "earth_j2": true,
+            "other_planets": true,
+            "first_pn": true,
+            "tide_convention": "none",
+            "love_k2": 0.024116,
+            "earth_j2_value": 0.0010826358699107248
+          },
+          "lunar_degree": 60
+        },
+        "filter_settings": {
+          "bias_correlation_s": 0.0,
+          "bias_random_walk_psd": 1e-18,
+          "acceleration_noise_psd": 1e-10,
+          "initial_bias_sigma_m_s2": 1e-07,
+          "maximum_bias_m_s2": 2e-06,
+          "nis_limit": 35.0,
+          "covariance_step_s": 1800.0,
+          "maneuver_fraction_sigma": 0.05,
+          "maneuver_pointing_sigma_rad": 0.02
+        },
+        "guard": null,
+        "metrics": {
+          "rms_m": 42.80804122277182,
+          "peak_m": 147.45938733012557,
+          "full_rms_m": 68.37763982804198,
+          "full_peak_m": 445.96737234468713,
+          "dv_m_s": 0.4454715144956872,
+          "burns": 190,
+          "direction_changes": 71,
+          "collision": false,
+          "completed": true,
+          "numerical_faults": 0,
+          "fixes_rejected": 1,
+          "fixes_accepted": 296,
+          "online_cpu_s": 74.29331400000083,
+          "mode_counts": {
+            "fresh": 298,
+            "inhibited": 38
+          },
+          "status_counts": {
+            "0": 298,
+            "2": 38
+          },
+          "max_cache_sizes": [
+            12,
+            0,
+            256
+          ]
+        },
+        "total_cpu_s": 109.64446000000004
+      },
+      {
+        "scenario": {
+          "name": "P2_jan18_9202",
+          "probe": 2,
+          "utc": "2012-01-18T00:00:00",
+          "days": 7.0,
+          "seed": 9202,
+          "split": "fresh",
+          "outages": [
+            [
+              36.0,
+              44.0
+            ],
+            [
+              108.0,
+              120.0
+            ]
+          ],
+          "pulses": [
+            [
+              24.0,
+              60.0,
+              3e-07
+            ],
+            [
+              96.0,
+              108.0,
+              2e-07
+            ]
+          ],
+          "bias_m_s2": 1.2e-07,
+          "thrust_sigma": 0.06,
+          "pointing_sigma_rad": 0.005
+        },
+        "profile": "legacy",
+        "arithmetic": "float64",
+        "classification": "Synthetic controlled vehicle; one reconstructed ARTEMIS spacecraft initial state; no future spacecraft samples",
+        "initial_state": [
+          3135039.3692585058,
+          15128625.705436978,
+          3715334.17131193,
+          -231.05549936426993,
+          322.49423009197136,
+          161.2006730102715
+        ],
+        "model": {
+          "epoch_jd_tdb": 2455944.500766023,
+          "parameters": {
+            "gm_moon": 4902799967088.641,
+            "gm_earth": 398600435507022.7,
+            "gm_sun": 1.3271244004127942e+20,
+            "moon_radius_m": 1738000.0,
+            "moon_j2": 0,
+            "area_mass_m2_kg": 0.016,
+            "reflectivity": 1.0,
+            "earth_radius_m": 6378137.0
+          },
+          "extra": {
+            "earth_j2": true,
+            "other_planets": true,
+            "first_pn": true,
+            "tide_convention": "none",
+            "love_k2": 0.024116,
+            "earth_j2_value": 0.0010826358699107248
+          },
+          "lunar_degree": 60
+        },
+        "filter_settings": {
+          "bias_correlation_s": 0.0,
+          "bias_random_walk_psd": 1e-18,
+          "acceleration_noise_psd": 1e-10,
+          "initial_bias_sigma_m_s2": 1e-07,
+          "maximum_bias_m_s2": 2e-06,
+          "nis_limit": 35.0,
+          "covariance_step_s": 1800.0,
+          "maneuver_fraction_sigma": 0.05,
+          "maneuver_pointing_sigma_rad": 0.02
+        },
+        "guard": null,
+        "metrics": {
+          "rms_m": 52.51059694695868,
+          "peak_m": 195.2244955424024,
+          "full_rms_m": 70.32194312622254,
+          "full_peak_m": 426.85768777203293,
+          "dv_m_s": 0.43724535246343577,
+          "burns": 192,
+          "direction_changes": 69,
+          "collision": false,
+          "completed": true,
+          "numerical_faults": 0,
+          "fixes_rejected": 1,
+          "fixes_accepted": 296,
+          "online_cpu_s": 75.82981199999972,
+          "mode_counts": {
+            "fresh": 298,
+            "inhibited": 38
+          },
+          "status_counts": {
+            "0": 298,
+            "2": 38
+          },
+          "max_cache_sizes": [
+            12,
+            0,
+            256
+          ]
+        },
+        "total_cpu_s": 111.356166
+      },
+      {
+        "scenario": {
+          "name": "P2_jan18_9202",
+          "probe": 2,
+          "utc": "2012-01-18T00:00:00",
+          "days": 7.0,
+          "seed": 9202,
+          "split": "fresh",
+          "outages": [
+            [
+              36.0,
+              44.0
+            ],
+            [
+              108.0,
+              120.0
+            ]
+          ],
+          "pulses": [
+            [
+              24.0,
+              60.0,
+              3e-07
+            ],
+            [
+              96.0,
+              108.0,
+              2e-07
+            ]
+          ],
+          "bias_m_s2": 1.2e-07,
+          "thrust_sigma": 0.06,
+          "pointing_sigma_rad": 0.005
+        },
+        "profile": "legacy",
+        "arithmetic": "32",
+        "classification": "Synthetic controlled vehicle; one reconstructed ARTEMIS spacecraft initial state; no future spacecraft samples",
+        "initial_state": [
+          3135039.3692585058,
+          15128625.705436978,
+          3715334.17131193,
+          -231.05549936426993,
+          322.49423009197136,
+          161.2006730102715
+        ],
+        "model": {
+          "epoch_jd_tdb": 2455944.500766023,
+          "parameters": {
+            "gm_moon": 4902799967088.641,
+            "gm_earth": 398600435507022.7,
+            "gm_sun": 1.3271244004127942e+20,
+            "moon_radius_m": 1738000.0,
+            "moon_j2": 0,
+            "area_mass_m2_kg": 0.016,
+            "reflectivity": 1.0,
+            "earth_radius_m": 6378137.0
+          },
+          "extra": {
+            "earth_j2": true,
+            "other_planets": true,
+            "first_pn": true,
+            "tide_convention": "none",
+            "love_k2": 0.024116,
+            "earth_j2_value": 0.0010826358699107248
+          },
+          "lunar_degree": 60
+        },
+        "filter_settings": {
+          "bias_correlation_s": 0.0,
+          "bias_random_walk_psd": 1e-18,
+          "acceleration_noise_psd": 1e-10,
+          "initial_bias_sigma_m_s2": 1e-07,
+          "maximum_bias_m_s2": 2e-06,
+          "nis_limit": 35.0,
+          "covariance_step_s": 1800.0,
+          "maneuver_fraction_sigma": 0.05,
+          "maneuver_pointing_sigma_rad": 0.02
+        },
+        "guard": null,
+        "metrics": {
+          "rms_m": 52.510622926549715,
+          "peak_m": 195.22634123090867,
+          "full_rms_m": 70.32196167121393,
+          "full_peak_m": 426.85768777203293,
+          "dv_m_s": 0.4372358426727898,
+          "burns": 192,
+          "direction_changes": 69,
+          "collision": false,
+          "completed": true,
+          "numerical_faults": 0,
+          "fixes_rejected": 1,
+          "fixes_accepted": 296,
+          "online_cpu_s": 73.31757899999982,
+          "mode_counts": {
+            "fresh": 298,
+            "inhibited": 38
+          },
+          "status_counts": {
+            "0": 298,
+            "2": 38
+          },
+          "max_cache_sizes": [
+            12,
+            0,
+            256
+          ]
+        },
+        "total_cpu_s": 108.43348700000001
+      }
+    ],
+    "supervised/regression": [
+      {
+        "scenario": {
+          "name": "P1_jan15_regression",
+          "probe": 1,
+          "utc": "2012-01-15T00:00:00",
+          "days": 3.0,
+          "seed": 9201,
+          "split": "regression",
+          "outages": [
+            [
+              36.0,
+              42.0
+            ]
+          ],
+          "pulses": [
+            [
+              24.0,
+              36.0,
+              3e-07
+            ]
+          ],
+          "bias_m_s2": 8e-08,
+          "thrust_sigma": 0.03,
+          "pointing_sigma_rad": 0.005
+        },
+        "profile": "supervised_sparse_05",
+        "arithmetic": "float64",
+        "classification": "Synthetic controlled vehicle; one reconstructed ARTEMIS spacecraft initial state; no future spacecraft samples",
+        "initial_state": [
+          -11022204.42392619,
+          9373663.17944626,
+          1236865.203633446,
+          462.2120849490333,
+          10.263933986220607,
+          44.65009552327442
+        ],
+        "model": {
+          "epoch_jd_tdb": 2455941.500766022,
+          "parameters": {
+            "gm_moon": 4902799967088.641,
+            "gm_earth": 398600435507022.7,
+            "gm_sun": 1.3271244004127942e+20,
+            "moon_radius_m": 1738000.0,
+            "moon_j2": 0,
+            "area_mass_m2_kg": 0.016,
+            "reflectivity": 1.0,
+            "earth_radius_m": 6378137.0
+          },
+          "extra": {
+            "earth_j2": true,
+            "other_planets": true,
+            "first_pn": true,
+            "tide_convention": "none",
+            "love_k2": 0.024116,
+            "earth_j2_value": 0.0010826358699107248
+          },
+          "lunar_degree": 60
+        },
+        "nominal_min_clearance_m": 262966.2768607545,
+        "filter_settings": {
+          "bias_correlation_s": 0.0,
+          "bias_random_walk_psd": 1e-18,
+          "acceleration_noise_psd": 1e-10,
+          "initial_bias_sigma_m_s2": 1e-07,
+          "maximum_bias_m_s2": 2e-06,
+          "nis_limit": 35.0,
+          "covariance_step_s": 1800.0,
+          "maneuver_fraction_sigma": 0.05,
+          "maneuver_pointing_sigma_rad": 0.02
+        },
+        "guard": null,
+        "metrics": {
+          "rms_m": 39.66678966142928,
+          "peak_m": 145.49623128847958,
+          "full_rms_m": 87.7730978363282,
+          "full_peak_m": 445.96737234468713,
+          "dv_m_s": 0.4629272237065978,
+          "burns": 87,
+          "direction_changes": 29,
+          "collision": false,
+          "completed": true,
+          "numerical_faults": 0,
+          "supervisor_halts": 0,
+          "fixes_rejected": 1,
+          "fixes_accepted": 132,
+          "online_cpu_s": 32.29765100000001,
+          "mode_counts": {
+            "fresh": 133,
+            "inhibited": 11
+          },
+          "status_counts": {
+            "0": 133,
+            "2": 11
+          },
+          "max_cache_sizes": [
+            12,
+            0,
+            144
+          ]
+        },
+        "total_cpu_s": 49.531812,
+        "routine_limits": {
+          "position_error_m": 5000.0,
+          "velocity_error_m_s": 0.5,
+          "issued_dv_per_day_m_s": 1.0
+        }
+      },
+      {
+        "scenario": {
+          "name": "P1_jan15_regression",
+          "probe": 1,
+          "utc": "2012-01-15T00:00:00",
+          "days": 3.0,
+          "seed": 9201,
+          "split": "regression",
+          "outages": [
+            [
+              36.0,
+              42.0
+            ]
+          ],
+          "pulses": [
+            [
+              24.0,
+              36.0,
+              3e-07
+            ]
+          ],
+          "bias_m_s2": 8e-08,
+          "thrust_sigma": 0.03,
+          "pointing_sigma_rad": 0.005
+        },
+        "profile": "supervised_sparse_05",
+        "arithmetic": "32",
+        "classification": "Synthetic controlled vehicle; one reconstructed ARTEMIS spacecraft initial state; no future spacecraft samples",
+        "initial_state": [
+          -11022204.42392619,
+          9373663.17944626,
+          1236865.203633446,
+          462.2120849490333,
+          10.263933986220607,
+          44.65009552327442
+        ],
+        "model": {
+          "epoch_jd_tdb": 2455941.500766022,
+          "parameters": {
+            "gm_moon": 4902799967088.641,
+            "gm_earth": 398600435507022.7,
+            "gm_sun": 1.3271244004127942e+20,
+            "moon_radius_m": 1738000.0,
+            "moon_j2": 0,
+            "area_mass_m2_kg": 0.016,
+            "reflectivity": 1.0,
+            "earth_radius_m": 6378137.0
+          },
+          "extra": {
+            "earth_j2": true,
+            "other_planets": true,
+            "first_pn": true,
+            "tide_convention": "none",
+            "love_k2": 0.024116,
+            "earth_j2_value": 0.0010826358699107248
+          },
+          "lunar_degree": 60
+        },
+        "nominal_min_clearance_m": 262966.2768607545,
+        "filter_settings": {
+          "bias_correlation_s": 0.0,
+          "bias_random_walk_psd": 1e-18,
+          "acceleration_noise_psd": 1e-10,
+          "initial_bias_sigma_m_s2": 1e-07,
+          "maximum_bias_m_s2": 2e-06,
+          "nis_limit": 35.0,
+          "covariance_step_s": 1800.0,
+          "maneuver_fraction_sigma": 0.05,
+          "maneuver_pointing_sigma_rad": 0.02
+        },
+        "guard": null,
+        "metrics": {
+          "rms_m": 39.66652076764797,
+          "peak_m": 145.49517217144657,
+          "full_rms_m": 87.77314177254195,
+          "full_peak_m": 445.96737234468713,
+          "dv_m_s": 0.4629202765082921,
+          "burns": 87,
+          "direction_changes": 29,
+          "collision": false,
+          "completed": true,
+          "numerical_faults": 0,
+          "supervisor_halts": 0,
+          "fixes_rejected": 1,
+          "fixes_accepted": 132,
+          "online_cpu_s": 31.47356299999998,
+          "mode_counts": {
+            "fresh": 133,
+            "inhibited": 11
+          },
+          "status_counts": {
+            "0": 133,
+            "2": 11
+          },
+          "max_cache_sizes": [
+            12,
+            0,
+            144
+          ]
+        },
+        "total_cpu_s": 48.920704,
+        "routine_limits": {
+          "position_error_m": 5000.0,
+          "velocity_error_m_s": 0.5,
+          "issued_dv_per_day_m_s": 1.0
+        }
+      },
+      {
+        "scenario": {
+          "name": "P1_jan18_failure_replay",
+          "probe": 1,
+          "utc": "2012-01-18T00:00:00",
+          "days": 7.0,
+          "seed": 9202,
+          "split": "regression",
+          "outages": [
+            [
+              36.0,
+              44.0
+            ],
+            [
+              108.0,
+              120.0
+            ]
+          ],
+          "pulses": [
+            [
+              24.0,
+              36.0,
+              3e-07
+            ],
+            [
+              96.0,
+              132.0,
+              2e-07
+            ]
+          ],
+          "bias_m_s2": 1.2e-07,
+          "thrust_sigma": 0.06,
+          "pointing_sigma_rad": 0.005
+        },
+        "profile": "supervised_sparse_05",
+        "arithmetic": "float64",
+        "classification": "Synthetic controlled vehicle; one reconstructed ARTEMIS spacecraft initial state; no future spacecraft samples",
+        "initial_state": [
+          -18391376.60131647,
+          3324272.339402902,
+          -889078.7249983696,
+          -92.38735163139744,
+          235.70693313006402,
+          45.328102014749405
+        ],
+        "model": {
+          "epoch_jd_tdb": 2455944.500766023,
+          "parameters": {
+            "gm_moon": 4902799967088.641,
+            "gm_earth": 398600435507022.7,
+            "gm_sun": 1.3271244004127942e+20,
+            "moon_radius_m": 1738000.0,
+            "moon_j2": 0,
+            "area_mass_m2_kg": 0.016,
+            "reflectivity": 1.0,
+            "earth_radius_m": 6378137.0
+          },
+          "extra": {
+            "earth_j2": true,
+            "other_planets": true,
+            "first_pn": true,
+            "tide_convention": "none",
+            "love_k2": 0.024116,
+            "earth_j2_value": 0.0010826358699107248
+          },
+          "lunar_degree": 60
+        },
+        "nominal_min_clearance_m": 37777.93227432505,
+        "filter_settings": {
+          "bias_correlation_s": 0.0,
+          "bias_random_walk_psd": 1e-18,
+          "acceleration_noise_psd": 1e-10,
+          "initial_bias_sigma_m_s2": 1e-07,
+          "maximum_bias_m_s2": 2e-06,
+          "nis_limit": 35.0,
+          "covariance_step_s": 1800.0,
+          "maneuver_fraction_sigma": 0.05,
+          "maneuver_pointing_sigma_rad": 0.02
+        },
+        "guard": null,
+        "metrics": {
+          "rms_m": 102054.2197129078,
+          "peak_m": 513398.6120461268,
+          "full_rms_m": 98343.79395066586,
+          "full_peak_m": 513398.6120461268,
+          "dv_m_s": 0.21534179067067988,
+          "burns": 53,
+          "direction_changes": 14,
+          "collision": false,
+          "completed": true,
+          "numerical_faults": 1,
+          "supervisor_halts": 213,
+          "fixes_rejected": 34,
+          "fixes_accepted": 263,
+          "online_cpu_s": 52.545739000000026,
+          "mode_counts": {
+            "fresh": 74,
+            "inhibited": 49,
+            "recovery_required": 213
+          },
+          "status_counts": {
+            "0": 74,
+            "2": 48,
+            "32": 1,
+            "64": 213
+          },
+          "max_cache_sizes": [
+            12,
+            0,
+            256
+          ]
+        },
+        "total_cpu_s": 83.960328,
+        "routine_limits": {
+          "position_error_m": 5000.0,
+          "velocity_error_m_s": 0.5,
+          "issued_dv_per_day_m_s": 1.0
+        }
+      },
+      {
+        "scenario": {
+          "name": "P1_jan18_failure_replay",
+          "probe": 1,
+          "utc": "2012-01-18T00:00:00",
+          "days": 7.0,
+          "seed": 9202,
+          "split": "regression",
+          "outages": [
+            [
+              36.0,
+              44.0
+            ],
+            [
+              108.0,
+              120.0
+            ]
+          ],
+          "pulses": [
+            [
+              24.0,
+              36.0,
+              3e-07
+            ],
+            [
+              96.0,
+              132.0,
+              2e-07
+            ]
+          ],
+          "bias_m_s2": 1.2e-07,
+          "thrust_sigma": 0.06,
+          "pointing_sigma_rad": 0.005
+        },
+        "profile": "supervised_sparse_05",
+        "arithmetic": "32",
+        "classification": "Synthetic controlled vehicle; one reconstructed ARTEMIS spacecraft initial state; no future spacecraft samples",
+        "initial_state": [
+          -18391376.60131647,
+          3324272.339402902,
+          -889078.7249983696,
+          -92.38735163139744,
+          235.70693313006402,
+          45.328102014749405
+        ],
+        "model": {
+          "epoch_jd_tdb": 2455944.500766023,
+          "parameters": {
+            "gm_moon": 4902799967088.641,
+            "gm_earth": 398600435507022.7,
+            "gm_sun": 1.3271244004127942e+20,
+            "moon_radius_m": 1738000.0,
+            "moon_j2": 0,
+            "area_mass_m2_kg": 0.016,
+            "reflectivity": 1.0,
+            "earth_radius_m": 6378137.0
+          },
+          "extra": {
+            "earth_j2": true,
+            "other_planets": true,
+            "first_pn": true,
+            "tide_convention": "none",
+            "love_k2": 0.024116,
+            "earth_j2_value": 0.0010826358699107248
+          },
+          "lunar_degree": 60
+        },
+        "nominal_min_clearance_m": 37777.93227432505,
+        "filter_settings": {
+          "bias_correlation_s": 0.0,
+          "bias_random_walk_psd": 1e-18,
+          "acceleration_noise_psd": 1e-10,
+          "initial_bias_sigma_m_s2": 1e-07,
+          "maximum_bias_m_s2": 2e-06,
+          "nis_limit": 35.0,
+          "covariance_step_s": 1800.0,
+          "maneuver_fraction_sigma": 0.05,
+          "maneuver_pointing_sigma_rad": 0.02
+        },
+        "guard": null,
+        "metrics": {
+          "rms_m": 102053.72573318772,
+          "peak_m": 513396.1863249825,
+          "full_rms_m": 98343.31793088355,
+          "full_peak_m": 513396.1863249825,
+          "dv_m_s": 0.21536062345514465,
+          "burns": 53,
+          "direction_changes": 14,
+          "collision": false,
+          "completed": true,
+          "numerical_faults": 1,
+          "supervisor_halts": 213,
+          "fixes_rejected": 34,
+          "fixes_accepted": 263,
+          "online_cpu_s": 52.23801499999991,
+          "mode_counts": {
+            "fresh": 74,
+            "inhibited": 49,
+            "recovery_required": 213
+          },
+          "status_counts": {
+            "0": 74,
+            "2": 48,
+            "32": 1,
+            "64": 213
+          },
+          "max_cache_sizes": [
+            12,
+            0,
+            256
+          ]
+        },
+        "total_cpu_s": 83.953451,
+        "routine_limits": {
+          "position_error_m": 5000.0,
+          "velocity_error_m_s": 0.5,
+          "issued_dv_per_day_m_s": 1.0
+        }
+      }
+    ],
+    "supervised/endurance": [
+      {
+        "scenario": {
+          "name": "P1_jan20_30days",
+          "probe": 1,
+          "utc": "2012-01-20T00:00:00",
+          "days": 30.0,
+          "seed": 9401,
+          "split": "fresh_endurance",
+          "outages": [
+            [
+              36.0,
+              42.0
+            ],
+            [
+              204.0,
+              210.0
+            ],
+            [
+              372.0,
+              384.0
+            ],
+            [
+              540.0,
+              546.0
+            ]
+          ],
+          "pulses": [
+            [
+              24.0,
+              36.0,
+              3e-07
+            ],
+            [
+              192.0,
+              216.0,
+              3e-07
+            ],
+            [
+              360.0,
+              396.0,
+              2e-07
+            ],
+            [
+              528.0,
+              540.0,
+              3e-07
+            ]
+          ],
+          "bias_m_s2": 8e-08,
+          "thrust_sigma": 0.03,
+          "pointing_sigma_rad": 0.005
+        },
+        "profile": "supervised_sparse_05",
+        "arithmetic": "float64",
+        "classification": "Synthetic controlled vehicle; one reconstructed ARTEMIS spacecraft initial state; no future spacecraft samples",
+        "initial_state": [
+          -10921816.86074067,
+          -2734224.1427814006,
+          -1588171.5519598802,
+          -600.2743636208976,
+          204.90813034672567,
+          -8.7500232645359
+        ],
+        "model": {
+          "epoch_jd_tdb": 2455946.500766024,
+          "parameters": {
+            "gm_moon": 4902799967088.641,
+            "gm_earth": 398600435507022.7,
+            "gm_sun": 1.3271244004127942e+20,
+            "moon_radius_m": 1738000.0,
+            "moon_j2": 0,
+            "area_mass_m2_kg": 0.016,
+            "reflectivity": 1.0,
+            "earth_radius_m": 6378137.0
+          },
+          "extra": {
+            "earth_j2": true,
+            "other_planets": true,
+            "first_pn": true,
+            "tide_convention": "none",
+            "love_k2": 0.024116,
+            "earth_j2_value": 0.0010826358699107248
+          },
+          "lunar_degree": 60
+        },
+        "nominal_min_clearance_m": 45866.16990427184,
+        "filter_settings": {
+          "bias_correlation_s": 0.0,
+          "bias_random_walk_psd": 1e-18,
+          "acceleration_noise_psd": 1e-10,
+          "initial_bias_sigma_m_s2": 1e-07,
+          "maximum_bias_m_s2": 2e-06,
+          "nis_limit": 35.0,
+          "covariance_step_s": 1800.0,
+          "maneuver_fraction_sigma": 0.05,
+          "maneuver_pointing_sigma_rad": 0.02
+        },
+        "guard": null,
+        "metrics": {
+          "rms_m": 42.41587207504666,
+          "peak_m": 369.29319215264974,
+          "full_rms_m": 44.61242367482792,
+          "full_peak_m": 369.29319215264974,
+          "dv_m_s": 2.1863277830146455,
+          "burns": 866,
+          "direction_changes": 387,
+          "collision": false,
+          "completed": true,
+          "numerical_faults": 2,
+          "supervisor_halts": 0,
+          "fixes_rejected": 1,
+          "fixes_accepted": 1380,
+          "online_cpu_s": 253.67986300000103,
+          "mode_counts": {
+            "fresh": 1382,
+            "inhibited": 58
+          },
+          "status_counts": {
+            "0": 1382,
+            "2": 56,
+            "32": 2
+          },
+          "max_cache_sizes": [
+            12,
+            0,
+            256
+          ]
+        },
+        "total_cpu_s": 394.15245500000003,
+        "routine_limits": {
+          "position_error_m": 5000.0,
+          "velocity_error_m_s": 0.5,
+          "issued_dv_per_day_m_s": 1.0
+        }
+      },
+      {
+        "scenario": {
+          "name": "P1_jan20_30days",
+          "probe": 1,
+          "utc": "2012-01-20T00:00:00",
+          "days": 30.0,
+          "seed": 9401,
+          "split": "fresh_endurance",
+          "outages": [
+            [
+              36.0,
+              42.0
+            ],
+            [
+              204.0,
+              210.0
+            ],
+            [
+              372.0,
+              384.0
+            ],
+            [
+              540.0,
+              546.0
+            ]
+          ],
+          "pulses": [
+            [
+              24.0,
+              36.0,
+              3e-07
+            ],
+            [
+              192.0,
+              216.0,
+              3e-07
+            ],
+            [
+              360.0,
+              396.0,
+              2e-07
+            ],
+            [
+              528.0,
+              540.0,
+              3e-07
+            ]
+          ],
+          "bias_m_s2": 8e-08,
+          "thrust_sigma": 0.03,
+          "pointing_sigma_rad": 0.005
+        },
+        "profile": "supervised_sparse_05",
+        "arithmetic": "32",
+        "classification": "Synthetic controlled vehicle; one reconstructed ARTEMIS spacecraft initial state; no future spacecraft samples",
+        "initial_state": [
+          -10921816.86074067,
+          -2734224.1427814006,
+          -1588171.5519598802,
+          -600.2743636208976,
+          204.90813034672567,
+          -8.7500232645359
+        ],
+        "model": {
+          "epoch_jd_tdb": 2455946.500766024,
+          "parameters": {
+            "gm_moon": 4902799967088.641,
+            "gm_earth": 398600435507022.7,
+            "gm_sun": 1.3271244004127942e+20,
+            "moon_radius_m": 1738000.0,
+            "moon_j2": 0,
+            "area_mass_m2_kg": 0.016,
+            "reflectivity": 1.0,
+            "earth_radius_m": 6378137.0
+          },
+          "extra": {
+            "earth_j2": true,
+            "other_planets": true,
+            "first_pn": true,
+            "tide_convention": "none",
+            "love_k2": 0.024116,
+            "earth_j2_value": 0.0010826358699107248
+          },
+          "lunar_degree": 60
+        },
+        "nominal_min_clearance_m": 45866.16990427184,
+        "filter_settings": {
+          "bias_correlation_s": 0.0,
+          "bias_random_walk_psd": 1e-18,
+          "acceleration_noise_psd": 1e-10,
+          "initial_bias_sigma_m_s2": 1e-07,
+          "maximum_bias_m_s2": 2e-06,
+          "nis_limit": 35.0,
+          "covariance_step_s": 1800.0,
+          "maneuver_fraction_sigma": 0.05,
+          "maneuver_pointing_sigma_rad": 0.02
+        },
+        "guard": null,
+        "metrics": {
+          "rms_m": 42.41601585075416,
+          "peak_m": 369.29248656983225,
+          "full_rms_m": 44.612558899209844,
+          "full_peak_m": 369.29248656983225,
+          "dv_m_s": 2.186423744809457,
+          "burns": 866,
+          "direction_changes": 387,
+          "collision": false,
+          "completed": true,
+          "numerical_faults": 2,
+          "supervisor_halts": 0,
+          "fixes_rejected": 1,
+          "fixes_accepted": 1380,
+          "online_cpu_s": 250.4144080000005,
+          "mode_counts": {
+            "fresh": 1382,
+            "inhibited": 58
+          },
+          "status_counts": {
+            "0": 1382,
+            "2": 56,
+            "32": 2
+          },
+          "max_cache_sizes": [
+            12,
+            0,
+            256
+          ]
+        },
+        "total_cpu_s": 392.430836,
+        "routine_limits": {
+          "position_error_m": 5000.0,
+          "velocity_error_m_s": 0.5,
+          "issued_dv_per_day_m_s": 1.0
+        }
+      },
+      {
+        "scenario": {
+          "name": "P2_jan20_30days",
+          "probe": 2,
+          "utc": "2012-01-20T00:00:00",
+          "days": 30.0,
+          "seed": 9402,
+          "split": "fresh_endurance",
+          "outages": [
+            [
+              36.0,
+              42.0
+            ],
+            [
+              204.0,
+              210.0
+            ],
+            [
+              372.0,
+              384.0
+            ],
+            [
+              540.0,
+              546.0
+            ]
+          ],
+          "pulses": [
+            [
+              24.0,
+              36.0,
+              3e-07
+            ],
+            [
+              192.0,
+              216.0,
+              3e-07
+            ],
+            [
+              360.0,
+              396.0,
+              2e-07
+            ],
+            [
+              528.0,
+              540.0,
+              3e-07
+            ]
+          ],
+          "bias_m_s2": 8e-08,
+          "thrust_sigma": 0.03,
+          "pointing_sigma_rad": 0.005
+        },
+        "profile": "supervised_sparse_05",
+        "arithmetic": "float64",
+        "classification": "Synthetic controlled vehicle; one reconstructed ARTEMIS spacecraft initial state; no future spacecraft samples",
+        "initial_state": [
+          -8497487.692582771,
+          8590081.366067985,
+          5283335.199492955,
+          46.59439283602573,
+          -523.2325407408418,
+          -169.64928701489958
+        ],
+        "model": {
+          "epoch_jd_tdb": 2455946.500766024,
+          "parameters": {
+            "gm_moon": 4902799967088.641,
+            "gm_earth": 398600435507022.7,
+            "gm_sun": 1.3271244004127942e+20,
+            "moon_radius_m": 1738000.0,
+            "moon_j2": 0,
+            "area_mass_m2_kg": 0.016,
+            "reflectivity": 1.0,
+            "earth_radius_m": 6378137.0
+          },
+          "extra": {
+            "earth_j2": true,
+            "other_planets": true,
+            "first_pn": true,
+            "tide_convention": "none",
+            "love_k2": 0.024116,
+            "earth_j2_value": 0.0010826358699107248
+          },
+          "lunar_degree": 60
+        },
+        "nominal_min_clearance_m": 249456.1719310803,
+        "filter_settings": {
+          "bias_correlation_s": 0.0,
+          "bias_random_walk_psd": 1e-18,
+          "acceleration_noise_psd": 1e-10,
+          "initial_bias_sigma_m_s2": 1e-07,
+          "maximum_bias_m_s2": 2e-06,
+          "nis_limit": 35.0,
+          "covariance_step_s": 1800.0,
+          "maneuver_fraction_sigma": 0.05,
+          "maneuver_pointing_sigma_rad": 0.02
+        },
+        "guard": null,
+        "metrics": {
+          "rms_m": 36.16682703826834,
+          "peak_m": 247.69565069737266,
+          "full_rms_m": 42.45876282126862,
+          "full_peak_m": 425.3150993877514,
+          "dv_m_s": 2.2699428145942147,
+          "burns": 905,
+          "direction_changes": 374,
+          "collision": false,
+          "completed": true,
+          "numerical_faults": 0,
+          "supervisor_halts": 0,
+          "fixes_rejected": 1,
+          "fixes_accepted": 1380,
+          "online_cpu_s": 256.4643489999991,
+          "mode_counts": {
+            "fresh": 1384,
+            "inhibited": 56
+          },
+          "status_counts": {
+            "0": 1384,
+            "2": 56
+          },
+          "max_cache_sizes": [
+            12,
+            0,
+            256
+          ]
+        },
+        "total_cpu_s": 396.284265,
+        "routine_limits": {
+          "position_error_m": 5000.0,
+          "velocity_error_m_s": 0.5,
+          "issued_dv_per_day_m_s": 1.0
+        }
+      },
+      {
+        "scenario": {
+          "name": "P2_jan20_30days",
+          "probe": 2,
+          "utc": "2012-01-20T00:00:00",
+          "days": 30.0,
+          "seed": 9402,
+          "split": "fresh_endurance",
+          "outages": [
+            [
+              36.0,
+              42.0
+            ],
+            [
+              204.0,
+              210.0
+            ],
+            [
+              372.0,
+              384.0
+            ],
+            [
+              540.0,
+              546.0
+            ]
+          ],
+          "pulses": [
+            [
+              24.0,
+              36.0,
+              3e-07
+            ],
+            [
+              192.0,
+              216.0,
+              3e-07
+            ],
+            [
+              360.0,
+              396.0,
+              2e-07
+            ],
+            [
+              528.0,
+              540.0,
+              3e-07
+            ]
+          ],
+          "bias_m_s2": 8e-08,
+          "thrust_sigma": 0.03,
+          "pointing_sigma_rad": 0.005
+        },
+        "profile": "supervised_sparse_05",
+        "arithmetic": "32",
+        "classification": "Synthetic controlled vehicle; one reconstructed ARTEMIS spacecraft initial state; no future spacecraft samples",
+        "initial_state": [
+          -8497487.692582771,
+          8590081.366067985,
+          5283335.199492955,
+          46.59439283602573,
+          -523.2325407408418,
+          -169.64928701489958
+        ],
+        "model": {
+          "epoch_jd_tdb": 2455946.500766024,
+          "parameters": {
+            "gm_moon": 4902799967088.641,
+            "gm_earth": 398600435507022.7,
+            "gm_sun": 1.3271244004127942e+20,
+            "moon_radius_m": 1738000.0,
+            "moon_j2": 0,
+            "area_mass_m2_kg": 0.016,
+            "reflectivity": 1.0,
+            "earth_radius_m": 6378137.0
+          },
+          "extra": {
+            "earth_j2": true,
+            "other_planets": true,
+            "first_pn": true,
+            "tide_convention": "none",
+            "love_k2": 0.024116,
+            "earth_j2_value": 0.0010826358699107248
+          },
+          "lunar_degree": 60
+        },
+        "nominal_min_clearance_m": 249456.1719310803,
+        "filter_settings": {
+          "bias_correlation_s": 0.0,
+          "bias_random_walk_psd": 1e-18,
+          "acceleration_noise_psd": 1e-10,
+          "initial_bias_sigma_m_s2": 1e-07,
+          "maximum_bias_m_s2": 2e-06,
+          "nis_limit": 35.0,
+          "covariance_step_s": 1800.0,
+          "maneuver_fraction_sigma": 0.05,
+          "maneuver_pointing_sigma_rad": 0.02
+        },
+        "guard": null,
+        "metrics": {
+          "rms_m": 36.16680188769166,
+          "peak_m": 247.69503520399294,
+          "full_rms_m": 42.458794639611064,
+          "full_peak_m": 425.3150993877514,
+          "dv_m_s": 2.269962839369828,
+          "burns": 905,
+          "direction_changes": 374,
+          "collision": false,
+          "completed": true,
+          "numerical_faults": 0,
+          "supervisor_halts": 0,
+          "fixes_rejected": 1,
+          "fixes_accepted": 1380,
+          "online_cpu_s": 249.4710709999992,
+          "mode_counts": {
+            "fresh": 1384,
+            "inhibited": 56
+          },
+          "status_counts": {
+            "0": 1384,
+            "2": 56
+          },
+          "max_cache_sizes": [
+            12,
+            0,
+            256
+          ]
+        },
+        "total_cpu_s": 389.573242,
+        "routine_limits": {
+          "position_error_m": 5000.0,
+          "velocity_error_m_s": 0.5,
+          "issued_dv_per_day_m_s": 1.0
+        }
+      }
+    ]
+  }
+}

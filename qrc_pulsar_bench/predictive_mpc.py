@@ -7,7 +7,7 @@ only the QP solver is the portable integer HLS candidate.
 from dataclasses import dataclass
 import numpy as np
 from scipy.linalg import expm
-from .adaptive_control import force_jacobian
+from .adaptive_control import force_jacobian,validate_covariance
 from .jacobi_control import Actuator
 from .fpga_mpc import FixedQP,scaled_qp,float_solve,MAX_N
 
@@ -27,6 +27,13 @@ class MPCSettings:
     def __post_init__(self):
         if not isinstance(self.horizon_steps,int) or not 1<=self.horizon_steps<=MAX_N//3:raise ValueError('Horizon exceeds fixed workspace')
         if not np.all(np.isfinite(list(vars(self).values()))) or min(vars(self).values())<=0:raise ValueError('Positive finite settings required')
+
+
+class BoundedLog(list):
+    """Recent onboard diagnostics; campaigns collect their own full history."""
+    def append(self,item):
+        super().append(item)
+        if len(self)>256:del self[:-256]
 
 
 def finite_burn_transition(a,interval,duration):
@@ -49,13 +56,36 @@ class PredictiveMPC:
         self.model,self.plan,self.settings,self.actuator=model,plan,settings,actuator
         self.solver=None if library is None else FixedQP(library,bits,bits-8)
         self.warm=np.zeros((settings.horizon_steps,3));self.cache={};self.last_status=0
-        self.diagnostics=[];self.last_schedule=np.empty((0,3))
+        self.diagnostics=BoundedLog();self.last_schedule=np.empty((0,3));self.last_epoch=-np.inf
+
+    def validate_input(self,t,estimate,mass,*,record_epoch=True):
+        if not np.all(np.isfinite([t,mass])) or t<0 or t>=self.plan.stop_s or mass<=0:
+            raise ValueError('Invalid decision epoch or mass')
+        if t<=self.last_epoch:raise ValueError('Duplicate or reversed decision epoch')
+        state=np.asarray(estimate['state'],dtype=float)
+        if state.shape not in ((6,),(9,)) or not np.all(np.isfinite(state)):
+            raise ValueError('Invalid navigation state')
+        if 'time_s' in estimate and (not np.isfinite(estimate['time_s']) or abs(estimate['time_s']-t)>1e-6):
+            raise ValueError('Estimate is not propagated to the decision epoch')
+        if 'last_observation_s' in estimate and (not np.isfinite(estimate['last_observation_s']) or estimate['last_observation_s']>t):
+            raise ValueError('Invalid observation epoch')
+        if 'covariance' in estimate:
+            if np.shape(estimate['covariance'])!=(len(state),len(state)):raise ValueError('Covariance shape')
+            validate_covariance(estimate['covariance'])
+        if record_epoch:self.last_epoch=float(t)
+        return state
+
+    def inhibit(self,status,reason,t=None):
+        self.last_status=status;self.warm[:]=0;self.last_schedule=np.empty((0,3))
+        self.diagnostics.append(dict(time_s=t,status=status,reason=reason))
+        return np.zeros(3)
 
     def _linear(self,t,h):
         key=(float(t),float(h))
         if key not in self.cache:
             state=self.model.to_moon(self.plan.at(t+h/2)[:6],t+h/2)
             self.cache[key]=force_jacobian(self.model.acceleration,state,t+h/2)
+            if len(self.cache)>2*self.settings.horizon_steps+4:del self.cache[next(iter(self.cache))]
         return self.cache[key]
 
     def build_problem(self,t,state,mass,durations):
@@ -78,8 +108,10 @@ class PredictiveMPC:
 
     def command(self,t,estimate,mass,*,valid=True):
         s=self.settings;self.last_schedule=np.empty((0,3))
-        if not valid:self.last_status=2;return np.zeros(3)
-        state=np.asarray(estimate['state'][:6]);remaining=self.plan.stop_s-t
+        if not valid:return self.inhibit(2,'invalid_navigation',t)
+        try:state=self.validate_input(t,estimate,mass)[:6]
+        except (ValueError,TypeError,KeyError,np.linalg.LinAlgError):return self.inhibit(1,'invalid_input')
+        remaining=self.plan.stop_s-t
         count=min(s.horizon_steps,int(np.ceil(remaining/s.interval_s)))
         if count<1:self.last_status=1;return np.zeros(3)
         warm=self.warm[:count].copy();durations=np.zeros(count);residual=0.;cap=0.
@@ -92,9 +124,7 @@ class PredictiveMPC:
                 if self.solver is None:status,u,residual=float_solve(h,g,start,beta,s.residual_tolerance)
                 else:status,u,residual=self.solver.solve(h,g,start,beta,s.residual_tolerance)
                 if status:
-                    self.last_status=status
-                    self.diagnostics.append(dict(time_s=t,status=status,residual=residual,refinement=refinement))
-                    return np.zeros(3)
+                    return self.inhibit(status,'solver_failure',t)
                 warm=u.reshape(count,3)*cap
                 durations=np.array([0. if (b:=self.actuator.command(d,t,mass,interval_s=s.interval_s)) is None else b.stop_s-b.start_s for d in warm])
             proposed=self.actuator.command(warm[0],t,mass,interval_s=min(s.interval_s,remaining))
@@ -102,9 +132,9 @@ class PredictiveMPC:
             rollout=self.model.propagate(state,t,t+min(s.interval_s,remaining),mass,proposed,
                 floors=(s.moon_floor_m,s.earth_floor_m))
             if not rollout.completed:
-                self.last_status=32;return np.zeros(3)
+                return self.inhibit(32,'clearance_screen',t)
         except (ValueError,np.linalg.LinAlgError,RuntimeError):
-            self.last_status=1;return np.zeros(3)
+            return self.inhibit(1,'invalid_problem',t)
         self.last_status=0;self.last_schedule=warm.copy()
         self.warm[:]=0
         if count>1:self.warm[:count-1]=warm[1:]

@@ -63,6 +63,8 @@ class StrategyMPC(PredictiveMPC):
         if key not in self.affine_cache:
             a=np.zeros((9,9));a[:6,:6]=self._linear(t,h);a[3:6,6:]=np.eye(3)
             self.affine_cache[key]=expm(a*h)
+            if len(self.affine_cache)>2*self.settings.horizon_steps+4:
+                del self.affine_cache[next(iter(self.affine_cache))]
         return self.affine_cache[key]
 
     def coast_peak(self,t,estimate,count):
@@ -101,13 +103,16 @@ class StrategyMPC(PredictiveMPC):
         return matrix[:,active],target,cap,active
 
     def _coast(self,t,reason,status=0,**details):
-        self.previous[:]=0;self.previous_epoch=t;self.last_status=status
+        self.previous[:]=0;self.previous_epoch=-np.inf if t is None else t;self.last_status=status
         self.last_schedule=np.empty((0,3))
+        if status:self.warm[:]=0
         self.diagnostics.append(dict(time_s=t,status=status,reason=reason,**details))
         return np.zeros(3)
 
     def command(self,t,estimate,mass,*,valid=True):
         if not valid:return self._coast(t,'stale_navigation',2)
+        try:self.validate_input(t,estimate,mass)
+        except (ValueError,TypeError,KeyError,np.linalg.LinAlgError):return self._coast(None,'invalid_input',1)
         s=self.settings;p=self.strategy;remaining=self.plan.stop_s-t
         count=min(s.horizon_steps,int(np.ceil(remaining/s.interval_s)))
         if count<1:return self._coast(t,'end_of_reference',1)
@@ -115,7 +120,8 @@ class StrategyMPC(PredictiveMPC):
         self.bias=np.asarray(estimate['state'][6:9]).copy() if p.use_bias else np.zeros(3)
         state=np.asarray(estimate['state'][:6]);peak=None;overridden=False
         if p.trigger_m or p.minimum_spacing_s:
-            peak=self.coast_peak(t,estimate,count)
+            try:peak=self.coast_peak(t,estimate,count)
+            except (ValueError,TypeError,KeyError,np.linalg.LinAlgError):return self._coast(t,'invalid_covariance',1)
             overridden=peak>p.dwell_override_m
             if p.minimum_spacing_s and t-self.last_burn<p.minimum_spacing_s-1e-6 and not overridden:
                 return self._coast(t,'minimum_spacing',coast_peak_m=peak)

@@ -14,6 +14,21 @@ trajectory, rather than only at the 30-minute decision epochs. Steady scoring
 excludes the first 12 hours. Five-minute maxima are sampled diagnostics, not
 certified continuous-time error bounds.
 
+The definitive initial states are reconstructed orbit products and can themselves
+depend on later tracking. The January split tests frozen controllers on new
+geometries and synthetic noise/fault cases; it is not an operationally available
+initial-fix test or validation against the historical spacecraft's reactions to
+our commands.
+
+The [executed results](artemis-strategies-results-2026-10-31.md) include every
+training candidate, the fresh comparison and individual tracking traces.
+The stronger development candidate after evaluation is `sparse_05`: mean
+tracking RMS fell 9.73%, delta-v 18.65% and burn count 35.02% versus baseline.
+It met the broader 100 m RMS / 500 m peak limits in all eight January cases.
+The training winner, `sparse_event60`, saved more fuel but failed those limits
+in one outage case. Neither met the tighter 50 m RMS / 300 m peak envelope in
+every fresh case. This is a measured tradeoff, not a completed global optimum.
+
 ## Strategies compared
 
 The 15 settings include the previous selected MPC baseline and these changes:
@@ -86,12 +101,33 @@ burn screening are host operations. No board has been selected and there are
 no new synthesis, RTL timing, resource or power measurements.
 
 Smaller delta-v is not necessarily fewer corrections or lower pointing cost.
-Direction changes between successive executed burns and between adjacent
-30-minute burns are distinct reported diagnostics. Neither is a proof of global
+Changes in commanded direction between successive burns and between adjacent
+30-minute burns are distinct reported diagnostics; the count does not include
+pointing-error perturbations. Neither is a proof of global
 stability. Real attitude/thruster allocation, minimum impulse hardware behavior,
 fuel uncertainty and mission-specific emergency handling remain unvalidated.
 
 ## Reproduction
+
+The frozen primary is `strategies()['sparse_event60']`, rather than the
+illustrative defaults of `MPCSettings()`. It uses four 30-minute prediction
+slots, a 60 m coast trigger, sparse weight 0.1 and a 0.001 m/s minimum requested
+correction. Sparse effort and finite-burn timing use six fixed refinements.
+The 24-bit / 16-fractional-bit QP core failed the 1% tracking-change gate in
+one training case (5.515% RMS change). The 32-bit / 24-fractional-bit core
+passed all four, with maximum RMS change 0.003655% and delta-v change 0.001394%.
+The selected format applies to this policy; the previous baseline's 24-bit
+result remains a separate measurement.
+
+For the stronger development candidate, use `strategies()['sparse_05']`:
+the same two-hour horizon, sparse weight 0.5, minimum correction 0.001 m/s,
+and no coast trigger or mandatory burn spacing. An additional 12 arithmetic
+runs checked its frozen settings at 32 total / 24 fractional bits. All passed;
+the largest RMS change was 0.011955%, largest delta-v change 0.003693%, and
+every burn count matched floating point. These checks reused the September and
+January cases after evaluation, so they are not new independent holdout data.
+The full campaign totals 116 three-day runs, including pilots and arithmetic
+comparisons, across the 15 settings. The complete test suite passed 349 tests.
 
 ```sh
 python -m pip install -e '.[navigation,test]' matplotlib
@@ -103,6 +139,15 @@ PYTHONPATH=. python scripts/artemis_strategy_campaign.py prepare \
 python scripts/report_artemis_strategies.py /tmp/artemis-strategies
 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q
 ```
+
+The executed campaign is stored at
+`/Users/hendrixx./qrc-mpc-strategies-2026-10-31/`. Its
+`selected-controller.json` exports the selected settings, arithmetic and evidence
+receipts. The `verification.json` receipt checks all 65 numerical source files
+and their saved copies, all 53 physical inputs, selection provenance, complete
+run matrices, independently recomputed metrics and the packaged modules.
+`scripts/verify_artemis_strategies.py` recreates those final receipts after the
+campaign, wheel build, objective audit and test log are present.
 
 Use a new output directory after numerical-source or protocol changes. Saved
 source snapshots and all input hashes allow the executed implementation to be

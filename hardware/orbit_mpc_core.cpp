@@ -18,6 +18,10 @@ int32_t rounded(int64_t x, bool &fault) {
 }
 int32_t clip(int64_t x) { return int32_t(x < -ONE ? -ONE : x > ONE ? ONE : x); }
 }
+extern "C" int orbit_mpc_metadata(int field) {
+    const int values[5]={1,QRC_MPC_BITS,QRC_MPC_FRAC,QRC_MPC_N,QRC_MPC_ITERATIONS};
+    return field>=0 && field<5 ? values[field] : -1;
+}
 extern "C" int orbit_mpc_solve(const int32_t h[QRC_MPC_N*QRC_MPC_N],
     const int32_t g[QRC_MPC_N], const int32_t warm[QRC_MPC_N],
     int n, int32_t beta, int32_t tolerance, int valid,

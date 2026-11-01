@@ -2,6 +2,12 @@
 #include <cassert>
 #include <cstdlib>
 int main() {
+    assert(orbit_mpc_metadata(0)==1);
+    assert(orbit_mpc_metadata(1)==QRC_MPC_BITS);
+    assert(orbit_mpc_metadata(2)==QRC_MPC_FRAC);
+    assert(orbit_mpc_metadata(3)==QRC_MPC_N);
+    assert(orbit_mpc_metadata(4)==QRC_MPC_ITERATIONS);
+    assert(orbit_mpc_metadata(99)==-1);
     const int32_t one=int32_t(1)<<QRC_MPC_FRAC;
     int32_t h[QRC_MPC_N*QRC_MPC_N]={0},g[QRC_MPC_N]={0},warm[QRC_MPC_N]={0},out[QRC_MPC_N]={0},res=0;
     for(int i=0;i<3;++i) {h[i*QRC_MPC_N+i]=one/2;g[i]=one/8;}
