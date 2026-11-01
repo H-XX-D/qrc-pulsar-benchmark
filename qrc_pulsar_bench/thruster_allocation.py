@@ -231,29 +231,64 @@ class RCSCluster:
             raise ValueError(f"Unknown fault type: {fault_type}")
 
 
+@dataclass(frozen=True)
+class StructuralFrame:
+    """Spacecraft bus structural and elastodynamic properties."""
+    bus_length_m: float = 1.5                   # Distance between opposing thruster mounting decks
+    strut_area_m2: float = 0.002                # Cross-sectional load-bearing area (20 cm^2)
+    youngs_modulus_pa: float = 70.0e9           # Aluminum-lithium / Carbon composite modulus (70 GPa)
+    fundamental_freq_hz: float = 2.5            # Fundamental flexible bending mode (e.g. solar array / bus)
+    damping_ratio: float = 0.005                # Internal material & joint damping ratio in vacuum (0.5%)
+
+    @property
+    def stiffness_n_per_m(self) -> float:
+        """Axial structural stiffness K = E * A / L."""
+        return (self.youngs_modulus_pa * self.strut_area_m2) / self.bus_length_m
+
+    @property
+    def modal_decay_time_s(self) -> float:
+        """1/e vibrational amplitude decay time tau = 1 / (zeta * omega_n)."""
+        omega_n = 2.0 * np.pi * self.fundamental_freq_hz
+        return 1.0 / (self.damping_ratio * omega_n)
+
+
+@dataclass
+class StructuralStressMetrics:
+    """Stress, strain energy, and vibrational dissipation from thruster firings."""
+    opposing_force_n: float                     # Antagonistic compressive force across the bus
+    frame_stress_mpa: float                     # Internal compressive stress sigma = F / A
+    strain_energy_j: float                      # Stored elastic strain energy U = F^2 L / (2 E A)
+    vibrational_energy_j: float                 # Peak modal kinetic/potential vibration energy
+    vibration_decay_time_s: float               # Time required for structural ringing to settle
+    thermal_dissipation_rate_w: float           # Rate at which vibration converts to heat via joint friction
+
+
 @dataclass
 class AllocationResult:
     """Outcome of control allocation solve."""
     success: bool
-    pulse_durations_s: np.ndarray       # Firing duration for each thruster in seconds
-    thrust_levels_n: np.ndarray         # Commanded thrust for each thruster in Newtons
-    commanded_wrench: np.ndarray        # Requested [Fx, Fy, Fz, tau_x, tau_y, tau_z]
-    achieved_wrench: np.ndarray         # Realized [Fx, Fy, Fz, tau_x, tau_y, tau_z]
-    wrench_residual: np.ndarray         # Commanded - Achieved
-    propellant_used_kg: float           # Propellant consumed by this allocation
-    active_thruster_count: int          # Number of thrusters fired
+    pulse_durations_s: np.ndarray               # Firing duration for each thruster in seconds
+    thrust_levels_n: np.ndarray                 # Commanded thrust for each thruster in Newtons
+    commanded_wrench: np.ndarray                # Requested [Fx, Fy, Fz, tau_x, tau_y, tau_z]
+    achieved_wrench: np.ndarray                 # Realized [Fx, Fy, Fz, tau_x, tau_y, tau_z]
+    wrench_residual: np.ndarray                 # Commanded - Achieved
+    propellant_used_kg: float                   # Propellant consumed by this allocation
+    active_thruster_count: int                  # Number of thrusters fired
+    structural_metrics: StructuralStressMetrics # Internal frame stress and vibrational dissipation
 
 
 class ThrusterAllocator:
     """Solves bounded, non-negative control allocation for coupled force and torque."""
     def __init__(self, cluster: RCSCluster, interval_s: float = 1.0,
                  force_weight: float = 1.0, torque_weight: float = 10.0,
-                 fuel_penalty: float = 0.01):
+                 fuel_penalty: float = 0.01,
+                 frame: StructuralFrame = StructuralFrame()):
         self.cluster = cluster
         self.interval_s = float(interval_s)
         self.force_weight = float(force_weight)
         self.torque_weight = float(torque_weight)
         self.fuel_penalty = float(fuel_penalty)
+        self.frame = frame
 
     def allocate(self, wrench_des: np.ndarray, r_cm: np.ndarray) -> AllocationResult:
         """Map commanded 6D wrench [F_body (N); tau_body (N*m)] to thruster pulses."""
@@ -336,6 +371,30 @@ class ThrusterAllocator:
         achieved_wrench = b_matrix @ t_optimal
         residual = wrench_des - achieved_wrench
 
+        # Structural stress and vibrational dissipation mechanics
+        frame = self.frame
+        opposing_n = 0.0
+        for i in range(n):
+            for j in range(i + 1, n):
+                if np.dot(thrusters[i].direction_body, thrusters[j].direction_body) < -0.9:
+                    opposing_n += float(min(t_optimal[i], t_optimal[j]))
+
+        stress_pa = opposing_n / frame.strut_area_m2
+        stress_mpa = stress_pa / 1e6
+        strain_energy_j = (opposing_n ** 2 * frame.bus_length_m) / (2.0 * frame.youngs_modulus_pa * frame.strut_area_m2) if opposing_n > 0 else 0.0
+        vib_energy_j = (opposing_n ** 2) / (2.0 * frame.stiffness_n_per_m) if opposing_n > 0 else 0.0
+        omega_n = 2.0 * np.pi * frame.fundamental_freq_hz
+        dissipation_rate_w = 2.0 * frame.damping_ratio * omega_n * vib_energy_j if vib_energy_j > 0 else 0.0
+
+        struct_metrics = StructuralStressMetrics(
+            opposing_force_n=float(opposing_n),
+            frame_stress_mpa=float(stress_mpa),
+            strain_energy_j=float(strain_energy_j),
+            vibrational_energy_j=float(vib_energy_j),
+            vibration_decay_time_s=float(frame.modal_decay_time_s),
+            thermal_dissipation_rate_w=float(dissipation_rate_w)
+        )
+
         return AllocationResult(
             success=bool(success),
             pulse_durations_s=durations,
@@ -344,7 +403,8 @@ class ThrusterAllocator:
             achieved_wrench=achieved_wrench,
             wrench_residual=residual,
             propellant_used_kg=float(prop_mass),
-            active_thruster_count=active_count
+            active_thruster_count=active_count,
+            structural_metrics=struct_metrics
         )
 
 

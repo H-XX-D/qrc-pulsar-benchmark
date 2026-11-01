@@ -8,6 +8,8 @@ from qrc_pulsar_bench.thruster_allocation import (
     Thruster,
     RCSCluster,
     ThrusterAllocator,
+    StructuralFrame,
+    StructuralStressMetrics,
     AttitudeSlewPlanner,
     quat_mult,
     quat_conjugate,
@@ -208,3 +210,57 @@ def test_thruster_fault_compensation_stuck_open():
     assert res.active_thruster_count > 1
     # Residual torque should be tightly bounded despite the stuck thruster
     np.testing.assert_allclose(res.achieved_wrench[3:], [0.0, 0.0, 0.0], atol=0.2)
+
+
+def test_opposing_thruster_structural_stress_and_vibration():
+    frame = StructuralFrame(
+        bus_length_m=1.5,
+        strut_area_m2=0.002,
+        youngs_modulus_pa=70.0e9,
+        fundamental_freq_hz=2.5,
+        damping_ratio=0.005,
+    )
+    cluster = RCSCluster.standard_12_thruster_cluster(radius_m=0.6, height_m=0.8, thrust_n=2.0)
+    allocator = ThrusterAllocator(cluster, interval_s=1.0, torque_weight=100.0, frame=frame)
+    r_cm = np.zeros(3)
+
+    # Force opposing firings: Thruster 0 is stuck open firing +X at 2 N
+    cluster.set_fault(0, "stuck_open")
+    cmd = np.zeros(6)
+    res = allocator.allocate(cmd, r_cm)
+
+    assert res.success
+    metrics = res.structural_metrics
+    assert isinstance(metrics, StructuralStressMetrics)
+
+    # Opposing force must capture antagonistic compressive load across bus
+    assert metrics.opposing_force_n >= 1.8
+    # Stress sigma = F / A (e.g. 2 N / 0.002 m^2 = 1000 Pa = 1e-3 MPa)
+    assert metrics.frame_stress_mpa > 0.0
+    assert metrics.strain_energy_j > 0.0
+    assert metrics.vibrational_energy_j > 0.0
+    assert metrics.thermal_dissipation_rate_w > 0.0
+
+    # Modal decay time: 1 / (zeta * 2 * pi * f_1) = 1 / (0.005 * 2 * pi * 2.5) ~ 12.73 s
+    expected_decay_s = 1.0 / (0.005 * 2.0 * np.pi * 2.5)
+    assert metrics.vibration_decay_time_s == pytest.approx(expected_decay_s, rel=1e-3)
+
+
+def test_nominal_burn_zero_opposing_stress():
+    cluster = RCSCluster.standard_12_thruster_cluster(radius_m=0.6, height_m=0.8, thrust_n=2.0)
+    allocator = ThrusterAllocator(cluster, interval_s=1.0)
+    r_cm = np.zeros(3)
+
+    # Clean +Z translation burn
+    cmd = np.array([0.0, 0.0, 2.0, 0.0, 0.0, 0.0])
+    res = allocator.allocate(cmd, r_cm)
+
+    assert res.success
+    metrics = res.structural_metrics
+    # Nominal unidirectional burn should induce zero opposing thruster stress
+    assert metrics.opposing_force_n == pytest.approx(0.0, abs=1e-6)
+    assert metrics.frame_stress_mpa == pytest.approx(0.0, abs=1e-6)
+    assert metrics.strain_energy_j == pytest.approx(0.0, abs=1e-6)
+    assert metrics.vibrational_energy_j == pytest.approx(0.0, abs=1e-6)
+    assert metrics.thermal_dissipation_rate_w == pytest.approx(0.0, abs=1e-6)
+
