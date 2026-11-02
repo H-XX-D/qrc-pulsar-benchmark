@@ -78,11 +78,18 @@ class MissionSimulationSummary:
 class MissionEventSimulator:
     """Simulates deep-space mission timeline with injected catastrophic anomalies."""
 
-    def __init__(self, target_system: str = "Jupiter-Callisto", initial_mass_kg: float = 500.0):
+    def __init__(self, target_system: str = "Jupiter-Callisto", initial_mass_kg: float = 500.0, mission_duration_days: float = 90.0):
         self.target_system = target_system
         self.initial_mass_kg = initial_mass_kg
+        self.mission_duration_days = mission_duration_days
         self.catastrophe_system = CatastropheAvoidanceFlightSystem(target_system=target_system)
         self.dro_architect = DROSafeHavenArchitect()
+
+    @staticmethod
+    def calculate_maneuver_fuel(mass_kg: float, delta_v_m_s: float, isp_s: float = 230.0) -> float:
+        """Exact Tsiolkovsky rocket equation fuel mass consumption."""
+        g0 = 9.80665
+        return float(mass_kg * (1.0 - np.exp(-delta_v_m_s / (isp_s * g0))))
 
     def define_standard_anomaly_campaign(self) -> List[InjectedEvent]:
         """Creates the 6-event stress test campaign across a 90-day mission timeline."""
@@ -205,8 +212,9 @@ class MissionEventSimulator:
                 elif active_evt.event_type == "COLLISION_HAZARD":
                     hazard_score = 0.95
                     reaction_time_s = 0.030  # 30 ms reflex
-                    step_fuel = 0.850  # 850 grams impulsive evasive burn (18 m/s)
-                    auto_action = "REFLEX_AVOIDANCE: CAR fires emergency 18.0 m/s abort impulse within 30 ms; clears obstacle by 42 km"
+                    # Tsiolkovsky rocket equation: 18 m/s evasive impulse on vehicle mass (~3.97 kg for 500 kg @ Isp 230s)
+                    step_fuel = self.calculate_maneuver_fuel(mass_kg=current_mass, delta_v_m_s=18.0, isp_s=230.0)
+                    auto_action = f"REFLEX_AVOIDANCE: CAR fires emergency 18.0 m/s abort impulse ({step_fuel:.2f} kg) within 30 ms; clears obstacle by 42 km"
                     catastrophes_avoided += 1
 
                     # Ground-in-the-loop: 86-minute light time vs 90-second impact horizon

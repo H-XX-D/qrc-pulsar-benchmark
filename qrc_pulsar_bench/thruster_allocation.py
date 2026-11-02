@@ -266,7 +266,7 @@ class StructuralStressMetrics:
 @dataclass
 class AllocationResult:
     """Outcome of control allocation solve."""
-    success: bool
+    success: bool                               # True only if optimizer converged AND wrench was satisfied
     pulse_durations_s: np.ndarray               # Firing duration for each thruster in seconds
     thrust_levels_n: np.ndarray                 # Commanded thrust for each thruster in Newtons
     commanded_wrench: np.ndarray                # Requested [Fx, Fy, Fz, tau_x, tau_y, tau_z]
@@ -275,6 +275,8 @@ class AllocationResult:
     propellant_used_kg: float                   # Propellant consumed by this allocation
     active_thruster_count: int                  # Number of thrusters fired
     structural_metrics: StructuralStressMetrics # Internal frame stress and vibrational dissipation
+    optimizer_converged: bool = True            # True if numerical solver reached bounded minimum
+    wrench_satisfied: bool = True               # True if achieved wrench satisfies commanded within tolerance
 
 
 class ThrusterAllocator:
@@ -342,9 +344,9 @@ class ThrusterAllocator:
 
             res = lsq_linear(reg_a_free, reg_b_free, bounds=(lb_free, ub_free), method='bvls')
             t_optimal[free_mask] = np.maximum(0.0, res.x)
-            success = bool(res.success)
+            optimizer_converged = bool(res.success)
         else:
-            success = True
+            optimizer_converged = True
 
         # Compute pulse durations
         durations = np.zeros(n, dtype=np.float64)
@@ -371,6 +373,17 @@ class ThrusterAllocator:
         achieved_wrench = b_matrix @ t_optimal
         residual = wrench_des - achieved_wrench
 
+        # Verify whether achieved wrench meets requested wrench within tolerance
+        force_err = float(np.linalg.norm(residual[:3]))
+        torque_err = float(np.linalg.norm(residual[3:]))
+        force_cmd_norm = float(np.linalg.norm(wrench_des[:3]))
+        torque_cmd_norm = float(np.linalg.norm(wrench_des[3:]))
+
+        force_ok = force_err <= max(0.1, 0.05 * force_cmd_norm)
+        torque_ok = torque_err <= max(0.25, 0.05 * torque_cmd_norm)
+        wrench_satisfied = bool(force_ok and torque_ok)
+        overall_success = bool(optimizer_converged and wrench_satisfied)
+
         # Structural stress and vibrational dissipation mechanics
         frame = self.frame
         opposing_n = 0.0
@@ -396,7 +409,7 @@ class ThrusterAllocator:
         )
 
         return AllocationResult(
-            success=bool(success),
+            success=overall_success,
             pulse_durations_s=durations,
             thrust_levels_n=t_optimal,
             commanded_wrench=wrench_des,
@@ -404,7 +417,9 @@ class ThrusterAllocator:
             wrench_residual=residual,
             propellant_used_kg=float(prop_mass),
             active_thruster_count=active_count,
-            structural_metrics=struct_metrics
+            structural_metrics=struct_metrics,
+            optimizer_converged=bool(optimizer_converged),
+            wrench_satisfied=bool(wrench_satisfied),
         )
 
 

@@ -64,7 +64,12 @@ class StationKeepingReport:
     max_position_error_km: float
     rms_position_error_km: float
     uncontrolled_drift_km: float
-    fuel_savings_factor_vs_uncontrolled: float
+    drift_confinement_ratio: float
+
+    @property
+    def fuel_savings_factor_vs_uncontrolled(self) -> float:
+        """Legacy alias: note this is a spatial drift confinement ratio (distance ratio), not fuel mass."""
+        return self.drift_confinement_ratio
 
 
 class EarthMoonCR3BP:
@@ -397,5 +402,5 @@ class PredictiveStationKeepingEngine:
             max_position_error_km=max_err_km,
             rms_position_error_km=rms_err_km,
             uncontrolled_drift_km=uncontrolled_drift_km,
-            fuel_savings_factor_vs_uncontrolled=uncontrolled_drift_km / max(max_err_km, 1e-6)
+            drift_confinement_ratio=uncontrolled_drift_km / max(max_err_km, 1e-6)
         )

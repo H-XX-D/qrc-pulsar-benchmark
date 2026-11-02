@@ -71,26 +71,26 @@ class CatastropheAvoidanceFlightSystem:
 
     def __init__(self, target_system: str = "Jupiter-Callisto"):
         self.target_system = target_system
-        # System mass ratios (mu = m2 / (m1 + m2))
+        # System mass ratios (mu = m2 / (m1 + m2)) and exact CR3BP L1 Jacobi energy
         self.system_params: Dict[str, Dict[str, float]] = {
             "Jupiter-Callisto": {
                 "mu": 5.666e-5,
-                "l1_distance_norm": 0.0264,  # Normalized distance to L1
-                "c_l1": 3.0018,              # Critical Jacobi energy at L1
+                "l1_distance_norm": 0.026393,  # Exact normalized distance gamma = 1 - mu - x_L1
+                "c_l1": 3.00619438,            # Exact critical Jacobi energy at L1
                 "characteristic_velocity_mps": 8204.0,
                 "characteristic_length_km": 1882700.0,
             },
             "Saturn-Enceladus": {
                 "mu": 1.90e-7,
-                "l1_distance_norm": 0.0039,
-                "c_l1": 3.00008,
+                "l1_distance_norm": 0.003981,
+                "c_l1": 3.00014237,
                 "characteristic_velocity_mps": 12630.0,
                 "characteristic_length_km": 238000.0,
             },
             "Sun-Ceres": {
                 "mu": 4.72e-10,
-                "l1_distance_norm": 0.0005,
-                "c_l1": 3.000002,
+                "l1_distance_norm": 0.000540,
+                "c_l1": 3.00000262,
                 "characteristic_velocity_mps": 17880.0,
                 "characteristic_length_km": 414000000.0,
             },

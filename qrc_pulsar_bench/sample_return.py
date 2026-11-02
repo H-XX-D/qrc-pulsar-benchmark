@@ -224,10 +224,15 @@ class AtmosphericEjectionCaptureRover:
         4. Invariant manifold return flight and autonomous docking at Callisto Station.
         """
         # Sortie propulsion budget
-        dv_departure_mps = 68.5          # Manifold exit from Callisto Station
+        # NOTE: A direct two-impulse Hohmann transfer between Callisto (1,883,000 km) and Europa (671,000 km)
+        # requires dv1 = 2,256.8 m/s departure and dv2 = 2,944.9 m/s insertion (total 5,201.7 m/s one-way).
+        # The 167.7 m/s figure is an idealized multi-flyby resonance-hopping manifold concept (Ross et al.)
+        # that assumes multi-month Ganymede/Callisto gravity assists to drop periapse without large burns.
+        dv_departure_mps = 68.5          # Manifold insertion from Callisto Station Halo orbit
         dv_periapse_trim_mps = 14.2       # Plume targeting corridor correction
-        dv_station_rendezvous_mps = 85.0  # Braking and soft capture at Callisto Station
+        dv_station_rendezvous_mps = 85.0  # Braking and soft capture at Callisto Station Halo orbit
         total_sortie_dv_mps = dv_departure_mps + dv_periapse_trim_mps + dv_station_rendezvous_mps
+        hohmann_one_way_dv_mps = 5201.7   # Unassisted direct Hohmann transfer benchmark (m/s)
 
         # Free natural gravity assist deflection by Europa
         dv_gravity_assist_mps = 1551.7
@@ -1013,7 +1018,7 @@ class SampleReturnMissionReport:
             f"   - Target Celestial Plume             : {ar.get('target_moon', 'Europa')} Plume/Exosphere at {ar.get('plume_altitude_km', 50.0):.1f} km flyby altitude",
             f"   - Hyperbolic Encounter Velocity      : {ar.get('flyby_speed_mps', 2100.0):.1f} m/s (Graded aerogel intact capture)",
             f"   - Pristine Oceanic Sample Harvested  : {ar.get('sample_mass_collected_kg', 1.25):.2f} kg cryovolcanic ice/brine particles",
-            f"   - Round-Trip Sortie Delta-V          : {ar.get('total_sortie_dv_mps', 167.7):.1f} m/s (Callisto Station <-> Moon Manifold)",
+            f"   - Round-Trip Sortie Delta-V          : {ar.get('total_sortie_dv_mps', 167.7):.1f} m/s (Idealized multi-flyby manifold; Hohmann direct is 5,202 m/s)",
             f"   - Sortie Fuel Consumed               : {ar.get('fuel_consumed_kg', 2.61):.2f} kg ({ar.get('sorties_capacity', 5)} sorties per tank)",
             f"   - Encounter Radiation Dose           : {ar.get('total_absorbed_dose_rad', 204.9):.1f} rad (0.20 krad, {ar.get('radiation_qualification_margin_percent', 99.8):.1f}% margin)",
             f"   - Surface Hazards Eliminated         : {ar.get('surface_hazards', 'Zero impact risk; saved 2.02 km/s surface escape')}",

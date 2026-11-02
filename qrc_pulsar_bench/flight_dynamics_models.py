@@ -207,13 +207,16 @@ class ReactionWheelArray:
         return cls(wheels)
 
     @classmethod
-    def standard_4_wheel_pyramid(cls, skew_angle_deg: float = 54.7356,
+    def standard_4_wheel_pyramid(cls, skew_angle_deg: float = 35.26438968,
                                  inertia_kg_m2: float = 0.04,
                                  max_speed_rpm: float = 6000.0,
                                  max_torque_nm: float = 0.2) -> "ReactionWheelArray":
         """
         Standard 4-wheel pyramid configuration offering isotropic control and 1-wheel redundancy.
-        skew_angle is the elevation angle above the X-Y plane (54.74 deg yields equal 3-axis authority).
+        skew_angle is the elevation angle above the X-Y plane.
+        beta = arcsin(1/sqrt(3)) ~ 35.264 deg yields equal 3-axis authority:
+        A_w A_w^T = diag(2*cos^2(beta), 2*cos^2(beta), 4*sin^2(beta)) = diag(4/3, 4/3, 4/3).
+        (Note: 54.74 deg is the zenith half-angle from the Z-axis, which would cause a 4:1 imbalance).
         """
         beta = np.radians(skew_angle_deg)
         cos_b, sin_b = np.cos(beta), np.sin(beta)
@@ -302,8 +305,10 @@ class ReactionWheelArray:
         else:
             target_h = _vector(target_momentum_nm_s, "target_momentum_nm_s")
 
-        delta_h = current_h - target_h
-        tau_rcs_des = delta_h / float(duration_s)
+        # External RCS torque to desaturate wheels:
+        # To change wheel momentum from current_h to target_h over duration_s,
+        # the external torque imparted to the spacecraft is tau_rcs = (target_h - current_h) / duration_s
+        tau_rcs_des = (target_h - current_h) / float(duration_s)
 
         # Commanded wrench: 0 force, tau_rcs torque
         cmd_wrench = np.r_[np.zeros(3), tau_rcs_des]
@@ -332,7 +337,8 @@ class ReactionWheelArray:
             u_s_kg_m = w.static_unbalance_g_mm * 1e-6
             f_mag = u_s_kg_m * (omega ** 2)
             # Dynamic unbalance: Tau_d = I_xz * omega^2 = U_d [kg*m^2] * omega^2
-            u_d_kg_m2 = w.dynamic_unbalance_g_mm2 * 1e-7
+            # 1 g*mm^2 = 1e-3 kg * (1e-3 m)^2 = 1e-9 kg*m^2
+            u_d_kg_m2 = w.dynamic_unbalance_g_mm2 * 1e-9
             tau_mag = u_d_kg_m2 * (omega ** 2)
 
             # Jitter acts radially perpendicular to the spin axis
@@ -649,23 +655,33 @@ class StarTrackerModel:
 class EclipseThermalSnapModel:
     """
     Models thermal snap shock impulse induced when crossing the penumbra/umbra boundary.
-    Rapid thermal contraction of solar array booms (delta T ~ 200 K) creates an angular momentum impulse.
+    Based on structural thermo-elastic beam bending (Thornton & Foster formulation):
+    Asymmetric cooling across the boom cross-section (diameter 2*R_b) creates a through-depth
+    thermal gradient Delta T_grad = eta * Delta T, inducing a thermal bending moment M_T and
+    rapid tip transverse velocity v_trans = (alpha * L^2 * Delta T_grad) / (6 * R_b * Delta t).
+    The transverse velocity of the tip mass m_p creates the angular momentum impulse:
+    Delta H_snap = r_boom x (m_p * v_trans).
     """
     def __init__(self, boom_length_m: float = 5.0,
+                 boom_radius_m: float = 0.05,
                  panel_mass_kg: float = 25.0,
                  thermal_expansion_coeff: float = 23.0e-6,  # Aluminum / Carbon composite CTE [1/K]
                  delta_temperature_k: float = 200.0,        # Temperature drop across eclipse [K]
+                 transverse_gradient_ratio: float = 0.15,   # Cross-sectional Delta T ratio (15%)
                  snap_time_scale_s: float = 0.5):
         self.boom_length_m = float(boom_length_m)
+        self.boom_radius_m = float(boom_radius_m)
         self.panel_mass_kg = float(panel_mass_kg)
         self.alpha_cte = float(thermal_expansion_coeff)
         self.delta_t_k = float(delta_temperature_k)
+        self.grad_ratio = float(transverse_gradient_ratio)
         self.snap_time_scale_s = float(snap_time_scale_s)
 
     def compute_shock_impulse(self, prev_sunlight_fraction: float,
                               curr_sunlight_fraction: float,
                               dt_s: float,
-                              boom_axis_body: Tuple[float, float, float] = (0.0, 1.0, 0.0)) -> Optional[np.ndarray]:
+                              boom_axis_body: Tuple[float, float, float] = (0.0, 1.0, 0.0),
+                              sun_incidence_body: Optional[Tuple[float, float, float]] = None) -> Optional[np.ndarray]:
         """
         Check if a rapid eclipse transition occurred (|dPhi/dt| > threshold).
         If so, returns angular momentum impulse Delta H_snap in body frame [N*m*s].
@@ -677,17 +693,37 @@ class EclipseThermalSnapModel:
         if abs(dphi_dt) < 0.1:
             return None  # Steady lighting, zero thermal shock
 
-        # Delta L = L * alpha * Delta T
-        delta_l = self.boom_length_m * self.alpha_cte * self.delta_t_k
-        contract_vel = delta_l / self.snap_time_scale_s  # Velocity of contracting tip mass
+        # Through-depth cross-sectional gradient: Delta T_grad = eta * Delta T
+        delta_t_grad = self.grad_ratio * self.delta_t_k
 
-        # Boom lever arm
-        r_boom = np.asarray(boom_axis_body, dtype=float) * self.boom_length_m
-        # Contraction direction along boom axis with transverse shudder due to asymmetrical cool-down
-        v_shudder = np.array([-0.2 * contract_vel, 0.0, contract_vel])
+        # Thermo-elastic tip transverse bending displacement:
+        # delta_tip = (alpha * L^2 * Delta T_grad) / (6 * R_b)
+        delta_tip = (self.alpha_cte * (self.boom_length_m ** 2) * delta_t_grad) / (6.0 * self.boom_radius_m)
+        v_trans_mag = delta_tip / self.snap_time_scale_s
 
-        # Angular momentum impulse: Delta H = r x (m * v)
-        delta_h_snap = np.cross(r_boom, self.panel_mass_kg * v_shudder)
-        # Sign flips depending on heating (expansion) vs cooling (contraction)
+        boom_dir = np.asarray(boom_axis_body, dtype=float)
+        boom_dir /= np.linalg.norm(boom_dir)
+        r_boom = boom_dir * self.boom_length_m
+
+        # Transverse bending direction: orthogonal to boom axis
+        if sun_incidence_body is not None:
+            s_dir = np.asarray(sun_incidence_body, dtype=float)
+            s_dir /= np.linalg.norm(s_dir)
+            trans_dir = s_dir - np.dot(s_dir, boom_dir) * boom_dir
+            if np.linalg.norm(trans_dir) > 1e-4:
+                trans_dir /= np.linalg.norm(trans_dir)
+            else:
+                trans_dir = np.array([0.0, 0.0, 1.0])
+        else:
+            ref = np.array([0.0, 0.0, 1.0]) if abs(boom_dir[2]) < 0.9 else np.array([1.0, 0.0, 0.0])
+            trans_dir = np.cross(boom_dir, ref)
+            trans_dir /= np.linalg.norm(trans_dir)
+
+        # Transverse tip velocity
+        v_trans = v_trans_mag * trans_dir
+
+        # Angular momentum impulse: Delta H = r_boom x (m_panel * v_trans)
+        delta_h_snap = np.cross(r_boom, self.panel_mass_kg * v_trans)
+        # Sign flips depending on cooling (contraction/bending inward) vs heating (expansion)
         sign = -1.0 if dphi_dt < 0 else 1.0
         return delta_h_snap * sign
