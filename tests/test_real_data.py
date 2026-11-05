@@ -32,7 +32,9 @@ def test_zenodo_statistics_and_covariance(zenodo_path):
     assert result['N_total'] == 27110
     assert sum(w['n_obs'] for w in result['windows']) == result['N_total']
     assert result['overall_rms_us'] == pytest.approx(1.54260196, rel=1e-7)
-    assert result['overall_std_us'] == pytest.approx(1.5424795253, rel=1e-9)
+    # 1.5424795253 us at the former unsourced 365.953339305 Hz, rescaled to
+    # Archibald et al. (2018) f = 365.953363080 Hz.
+    assert result['overall_std_us'] == pytest.approx(1.5424795253*365.953339305/365.953363080, rel=1e-9)
     assert result['drift_slope_us_yr'] == pytest.approx(0.0134999903, rel=1e-7)
     diagnostic = result['sep_diagnostic']
     assert diagnostic['nuisance_rank'] == 39

@@ -60,6 +60,9 @@ class HierarchicalTripleSystem:
     delta_sep_uncertainty: Optional[float] = None
     delta_sep_bound95: Optional[float] = None
     delta_sep_ref: Optional[str] = None
+    # QRC theory prediction for Delta. Supplied by the theory, compared with
+    # the published measurement above; never fitted to residuals.
+    delta_sep_qrc_prediction: Optional[float] = None
 
 @dataclass(frozen=True)
 class CircumbinaryExoplanetSystem:
@@ -104,22 +107,28 @@ class CircumbinaryExoplanetSystem:
 PSR_J0337_1715 = HierarchicalTripleSystem(
     name="PSR J0337+1715",
     description="Hierarchical stellar triple system (millisecond pulsar + two white dwarfs). Ideal test of Strong Equivalence Principle in strong gravity.",
-    literature_ref="Archibald et al., Nature 559, 73–76 (2018); Voisin et al., A&A 638, A24 (2020)",
-    m1_msun=1.4378,
-    m2_msun=0.1975,
-    m3_msun=0.4104,
-    Pb1_days=1.629401787,
-    Pb2_days=327.25754,
-    e1=0.00069,
-    e2=0.03536,
-    cos_i1=0.7694,
-    cos_i2=0.7696,
-    f0_hz=365.953339305,
+    literature_ref="Ransom et al., Nature 505, 520 (2014) Table 1 (orbit, masses, spin); Archibald et al., Nature 559, 73 (2018) (SEP Delta)",
+    # Ransom et al. (2014) Table 1. Masses, periods and eccentricities come
+    # from one fit so they stay consistent with that fit's node times and
+    # periastron longitudes (used by pint_model and fitter).
+    m1_msun=1.4378,        # mp = 1.4378(13)
+    m2_msun=0.19751,       # mcI = 0.19751(15)
+    m3_msun=0.4101,        # mcO = 0.4101(3)
+    Pb1_days=1.629401788,  # Pb,I = 1.629401788(5) d
+    Pb2_days=327.257541,   # Pb,O = 327.257541(7) d
+    e1=6.9178e-4,          # eI = 6.9178(2)e-4
+    e2=3.53561955e-2,      # eO = 3.53561955(17)e-2
+    # tan i = (a sin i)/(a cos i): inner 1.21752844/1.4900 lt-s, outer
+    # 74.6727101/91.42 lt-s (i about 39.25 deg).
+    cos_i1=float(math.cos(math.atan2(1.21752844, 1.4900))),
+    cos_i2=float(math.cos(math.atan2(74.6727101, 91.42))),
+    f0_hz=365.953363096,   # f = 365.953363096(11) Hz
     # Archibald 2018 arXiv v1, main text: -1.09 +/- 0.74 (1 sigma), in 10^-6.
     delta_sep_published=-1.09e-6,
     delta_sep_uncertainty=0.74e-6,
     delta_sep_bound95=2.6e-6,
-    delta_sep_ref="https://arxiv.org/abs/1807.02059v1"
+    delta_sep_ref="https://arxiv.org/abs/1807.02059v1",
+    delta_sep_qrc_prediction=0.0
 )
 
 # 2. PSR J0737−3039A/B: The Double Pulsar (Kramer et al. 2021 PRX 11, 041050)
@@ -153,13 +162,13 @@ PSR_B1913_16 = BinaryPulsarSystem(
     Pb_days=0.322997448918,
     eccentricity=0.6171340,
     x_p_s=2.341776,
-    sin_i=0.734,
+    sin_i=0.7327,          # (sin i) from <omdot> and gamma, Sect. 4: 0.7327(4)
     om_dot_obs_deg_yr=4.226585,
     Pdot_b_obs=-2.423e-12,           # Observed decay (includes Galactic acceleration)
     Pdot_b_int_obs=-2.398e-12,       # Intrinsic decay (after Galactic acceleration correction of -0.025e-12)
-    # arXiv v1 Table 2 labels 0.004307 as ms; that unit/value pairing is
-    # ambiguous. Omit this target rather than silently repairing the source.
-    gamma_obs_ms=None
+    # Table 2 prints "gamma (ms) 0.004307(4)"; the value is in seconds
+    # (4.307 ms), which the published masses reproduce to 0.05 percent.
+    gamma_obs_ms=4.307
 )
 
 # 4. PSR J1738+0333: Asymmetric Pulsar + White Dwarf Binary
@@ -167,14 +176,15 @@ PSR_J1738_0333 = BinaryPulsarSystem(
     name="PSR J1738+0333",
     description="Relativistic asymmetric binary (pulsar + low-mass helium white dwarf) in circular orbit. Decisively constrains scalar-dipole gravitational radiation.",
     literature_ref="Freire et al., MNRAS 423, 3328–3343 (2012), https://arxiv.org/abs/1205.1450",
-    m1_msun=1.46,
-    m2_msun=0.181,
-    Pb_days=0.35479073987,
-    eccentricity=0.00000035,
-    x_p_s=0.3434,
-    sin_i=0.54,
-    Pdot_b_obs=-1.70e-14,
-    Pdot_b_int_obs=-2.59e-14
+    # Freire et al. (2012) Table 1.
+    m1_msun=1.46,                 # Mp = 1.46(+0.06/-0.05)
+    m2_msun=0.181,                # Mc = 0.181(+0.008/-0.007), Antoniadis et al. (2012)
+    Pb_days=0.3547907398724,      # Pb = 0.3547907398724(13) d
+    eccentricity=3.4e-7,          # e = (3.4 +- 1.1)e-7
+    x_p_s=0.3434,                 # x = 0.3434 lt-s (rounded in Table 1)
+    sin_i=0.53877,                # s = 0.53877 (i = 32.6(1.0) deg)
+    Pdot_b_obs=-17.0e-15,         # Pbdot = -17.0(3.1) fs/s
+    Pdot_b_int_obs=-25.9e-15      # Pbdot_int = -25.9(3.2) fs/s
 )
 
 # 5. Kepler-16b: Circumbinary Exoplanet Benchmark
@@ -182,15 +192,19 @@ KEPLER_16B = CircumbinaryExoplanetSystem(
     name="Kepler-16b",
     description="First unambiguous circumbinary exoplanet discovered by NASA Kepler. Exhibits large transit timing variations (TTV) and nodal orbital precession.",
     literature_ref="Doyle et al., Science 333, 1602–1606 (2011)",
+    # Planet and primary: NASA Exoplanet Archive record for Doyle et al.
+    # (2011) (mass 0.6897, period 228.776 d, e 0.0069, 0.333 M_Jup).
     m_starA_msun=0.6897,
-    m_starB_msun=0.20255,
-    m_planet_msun=0.000318, # 0.333 Jupiter masses
-    P_bin_days=41.079220,
+    m_starB_msun=0.20255,     # Doyle 2011 Table 1 (Science supplement); not text-verified here
+    m_planet_msun=0.000318,   # 0.333 M_Jup
+    P_bin_days=41.079220,     # Doyle 2011 Table 1 (Science supplement); not text-verified here
     P_planet_days=228.776,
-    e_bin=0.15944,
+    e_bin=0.15944,            # Doyle 2011 Table 1 (Science supplement); not text-verified here
     e_planet=0.0069,
+    # UNSOURCED legacy comparison values. Doyle 2011 states only that the
+    # secular timescale is "about 40 years" and the orbits align "within
+    # 0.4 deg"; 44.1 yr, 1.52 h and 0.42 deg have no located source.
     P_nodal_prec_yr_obs=44.1,
-    # Legacy example comparison values; these are not computed predictions.
     ttv_amplitude_hours=1.52,
     mutual_inclination_deg=0.42
 )

@@ -12,6 +12,10 @@ from scipy.linalg import lstsq
 
 
 UNIT_TO_US = {"us": 1.0, "ns": 1e-3, "s": 1e6}
+# Archibald et al. (2018) Table 1 spin frequency; the Zenodo 1241122 phase
+# residuals come from that fit, so convert turns to time with it.
+ARCHIBALD_SPIN_FREQUENCY_HZ = 365.953363080
+
 ARCHIBALD_SEP = {
     "value": -1.09e-6,
     "uncertainty_68": 0.74e-6,
@@ -234,7 +238,7 @@ class ZenodoResidualEvaluator:
                 raise ValueError("Expected mutually exclusive binary backend jump indicators.")
             expected = {"arecibo": [0., 0.], "gbt": [0., 1.], "wsrt": [1., 0.]}[backend]
             data = data[np.all(jumps == expected, axis=1)]
-        phase_to_us = 1e6 / 365.953339305
+        phase_to_us = 1e6 / ARCHIBALD_SPIN_FREQUENCY_HZ
         result = inspect_residuals(data[:, 0], data[:, 1] * phase_to_us,
                                    data[:, 2] * phase_to_us, num_windows)
         result["published_sep"] = dict(ARCHIBALD_SEP)

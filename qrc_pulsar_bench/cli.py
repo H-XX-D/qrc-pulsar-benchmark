@@ -60,6 +60,12 @@ def cmd_run(args):
         if published["absolute_bound_95"] is not None:
             print_row("Published SEP |Delta| bound (95%)", f"{published['absolute_bound_95']:.2g}")
             print_row("SEP reference", published["source"])
+        qrc = result.get("qrc_sep_prediction")
+        if qrc is not None:
+            verdict = "inside" if qrc["within_published_95_bound"] else "OUTSIDE"
+            print_row("QRC prediction for Delta (theory input)", f"{qrc['value']:.2g}")
+            print_row("QRC vs published measurement", f"{verdict} the 95% bound; "
+                      f"{qrc['pull_vs_published_sigma']:.2f} sigma from the published value")
     elif isinstance(system, BinaryPulsarSystem):
         for label, key, target, comparison, unit in [
             ("Periastron advance", "om_dot_pred_deg_yr", "om_dot_obs_deg_yr", "om_dot", "deg/yr"),

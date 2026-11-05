@@ -10,9 +10,10 @@ Hardened against smuggled mechanics and numerical artifacts:
   - Time-invariance: Orbit integration is permanently anchored to a fixed catalog
     reference epoch (T0 = PEPOCH = 55920.0 MJD). Evaluated delays at any MJD are
     strictly invariant with respect to TOA slicing or dataset partitioning.
-  - Ransom's Measured Node Times: Uses Ransom et al. (2014) Table 1 measured epochs
-    (TASC1 = 55920.407717436, TASC2 = 56233.935815) to dynamically derive initial
-    orbital phases (no hardcoded angles).
+  - Ransom's Measured Node Times: Uses Ransom et al. (2014) Table 1 node epochs
+    (TASC1 = 55920.407717436, TASC2 = 56233.935815) and periastron longitudes
+    (OM1 = 97.6182 deg, OM2 = 95.619493 deg); the true anomaly at the reference
+    epoch follows from Kepler's equation.
   - High-Density Resolution: Samples at least 200 points per inner orbit with
     DOP853 native continuous dense-output collocation (sol.sol), eliminating all
     coarse spline interpolation errors.
@@ -40,6 +41,21 @@ try:
 except (ImportError, AttributeError):
     _BaseComponent = object
     _HAS_PINT = False
+
+
+def _true_anomaly_at(t_mjd, tasc_mjd, pb_days, e, omega_rad):
+    """True anomaly at t_mjd for an orbit whose ascending node falls at tasc_mjd.
+
+    At the ascending node the argument of latitude is zero, so the true
+    anomaly there is -omega; Kepler's equation carries it to t_mjd.
+    """
+    f_asc = -omega_rad
+    E_asc = 2.0 * np.arctan(np.sqrt((1.0 - e) / (1.0 + e)) * np.tan(f_asc / 2.0))
+    M = (E_asc - e * np.sin(E_asc)) + 2.0 * np.pi * (t_mjd - tasc_mjd) / pb_days
+    E = M
+    for _ in range(50):
+        E = E - (E - e * np.sin(E) - M) / (1.0 - e * np.cos(E))
+    return float(2.0 * np.arctan2(np.sqrt(1.0 + e) * np.sin(E / 2.0), np.sqrt(1.0 - e) * np.cos(E / 2.0)))
 
 
 class RelationalTripleDelayComponent(_BaseComponent):
@@ -72,6 +88,8 @@ class RelationalTripleDelayComponent(_BaseComponent):
         self.add_param(floatParameter(name="E2", value=system.e2, units="", description="Outer eccentricity", tcb2tdb_scale_factor=u.Quantity(1)))
         self.add_param(floatParameter(name="COSI1", value=system.cos_i1, units="", description="Cosine of inner inclination", tcb2tdb_scale_factor=u.Quantity(1)))
         self.add_param(floatParameter(name="COSI2", value=system.cos_i2, units="", description="Cosine of outer inclination", tcb2tdb_scale_factor=u.Quantity(1)))
+        self.add_param(floatParameter(name="OM1", value=97.6182, units="deg", description="Inner longitude of periastron (Ransom et al. 2014)", tcb2tdb_scale_factor=u.Quantity(1)))
+        self.add_param(floatParameter(name="OM2", value=95.619493, units="deg", description="Outer longitude of periastron (Ransom et al. 2014)", tcb2tdb_scale_factor=u.Quantity(1)))
         self.add_param(MJDParameter(name="TASC1", description="Inner ascending node epoch (MJD)", time_scale="tdb", tcb2tdb_scale_factor=u.Quantity(1)))
         self.add_param(MJDParameter(name="TASC2", description="Outer ascending node epoch (MJD)", time_scale="tdb", tcb2tdb_scale_factor=u.Quantity(1)))
         self.add_param(MJDParameter(name="PEPOCH_REF", description="Trajectory reference epoch (MJD)", time_scale="tdb", tcb2tdb_scale_factor=u.Quantity(1)))
@@ -100,6 +118,8 @@ class RelationalTripleDelayComponent(_BaseComponent):
             "E2": system.e2,
             "COSI1": system.cos_i1,
             "COSI2": system.cos_i2,
+            "OM1": 97.6182,
+            "OM2": 95.619493,
             "TASC1": 55920.407717436,
             "TASC2": 56233.935815,
             "PEPOCH_REF": 55920.0,
@@ -148,9 +168,12 @@ class RelationalTripleDelayComponent(_BaseComponent):
         pb1 = system.Pb1_days
         pb2 = system.Pb2_days
 
-        # Dynamically compute initial orbital phases at fixed reference epoch T0
-        phi1_0 = (2.0 * np.pi * ((t0_mjd - tasc1) / pb1)) % (2.0 * np.pi)
-        phi2_0 = (2.0 * np.pi * ((t0_mjd - tasc2) / pb2)) % (2.0 * np.pi)
+        # Osculating geometry at the reference epoch from the node times:
+        # periapsis longitude plus the true anomaly reached at T0.
+        om1 = np.radians(self._get_param("OM1", 97.6182))
+        om2 = np.radians(self._get_param("OM2", 95.619493))
+        f1_0 = _true_anomaly_at(t0_mjd, tasc1, pb1, system.e1, om1)
+        f2_0 = _true_anomaly_at(t0_mjd, tasc2, pb2, system.e2, om2)
 
         t_eval_s = (mjd - t0_mjd) * day_s
         t_min_s = float(np.min(t_eval_s))
@@ -158,8 +181,8 @@ class RelationalTripleDelayComponent(_BaseComponent):
 
         state, _, _ = _initial_state(
             system,
-            inner_angles_rad=(0.0, 0.0, phi1_0),
-            outer_angles_rad=(0.0, 0.0, phi2_0),
+            inner_angles_rad=(0.0, om1, f1_0),
+            outer_angles_rad=(0.0, om2, f2_0),
         )
         masses = [state.m1, state.m2, state.m3]
         y0 = np.concatenate([state.r1, state.v1, state.r2, state.v2])
