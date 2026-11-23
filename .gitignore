@@ -44,3 +44,7 @@ venv.bak/
 *.csv
 !examples/*.csv
 .claude/
+
+# Private CislunarOS work
+*cislunaros*
+*CislunarOS*
