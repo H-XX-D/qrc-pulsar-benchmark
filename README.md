@@ -15,7 +15,7 @@ This repository provides the underlying physical and mathematical formulation fo
 
 ## Fundamental Theory: Quantum Relational Causality (QRC)
 
-The foundational mathematical preprint and theoretical derivations are part of this repository under [`theory/`](theory/):
+The mathematical preprint and derivations investigate discrete relational actions on matching groupoids, treating distance as the inferred measurement of causal impedance rather than an absolute background container. The preprint and executable checks are located under [`theory/`](theory/):
 - **Preprint Paper (PDF)**: [`theory/paper/qrc_preprint.pdf`](theory/paper/qrc_preprint.pdf)
 - **Preprint Source (LaTeX)**: [`theory/paper/qrc_preprint.tex`](theory/paper/qrc_preprint.tex)
 - **Foundations & Exact Derivations**: [`theory/QRC_COMPLETE_FOUNDATIONS_MATHEMATICAL_DERIVATIONS.md`](theory/QRC_COMPLETE_FOUNDATIONS_MATHEMATICAL_DERIVATIONS.md)

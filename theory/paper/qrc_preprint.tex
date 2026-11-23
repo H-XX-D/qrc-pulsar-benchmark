@@ -42,21 +42,21 @@ Nested-Reciprocity Source Law, and Conditional Gauge Structure}
 \maketitle
 
 \begin{abstract}
-Quantum Relational Causality (QRC) is a research program in which spatial distance is
-treated as the inferred measurement of causal impedance between relational excitations,
-starting from a nonlocal zero-dimensional condition. This preprint states what the
-program has established mathematically, under which assumptions, and what is open. The
-main result concerns a declared source law $\Spre$ on a groupoid of finite sets $D$ of
-excitation types with transverse matchings between $D$ and its binary spans. For activity
-$0<h<2\lambda$ the unique ground state up to relabelling has $|D|=3$ and the complement
-matching, with excitation gap $\min(3h,2\lambda-h)$. Two further declared laws (least
-endpoint completion and a centred unit-rate response) then give the endpoint group
+Quantum Relational Causality (QRC) investigates discrete relational actions on matching
+groupoids, treating spatial distance as the inferred measurement of causal impedance
+between relational excitations rather than an absolute background container. This preprint
+states what the program has established mathematically, under which explicit assumptions,
+and what remains open. The main result concerns a declared source law $\Spre$ on a groupoid
+of finite sets $D$ of excitation types with transverse matchings between $D$ and its binary
+spans. For activity $0<h<2\lambda$ the unique ground state up to relabelling has $|D|=3$
+and the complement matching, with excitation gap $\min(3h,2\lambda-h)$. Two further declared
+laws (least endpoint completion and a centred unit-rate response) then give the endpoint group
 $\Z[D]$ of rank three, exact word-ball counts $V_3(R)=(4R^3+6R^2+8R+3)/3$, return
 probability $e^{-t}I_0(t/3)^3$, spectral dimension three and one co-metric
 $q^\sharp=\tfrac13\sum_{d\in D}d\otimes d$. These are implication theorems for a declared
-law; the law is not derived from more primitive principles, and nothing here shows that
-nature obeys it. Separately, on a supplied Hermitian $2+3$ internal carrier with one
-determinant record, the stabilizer is $(SU(2)\times SU(3)\times U(1))/\Z_6$, one
+combinatorial law; the law is not derived from informal ontological principles, and nothing
+here shows that nature obeys it. Separately, on a supplied Hermitian $2+3$ internal carrier
+with one determinant record, the stabilizer is $(SU(2)\times SU(3)\times U(1))/\Z_6$, one
 anomaly-free 15-state chiral family follows, and a pair-dual anomaly polynomial
 $(m+n-5)\ch_3(E)$ selects the ranks $2+3$ within its own hypotheses; dynamical selection
 of the carrier, mirror removal and a joint gauge continuum are not proved. We record
@@ -71,13 +71,19 @@ scripts in the accompanying package, each shown to fail on deliberately wrong in
 \section{Introduction and scope}
 \label{sec:intro}
 
-QRC starts from an ontological proposal: space in its underlying condition is
-zero-dimensional and nonlocal, particle fields are one-dimensional excitations,
-electromagnetic excitations are two-dimensional, and their composition supports the
-three-dimensional world, with time as the fourth dimension that encompasses its history.
-The program organises the work needed to turn that proposal into physics as a sequence
-of \emph{gates} (Section~\ref{sec:gates}). Each gate is a proof obligation with an
-explicit pass condition.
+The conceptual motivation behind Quantum Relational Causality (QRC) is relational:
+seeking to understand whether spatial dimension, gauge symmetries, and metric structure
+can emerge from discrete relational configurations without assuming a prior continuous
+background manifold. Informally, the program explores whether the experienced
+three-dimensional spatial world can be understood as an assembled hierarchy of relational
+excitation grades (from a zero-dimensional base condition to primitive lines and spans),
+with time as the history of causal updates.
+
+Crucially, this preprint does not claim to deduce physical reality from that informal
+metaphor, nor are the mathematical theorems derived from it. Instead, the program
+organises its technical proof obligations into a sequence of \emph{gates}
+(Section~\ref{sec:gates}), where each gate defines an explicit mathematical hypothesis and
+a verifiable pass condition.
 
 This preprint has a narrow purpose: to state exactly which of those obligations have
 been met as mathematics, under which hypotheses, and which have not. It is written for
@@ -118,10 +124,10 @@ public, so sketched results should be read as claims until those documents are r
 deliberately wrong input. ``Cited'' means taken from the literature, not re-derived.
 
 %======================================================================
-\section{Foundational statement and measurement definition}
+\section{Conceptual motivation and operational definitions}
 \label{sec:foundation}
 
-The foundational statement, in the author's formulation, is:
+The informal conceptual heuristic that originally motivated the project is stated as:
 
 \begin{quote}
 Space in its underlying condition is 0D and nonlocal; particle fields are 1D
@@ -131,14 +137,25 @@ fourth dimension encompassing its history. The limiting causal-update and propag
 role is assigned to $c$.
 \end{quote}
 
-The governing measurement distinction is stated exactly:
+The governing operational measurement definition is stated exactly:
 
 \begin{quote}
 Distance is the inferred measurement of causal impedance. Causal impedance does not
 cause a separate quantity or substance called distance.
 \end{quote}
 
-These are starting claims. Their mathematical realisation and physical adequacy are what
+\begin{remark}[Non-axiomatic status]
+The dimensional narrative above is an informal conceptual heuristic, not a mathematical
+premise. Nothing in this paper is mathematically deduced from the informal phrasing that
+particle fields are ``1D'' or that electromagnetism is ``2D''. In standard mathematical
+physics, physical fields are operator distributions or sections of fiber bundles over
+spacetime, not lower-dimensional objects composing into space. Within the formal
+mathematics of Section~\ref{sec:gate1}, the numerals $0,1,2,3$ attached to relational grades
+denote filtration depths in an exterior matching complex, while the spatial dimension
+three of the conclusion is the operational exponent of a declared walk and ball count.
+\end{remark}
+
+These are starting perspectives. Their mathematical realisation and physical adequacy are what
 the gates must establish. ``Nonlocal'' here means that spatial locality has not yet been
 inferred, not that a superluminal speed has been measured. No background metric,
 elementary graviton or universal synchronised update clock is supplied by the statement.
