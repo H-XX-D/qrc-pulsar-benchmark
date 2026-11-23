@@ -6,17 +6,8 @@ The default J2 is an approximate axisymmetric Moon, not a mascon gravity field.
 """
 
 from dataclasses import dataclass
-from typing import Optional
 import numpy as np
 from scipy.interpolate import CubicHermiteSpline
-
-try:
-    from qrc_pulsar_bench.three_body_system import ThreeBodySystem
-except ImportError:
-    try:
-        from three_body_system import ThreeBodySystem
-    except ImportError:
-        ThreeBodySystem = None
 
 GM_MOON = 4.9028001184575496e12
 GM_EARTH = 3.9860043550702266e14
@@ -146,20 +137,6 @@ class CislunarForceParameters:
     @property
     def srp_acceleration_1au(self):
         return SOLAR_PRESSURE_1AU * self.reflectivity * self.area_mass_m2_kg
-
-    @classmethod
-    def from_three_body_system(cls, system: "ThreeBodySystem", area_mass_m2_kg: float = 0.0, reflectivity: float = 1.3) -> "CislunarForceParameters":
-        """Constructs force parameters parameterized by an arbitrary ThreeBodySystem."""
-        return cls(
-            gm_moon=system.gm2,
-            gm_earth=system.gm1,
-            gm_sun=GM_SUN,
-            moon_radius_m=system.secondary_radius_m,
-            moon_j2=system.j2,
-            area_mass_m2_kg=area_mass_m2_kg,
-            reflectivity=reflectivity,
-            earth_radius_m=system.primary_radius_m,
-        )
 
     def native_parameters(self):
         """Stable C ABI order, matching hardware/cislunar_force_core.h."""

@@ -22,9 +22,6 @@ The foundational mathematical preprint and theoretical derivations are part of t
 - **Resolution of Fundamental Paradoxes**: [`theory/QRC_GRAND_PARADOX_RESOLUTION_MASTER_SYNTHESIS.md`](theory/QRC_GRAND_PARADOX_RESOLUTION_MASTER_SYNTHESIS.md)
 - **Mathematical Checks**: Executable tests in [`theory/checks/`](theory/checks/) verifying Gate 1 rank selection, heat kernel spectral dimensions, and Gate 5 anomaly-free chiral families.
 
-### Foundational Principle: Einstein Was Right
-Quantum Relational Causality (QRC) does **not** try to remake physics in its own image or overturn General Relativity. It proves that **Einstein was correct**: spacetime is not an abstract, absolute Newtonian container, but a dynamic, invariant network of physical relations, proper times, and clocks. Distance is the inferred measurement of causal impedance. By stripping away smuggled parameters, arbitrary coordinate origins, and empirical fudge factors, QRC makes physics make sense through measurable relational observables (Roemer delays, proper times, and invariant phase-space geometries).
-
 ## Scope
 
 The intended next application is **autonomous onboard orbit estimation for
@@ -106,16 +103,6 @@ navigation recovery, nominal-path recovery and observed clearance/fuel checks.
 Ground supervises authorized autonomy; ground-link loss leaves the assumed
 onboard sensors available. The ground receiver is simulated and emergency
 survival planning remains unvalidated.
-
-The [five-layer autonomy implementation](docs/layered-autonomy.md) adds recovery
-after sustained measurement rejection, a sensor-driven propulsion interlock,
-bounded protective trajectory screening, independent health states and
-authenticated ground authority. The
-[regression and fresh-scenario campaign](docs/artemis-layered-results-2026-11-01.md)
-tests those interfaces with explicit independent-sensor, shutoff and backup-bank
-assumptions, including failed isolation. These are host simulation results;
-flight qualification and integration with the separate RCS/attitude model remain
-outside this campaign.
 
 The binary calculators implement leading-order GR relations using supplied masses
 and orbital elements. The triple calculator estimates perturbation scales for

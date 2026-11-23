@@ -59,23 +59,12 @@ def propagate_plant(model,state,start,stop,mass,command,leak_force,leak_flow):
 
 
 class CompoundExperiment(ResilienceExperiment):
-    def run(self,scenario,case:FaultCase,*,library=None,coast_after_event=False,journal_path=None,
-            layered=False,isolation_available=True,ground_schedule=()):
+    def run(self,scenario,case:FaultCase,*,library=None,coast_after_event=False,journal_path=None):
         if case.onset_s<12*3600 or case.end_s>scenario.days*DAY:
             raise ValueError('Fault schedule outside experiment')
         initial,model,plan,inputs=self.prepare(scenario)
         if plan.min_clearance_m<50000:raise ValueError('Reference violates50km clearance floor')
-        guard=plant_adapter=authority=None;ground_results=[];ground_done=set()
-        if layered:
-            import secrets
-            from .loss_of_track import LossOfTrackFilter
-            from .propulsion_guard import PropulsionGuard,GuardedPlant
-            from .ground_authority import GroundAuthority
-            from .autonomy_supervisor import AutonomousMPC
-            guard=PropulsionGuard();plant_adapter=GuardedPlant(guard,scenario.seed+700000,isolation_available=isolation_available)
-            authority=GroundAuthority(scenario.name,secrets.token_bytes(32))
-            controller=AutonomousMPC(model,plan,guard,authority,library=library)
-        else:controller=RoutineMPC(model,plan,library=library,bits=32)
+        controller=RoutineMPC(model,plan,library=library,bits=32)
         actuator=controller.actuator;h=controller.settings.interval_s
         rng=np.random.default_rng(scenario.seed)
         actual=initial+np.r_[rng.normal(size=3)*300,rng.normal(size=3)*.01]
@@ -85,7 +74,7 @@ class CompoundExperiment(ResilienceExperiment):
         directions=fault_rng.normal(size=(len(case.events),3))
         if len(directions):directions/=np.linalg.norm(directions,axis=1)[:,None]
         events=list(zip(case.events,directions))
-        nav=(LossOfTrackFilter if layered else ManeuverAwareOrbitFilter)(model,initial,np.diag(np.r_[[500.]*3,[.03]*3]**2),500.)
+        nav=ManeuverAwareOrbitFilter(model,initial,np.diag(np.r_[[500.]*3,[.03]*3]**2),500.)
         ingress=NavigationIngress(nav);covariance=np.diag(np.r_[[30.]*3,[.002]*3]**2)
         journal=EventJournal(journal_path);received={};delivery_times={};previous_health=None;previous_link=True
         telemetry_errors=[];dropped_events=0;storage_failed=False
@@ -130,18 +119,6 @@ class CompoundExperiment(ResilienceExperiment):
                 if ground_up!=previous_link:
                     publish(t,'ground_link_restored' if ground_up else 'ground_link_lost',{})
                     previous_link=ground_up
-                cutoff=None
-                if layered:
-                    controller.ground_up=ground_up
-                    for index,command in enumerate(ground_schedule):
-                        if index in ground_done or not ground_up or t<command['delivery_s']:continue
-                        body=dict(mission=scenario.name,sequence=command['sequence'],issued_s=command['issued_s'],
-                            not_before_s=command['issued_s'],expires_s=command['expires_s'],action=command['action'],value=command.get('value'))
-                        envelope=authority.sign(body)
-                        if command.get('bad_signature'):envelope['mac']='0'*64
-                        accepted,reason=authority.receive(envelope,float(t));ground_done.add(index)
-                        decision=dict(time_s=float(t),sequence=body['sequence'],accepted=accepted,reason=reason)
-                        ground_results.append(decision);publish(t,'ground_command',decision)
                 observation=None;stamp=max(0.,t-60.)
                 if not any(f.kind=='sensor_dropout' for f,d in active):
                     measured=actual.copy() if stamp==0 else history.at(stamp)[:6]
@@ -162,10 +139,6 @@ class CompoundExperiment(ResilienceExperiment):
                         publish(t,'sensor_packet_rejected',dict(reason=observation['input_error']))
                 stage='navigation'
                 estimate=ingress.forecast(t,ledger,as_of_s=t)
-                if layered:
-                    # Estimated consumption from independent flow telemetry;
-                    # actual plant mass is never supplied to guidance.
-                    estimate['mass']-=guard.uncommanded_propellant_kg
                 ledger=[b for b in ledger if b.stop_s>nav.time_s]
                 error=actual-estimate['state'][:6];p=estimate['covariance']
                 health=(estimate['navigation_mode'],estimate['navigation_trusted'])
@@ -195,10 +168,6 @@ class CompoundExperiment(ResilienceExperiment):
                     dv=np.zeros(3);status=256;mode='comparison_coast'
                 else:
                     dv=controller.command(float(t),estimate,estimate['mass']);status=controller.last_status;mode=controller.mode
-                if layered:
-                    current_health=dict(controller.health.states)
-                    if not records or current_health!=records[-1].get('health'):
-                        publish(t,'vehicle_health',current_health)
                 requested=actuator.command(dv,t,estimate['mass'],interval_s=h) if status==0 else None
                 if not records or status!=records[-1]['status']:
                     publish(t,'guidance_status',dict(status=int(status),mode=mode))
@@ -207,12 +176,10 @@ class CompoundExperiment(ResilienceExperiment):
                     publish(t,'command_issued',dict(dv_m_s=dv.tolist(),estimated_mass_kg=float(estimate['mass'])))
                 if ground_up:deliver(receiver,t)
                 executed=None;gain=float(np.prod([f.value for f,d in active if f.kind=='thrust_gain']))
-                backup=bool(layered and guard.use_backup)
-                if backup:gain=1.
                 if requested is not None and gain>0:
                     direction=Rotation.from_rotvec(pointing).apply(requested.direction_icrf)
                     for fault,axis in active:
-                        if fault.kind=='pointing' and not backup:direction=Rotation.from_rotvec(axis*fault.value).apply(direction)
+                        if fault.kind=='pointing':direction=Rotation.from_rotvec(axis*fault.value).apply(direction)
                     executed=replace(requested,mass_start_kg=mass,thrust_n=requested.thrust_n*gain*(1+magnitude),
                         mass_flow_kg_s=requested.mass_flow_kg_s*gain,direction_icrf=tuple(direction))
                 force_events=[(f,d) for f,d in active if f.kind in ('acceleration','acceleration_ramp')]
@@ -227,19 +194,11 @@ class CompoundExperiment(ResilienceExperiment):
                 plant=MoonCartesianFlightModel(acceleration,model.inner,moon_radius_m=model.moon_radius_m,
                     earth_radius_m=model.earth_radius_m,max_step_s=150.,rtol=2e-13)
                 stage='plant'
-                if layered:
-                    event_count=len(guard.events)
-                    rollout,cutoff=plant_adapter.propagate(plant,actual,t,t+h,mass,executed,requested,leak_force,leak_flow)
-                    for event in guard.events[event_count:]:publish(event['time_s'],event['event'],event)
-                    if cutoff is not None and requested is not None and not backup and cutoff<requested.stop_s:
-                        ledger[-1]=replace(requested,stop_s=cutoff)
-                else:rollout=propagate_plant(plant,actual,t,t+h,mass,executed,leak_force,leak_flow)
+                rollout=propagate_plant(plant,actual,t,t+h,mass,executed,leak_force,leak_flow)
                 minimum_clearance=min(minimum_clearance,rollout.min_clearance_m);net_dv+=rollout.propulsive_dv
                 records.append(dict(time_s=float(t),dv=dv.tolist(),burn_s=0. if requested is None else requested.stop_s-requested.start_s,
-                    actual_burn_s=0. if executed is None else min(executed.stop_s,rollout.stop_s,
-                        cutoff if cutoff is not None and not backup else np.inf)-executed.start_s,
+                    actual_burn_s=0. if executed is None else min(executed.stop_s,rollout.stop_s)-executed.start_s,
                     uncommanded_thrust_n=float(np.linalg.norm(leak_force)),status=int(status),mode=mode))
-                if layered:records[-1].update(health=current_health,bank='backup' if backup else 'primary')
                 for epoch in np.arange(t+300,min(t+h,rollout.stop_s)+1,300):dense.append(point(epoch,rollout.at(epoch)))
                 final=rollout.at(rollout.stop_s);actual=final[:6].copy();mass=float(final[6]);history=rollout
                 if not rollout.completed:
@@ -267,7 +226,7 @@ class CompoundExperiment(ResilienceExperiment):
         navigation_settled=bool(completed and tail and tail[-1]['time_s']-tail[0]['time_s']>=21600)
         max_latency=max((delivery_times[seq]-record['time_s'] for seq,record in received.items()),default=0.)
         row=dict(scenario=asdict(scenario),case=asdict(case),fault_directions=directions.tolist(),
-            arithmetic='float64' if library is None else '32',control='coast_after_event' if coast_after_event else ('layered_mpc' if layered else 'routine_mpc'),
+            arithmetic='float64' if library is None else '32',control='coast_after_event' if coast_after_event else 'routine_mpc',
             initial_state=initial.tolist(),model=inputs,nominal_min_clearance_m=float(plan.min_clearance_m),
             metrics=dict(**scored,completed=completed,collision=collision,min_clearance_m=float(minimum_clearance) if np.isfinite(minimum_clearance) else None,
                 issued_dv_m_s=issued,net_propulsive_dv_m_s=float(net_dv),propellant_kg=500.-mass,
@@ -283,9 +242,4 @@ class CompoundExperiment(ResilienceExperiment):
             final_navigation_error_m=samples[-1]['navigation_error_m'] if samples else None,
             final_navigation_velocity_error_m_s=samples[-1]['navigation_velocity_error_m_s'] if samples else None)
         if failure is not None:row['failure']=failure
-        if layered:
-            row['protection']=dict(isolation_available=isolation_available,backup_available=guard.backup_available,
-                propulsion_events=guard.events,primary_closed=plant_adapter.closed,backup_enabled=guard.use_backup,
-                measured_extra_propellant_kg=guard.uncommanded_propellant_kg,health_updates=controller.health.updates,
-                health_events=list(controller.health.events),protective_plans=list(controller.protective_reports),ground_commands=ground_results)
         return row

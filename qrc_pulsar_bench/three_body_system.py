@@ -1,1 +1,0 @@
-/Volumes/Thunderbolt SSD/UserData/Relocated-20261102/artemis_live/mission_os/three_body_system.py
