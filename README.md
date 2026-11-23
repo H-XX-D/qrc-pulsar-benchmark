@@ -4,6 +4,15 @@ An MIT-licensed Python toolkit for **post-Keplerian formula evaluation, hierarch
 tidal scale estimates, Newtonian three-body evolution, triangle geometry, and post-fit pulsar residual inspection**.
 Python 3.9 or later is required.
 
+Author: **Todd Hendrixx** ([@H-XX-D](https://github.com/H-XX-D))
+
+### Companion Hard Sci-Fi Novel
+This repository provides the underlying physical and mathematical formulation for the hard science fiction novel:
+**[*The Impedance Threshold: Argonaut*](https://h-xx-d.github.io/the-impedance-threshold/)** by Todd Hendrixx.
+- **Online Web Reader & Formats**: [Read Online / Download PDF & EPUB](https://h-xx-d.github.io/the-impedance-threshold/)
+- **Repository**: [H-XX-D/the-impedance-threshold](https://github.com/H-XX-D/the-impedance-threshold)
+- **Scope**: Explores the consequences of autonomous space avionics, real-time edge filtering under compute constraints, the rocket equation/oxygen band bottlenecks, and humanity's contact with abyssal exospecies.
+
 ## Scope
 
 The intended next application is **autonomous onboard orbit estimation for
@@ -85,6 +94,16 @@ navigation recovery, nominal-path recovery and observed clearance/fuel checks.
 Ground supervises authorized autonomy; ground-link loss leaves the assumed
 onboard sensors available. The ground receiver is simulated and emergency
 survival planning remains unvalidated.
+
+The [five-layer autonomy implementation](docs/layered-autonomy.md) adds recovery
+after sustained measurement rejection, a sensor-driven propulsion interlock,
+bounded protective trajectory screening, independent health states and
+authenticated ground authority. The
+[regression and fresh-scenario campaign](docs/artemis-layered-results-2026-11-01.md)
+tests those interfaces with explicit independent-sensor, shutoff and backup-bank
+assumptions, including failed isolation. These are host simulation results;
+flight qualification and integration with the separate RCS/attitude model remain
+outside this campaign.
 
 The binary calculators implement leading-order GR relations using supplied masses
 and orbital elements. The triple calculator estimates perturbation scales for

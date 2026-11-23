@@ -216,20 +216,25 @@ def benchmark_qrc_reservoir(
     T, D = states.shape
     d_eff = compute_effective_dimension(states)
 
-    # Synthetic multi-frequency input signal driving pulse phase deviations
-    # (inner orbit + outer orbit beat frequency + random fluctuations)
-    f1 = 1.0 / system.Pb1_days
-    f2 = 1.0 / system.Pb2_days
-    rng = np.random.default_rng(42)
-    carrier = np.sin(2 * np.pi * f1 * times_days) + 0.3 * np.cos(2 * np.pi * f2 * times_days)
-    noise = 0.05 * rng.standard_normal(T)
-    input_signal = carrier + noise
+    # Physical trajectory observable: Roemer timing delay of the pulsar (body 1) along line of sight.
+    # Evaluated directly from numerical integration of the three-body equations of motion
+    # (no hardcoded frequencies or synthetic carrier sine waves).
+    integrator_out = RelationalThreeBodyIntegrator.integrate(
+        system,
+        num_inner_orbits=duration_days / system.Pb1_days,
+        num_output_points=T,
+        enable_1pn=enable_1pn
+    )
+    cart = integrator_out['cartesian_y']
+    # Geometric line-of-sight Roemer delay in microseconds
+    roemer_delay_us = -(cart[2, :] / c) * 1e6
+    input_signal = roemer_delay_us
 
     mc_total, mc_curve = compute_fading_memory_capacity(
         states, input_signal, max_lag=max_lag
     )
 
-    # Task: Reconstruct future timing phase (1-step forward prediction)
+    # Task: Reconstruct future timing phase (1-step forward prediction of physical Roemer delay)
     target = np.roll(input_signal, -1)
     target[-1] = target[-2]
 
