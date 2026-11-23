@@ -14,7 +14,8 @@ for script in \
     check_gate5_family.py \
     check_gate6_mass_channels.py \
     check_all_gates_empirical_confrontation.py \
-    check_all_gates_truthful_equations.py; do
+    check_all_gates_truthful_equations.py \
+    check_qrc_grand_synthesis_first_principles.py; do
   if python3 -I -B "$script" > /dev/null; then
     echo "$script: all observed outcomes match expectations"
   else
