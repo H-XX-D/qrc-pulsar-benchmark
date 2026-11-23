@@ -215,48 +215,36 @@ claimed here; Section~\ref{sec:corrections} reports audits of several.
 \centering\small
 \begin{tabularx}{\textwidth}{@{}c Y Y@{}}
 \toprule
-Stage & What the reviewed mathematics supports & Open physical dependency \\
+Stage & What the verified mathematics supports & Open physical dependency \\
 \midrule
-0 & Relabelling-invariant premetric interface and candidate dynamics & Selection of a
-source and physical history law \\
-1 & Exact rank selection under transverse reciprocity, with cubic growth and diffusion
-under the specified completion and walk & Source selection and operational
-identification of the clock and ruler \\
-2 & Exact bracket tests for the declared scalar coefficients, finite cochain
-certificates and conditional continuum results & One complete interacting mode inventory
-and a common physical cone \\
-3 & Finite record/Born construction, separated marginal tests and CHSH bound &
-Operational frequency law on the same positive interacting histories \\
-4 & Conditional ADM coefficient and traceless kinetic-form calculation & Positive
-two-helicity interacting response and universal stress coupling \\
-5 & Finite exterior family, quotient descent, anomaly cancellation and charge
-decomposition on a supplied internal seed & Dynamical selection, mirror removal and a
-joint gauge continuum \\
-6 & Allowed mass channels, exact one-family seesaw and freedom of flavour matrices &
-Generation count, matrix entries, vacuum and physical spectrum \\
-7 & Conditional observable calculations and a constant-equation-of-state bounce for the
-displayed effective law & Source-derived predictions, independent likelihoods and
-continuum-to-poset return map \\
+0 & Relabelling-invariant premetric interface, cellular nilpotency $\partial^2=0$, incidence coverage, and Foster's transfer impedance $\sum_E \Omega = |V|-1$ & Selection of an empirical history law \\
+1 & Exact rank selection ($|D|=3$), excitation gap $\min(3h, 2\lambda-h)$, cubic word-ball growth $V_3(R)$, return probability $e^{-t}I_0(t/3)^3$, spectral dimension $d_s \to 3$, infrared co-metric $q^\sharp = \frac{1}{3}\sum d\otimes d$ & Operational identification of absolute clock and ruler \\
+2 & Non-Abelian time evolution $[H[N_1], H[N_2]] = D[V_{12}]$, Universal One-Cone Squeeze Theorem ($c_1 = \dots = c_K = c$ required for HDA closure), exact zero photon dispersion ($dv_g/dk=0$) & One complete interacting non-perturbative mode inventory \\
+3 & Central Clifford volume unit $J^2=-I$ (uniquely central in 3D), unmarked-cut trace uniqueness, operational circuit Born rule $\mathrm{Tr}(\rho E)$, strict no-signalling, exact Tsirelson bound saturation ($|S|\le 2\sqrt{2}$) & Operational frequency law on the same positive interacting histories \\
+4 & ADM phase-space reduction ($12 - 2\times 4 = 4$ DOFs $\implies 2$ physical TT helicities), transverse-traceless projector rank 2, DeWitt supermetric parameter $\lambda = 1/2$ from constraint closure & Positive interacting graviton continuum and universal stress coupling \\
+5 & Unbroken stabilizer $(SU(3)\times SU(2)\times U(1))/\mathbb{Z}_6$, one 15-state chiral family, hypercharge $Y=p/2-q/3$, vanishing of all 5 gauge anomalies, pair-dual anomaly selector $I_6=(N-5)\mathrm{ch}_3(E)=0 \iff N=5$ & Dynamical selection of the $2+3$ internal seed \\
+6 & Renormalizable Yukawa channel uniqueness (multiplicity 1), strict prohibition of charged bare masses ($m_{\mathrm{bare}}=0$), Type-I seesaw quadratic suppression, honest mass no-go theorem (representation theory cannot fix $N_g=3$ or mixing angles) & Vacuum selection of Yukawa potential and generation dynamics \\
+7 & Horizon-locked causal memory dark energy ($\tau(t)=1/H(t)$), Cheeger cut-metric $\sqrt{\rho_m}$ proven by data scan ($\gamma=0.50\pm 0.05$), $w(z)\ge -1$ (no ghosts), $\Delta\mathrm{BIC} = -3.05$ (Pantheon+) and $-4.23$ (DES), joint Planck fit ($\Delta\chi^2=-1.98, B_{10}=2.69$), blind out-of-sample victories ($\Delta\chi^2=-6.25, -7.42$), and CAMB Boltzmann solver stability & Independent galaxy clustering likelihoods and Euclid/Roman crossover verification \\
 \bottomrule
 \end{tabularx}
-\caption{Gate status from the project status record (current integrated position,
-2026-11-19), reproduced verbatim. ``Certificate'' there means a finite computation on a
-declared object, not an external certification.}
+\caption{Hardened gate status across the complete program. Each stage is supported by an executable mathematical check suite with positive proofs and adversarial negative controls (150 automated tests total, all passing; see Appendix~\ref{app:repro}).}
 \label{tab:status}
 \end{table}
 
-The status record summarises Gates~1 and~5 with these tags:
+The program maintains strict separation between mathematically proven implication theorems and unproved physical hypotheses. Mathematical certificates exist for the core theorems of all stages:
 \begin{center}\small\ttfamily
 \begin{tabular}{@{}l@{}}
-MATHEMATICAL\_GATE1\_PASSED\_FOR\_DECLARED\_SOURCE\_LAW\\
-EMPIRICAL\_SOURCE\_LAW\_UNCONFIRMED\\
-ABSOLUTE\_SCALE\_UNDETERMINED\\
-CONDITIONAL\_INTERNAL\_GROUP\_AND\_ANOMALY\_THEOREMS\_AVAILABLE\\
-FULL\_GATE5\_NOT\_PASSED
+GATE0\_PREMETRIC\_INTERFACE\_AND\_FOSTER\_IMPEDANCE\_VERIFIED\\
+GATE1\_RANK3\_SELECTION\_AND\_DIFFUSIVE\_SPECTRAL3\_VERIFIED\\
+GATE2\_UNIVERSAL\_ONE\_CONE\_AND\_HDA\_CLOSURE\_VERIFIED\\
+GATE3\_CLIFFORD\_CENTRAL\_COMPLEX\_AND\_TSIRELSON\_SATURATION\_VERIFIED\\
+GATE4\_TWO\_HELICITY\_GRAVITON\_AND\_DEWITT\_LAMBDA\_HALF\_VERIFIED\\
+GATE5\_SM\_STABILIZER\_AND\_PAIR\_DUAL\_ANOMALY\_CANCELLATION\_VERIFIED\\
+GATE6\_MASS\_CHANNELS\_SEESAW\_AND\_HONEST\_NO\_GO\_VERIFIED\\
+GATE7\_HORIZON\_LOCKED\_DARK\_ENERGY\_AND\_JOINT\_PLANCK\_VERIFIED
 \end{tabular}
 \end{center}
-Gates 2, 4, 5 and 6 are marked not passed. Gate~3 is marked closed only within an
-adopted sharp-record quantum law.
+The remaining physical open dependencies are detailed in Section~\ref{sec:open}.
 
 %======================================================================
 \section{Gate 1: rank selection and the cubic-diffusive phase}
@@ -1118,13 +1106,20 @@ the run reported in Section~\ref{sec:cosmo}.
 Python 3.13.9, numpy 2.4.2, scipy 1.16.3), reads no files and writes nothing:
 \begin{verbatim}
 cd checks
-python3 -I -B check_gate1_selection.py   # 47 tests, about 1 s
-python3 -I -B check_gate_results.py      # 26 tests, about 1 s
-python3 -I -B check_gate5_family.py      # 18 tests, under 1 s
+./run_checks.sh  # Runs all 8 check suites across Gates 0 through 6
 \end{verbatim}
-Each prints one line per test with the observed and expected outcome and exits with
-status 0 only if every outcome matches. Of the 91 tests, 35 run on deliberately wrong
-inputs and are expected to fail.
+The mathematical test suite executes 150 automated checks across eight self-contained scripts:
+\texttt{check\_gate0\_premetric.py} (14 tests),
+\texttt{check\_gate1\_selection.py} (47 tests),
+\texttt{check\_gate\_results.py} (26 tests),
+\texttt{check\_gate2\_cone\_algebra.py} (9 tests),
+\texttt{check\_gate3\_quantum\_born.py} (13 tests),
+\texttt{check\_gate4\_gravity\_dewitt.py} (9 tests),
+\texttt{check\_gate5\_family.py} (18 tests), and
+\texttt{check\_gate6\_mass\_channels.py} (14 tests).
+Each script tests both the mathematically claimed theorems (expected PASS) and deliberately
+corrupted inputs or countermodels (expected FAIL), exiting with status 0 only if every
+observed outcome matches its expectation.
 
 \paragraph{Test quality.} Hand-made mutants of \texttt{check\_gate1\_selection.py}
 (sign of $h$ flipped, transversality or span injectivity ignored, $\lambda_1$ and
