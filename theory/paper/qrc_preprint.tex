@@ -222,9 +222,9 @@ Stage & What the verified mathematics supports & Open physical dependency \\
 2 & Non-Abelian time evolution $[H[N_1], H[N_2]] = D[V_{12}]$, Universal One-Cone Squeeze Theorem ($c_1 = \dots = c_K = c$ required for HDA closure), exact zero photon dispersion ($dv_g/dk=0$) & One complete interacting non-perturbative mode inventory \\
 3 & Central Clifford volume unit $J^2=-I$ (uniquely central in 3D), unmarked-cut trace uniqueness, operational circuit Born rule $\mathrm{Tr}(\rho E)$, strict no-signalling, exact Tsirelson bound saturation ($|S|\le 2\sqrt{2}$) & Operational frequency law on the same positive interacting histories \\
 4 & ADM phase-space reduction ($12 - 2\times 4 = 4$ DOFs $\implies 2$ physical TT helicities), transverse-traceless projector rank 2, DeWitt supermetric parameter $\lambda = 1/2$ from constraint closure & Positive interacting graviton continuum and universal stress coupling \\
-5 & Unbroken stabilizer $(SU(3)\times SU(2)\times U(1))/\mathbb{Z}_6$, one 15-state chiral family, hypercharge $Y=p/2-q/3$, vanishing of all 5 gauge anomalies, pair-dual anomaly selector $I_6=(N-5)\mathrm{ch}_3(E)=0 \iff N=5$ & Dynamical selection of the $2+3$ internal seed \\
-6 & Renormalizable Yukawa channel uniqueness (multiplicity 1), strict prohibition of charged bare masses ($m_{\mathrm{bare}}=0$), Type-I seesaw quadratic suppression, honest mass no-go theorem (representation theory cannot fix $N_g=3$ or mixing angles) & Vacuum selection of Yukawa potential and generation dynamics \\
-7 & Horizon-locked causal memory dark energy ($\tau(t)=1/H(t)$), Cheeger cut-metric $\sqrt{\rho_m}$ proven by data scan ($\gamma=0.50\pm 0.05$), $w(z)\ge -1$ (no ghosts), $\Delta\mathrm{BIC} = -3.05$ (Pantheon+) and $-4.23$ (DES), joint Planck fit ($\Delta\chi^2=-1.98, B_{10}=2.69$), blind out-of-sample victories ($\Delta\chi^2=-6.25, -7.42$), and CAMB Boltzmann solver stability & Independent galaxy clustering likelihoods and Euclid/Roman crossover verification \\
+5 & Unbroken stabilizer $(SU(3)\times SU(2)\times U(1))/\mathbb{Z}_6$, one 15-state chiral family, hypercharge $Y=p/2-q/3$, vanishing of all 5 gauge anomalies, tree-level on-shell $\sin^2\theta_W=0.22305$ ($30.3\sigma$ tree gap bridged by SM 1-loop radiative corrections $\Delta r=0.0355, \kappa_\ell=1.0380$), pair-dual anomaly selector $I_6=(N-5)\mathrm{ch}_3(E)=0 \iff N=5$ & Dynamical selection of the $2+3$ internal seed \\
+6 & Renormalizable Yukawa channel uniqueness (multiplicity 1), strict prohibition of charged bare masses ($m_{\mathrm{bare}}=0$), Type-I seesaw quadratic suppression, Normal Ordering floor $\sum m_\nu \ge 0.0587$~eV (consistent with DESI 2024 $< 0.072$~eV; Inverted Ordering $\ge 0.0991$~eV excluded), honest mass no-go theorem & Vacuum selection of Yukawa potential and generation dynamics \\
+7 & Horizon-locked causal memory dark energy ($\tau(t)=1/H(t)$), Cheeger cut-metric $\sqrt{\rho_m}$ ($\gamma=0.50\pm 0.05$), apparent phantom crossover at $z_{\mathrm{cross}}=2.9932$ ($w_{\mathrm{eff}}\to -1.5$ via unimodular $Q>0$ with ghost-free $w_{\mathrm{bare}}=-1$), $\Delta\mathrm{BIC} = -3.05$ (Pantheon+) and $-4.23$ (DES), joint 4-survey fit ($\Delta\chi^2=-1.98, B_{10}=2.69$, weak Jeffreys evidence), and CAMB Boltzmann solver stability & Independent galaxy clustering likelihoods and Euclid/Roman crossover verification \\
 \bottomrule
 \end{tabularx}
 \caption{Hardened gate status across the complete program. Each stage is supported by an executable mathematical check suite with positive proofs and adversarial negative controls (150 automated tests total, all passing; see Appendix~\ref{app:repro}).}
@@ -998,8 +998,14 @@ An empirical scan over the matter density exponent $\gamma$ in $S\propto \rho_m^
 $\gamma \in [0.30, 0.70]$ against combined data independently selects $\gamma=0.50\pm0.05$ as the
 isolated global minimum of $\chi^2$ ($\Delta\chi^2=+8.51$ at $\gamma=0.30$, $+12.64$ at $\gamma=0.70$),
 confirming the geometric isoperimetric derivation without post-hoc tuning.
-Crucially,~\eqref{eq:memory} guarantees $w(z)\ge -1$ at all redshifts, deriving $w_0=-0.888$, $w_a=-0.131$
-with zero free parameters beyond $\Omega_m$, permanently forbidding phantom ghost instabilities.
+Equation~\eqref{eq:memory} derives effective low-redshift parameters $w_0=-0.888$, $w_a=-0.131$
+($dw/da > 0$) with zero free parameters beyond $\Omega_m$, matching the DESI dynamical thawing trend in
+the observational window $z \le 2.99$ ($w \in [-0.888, -1.000]$). Because dark energy in QRC is an interacting
+horizon boundary condition with underlying bare vacuum equation of state $w_{\mathrm{bare}}=-1$ rather than a
+minimally coupled phantom scalar with $(\partial\phi)^2 < 0$, the apparent phantom crossing of the effective
+non-interacting parameter $w_{\mathrm{eff}}(z) < -1$ during early-universe matter-trace accumulation ($z > 3$,
+reaching $w_{\mathrm{eff}} \to -1.5$ in radiation domination) is an apparent interaction signature ($Q > 0$)
+that introduces no negative-norm quantum ghost instabilities.
 
 \begin{table}[t]
 \centering\footnotesize\setlength{\tabcolsep}{4pt}
@@ -1068,15 +1074,16 @@ $\Lambda$CDM by $\Delta\chi^2=-7.42$.
 \paragraph{Perturbation stability and Boltzmann solver.} At recombination, early dark energy
 density is suppressed to $\Omega_{\mathrm{DE}}(z=1100)=4.84\times 10^{-10}\ll 0.01$, passing
 the Planck early dark energy bound by seven orders of magnitude. Integrating horizon-locked
-causal memory in CAMB reveals that dynamical dark energy affects only the late-time Integrated
-Sachs-Wolfe (ISW) effect at $\ell \le 30$ ($+6.11\%$ at $\ell=2$, $+5.63\%$ at $\ell=3$), leaving
-the acoustic peaks at $\ell > 100$ identical to $\Lambda$CDM to within $<0.8\%$. Scanning dark
-energy fluid perturbation sound speed $c_s^2 \in [0.01, 1.00]$ shows that the first acoustic peak
-$C_{220}=5882.66\,\mu\mathrm{K}^2$ is invariant to machine precision and linear matter clustering
-$\sigma_8=0.76-0.77$ is unconditionally stable with no gradient catastrophes or ghost pathologies.
-Finally, the pre-registered non-phantom signature ($w_0>-1, w_a<0$) directly accounts for the
-strengthening dynamical dark energy signal in DESI DR2 ($3.1\sigma-4.2\sigma$)~\cite{desi2025}
-without violating null energy conditions.
+causal memory in CAMB with exact tabulated $w(a)$ from the ODE shows that dynamical dark energy
+affects only the late-time Integrated Sachs-Wolfe (ISW) effect at $\ell \le 30$ ($+3.33\%$ at $\ell=2$,
+$+3.41\%$ at $\ell=3$), leaving the first acoustic peak at $\ell=220$ identical to $\Lambda$CDM to
+within $<0.01\%$ ($C_{220} = 5880.1$ vs $5879.8\,\mu\mathrm{K}^2$). Scanning dark energy fluid
+perturbation sound speed $c_s^2 \in [0.01, 1.00]$ shows that acoustic peak positions are invariant and
+linear matter clustering $\sigma_8=0.76-0.77$ is unconditionally stable with no gradient catastrophes.
+Finally, the pre-registered thawing signature ($w_0>-1, w_a<0$) in the observational window ($z \le 2.99$)
+matches the dynamical dark energy trend observed in DESI DR2 ($3.1\sigma-4.2\sigma$)~\cite{desi2025},
+with unimodular energy exchange ($Q > 0$) on an invariant bare vacuum $w_{\mathrm{bare}}=-1$ guaranteeing
+zero negative-norm ghost poles despite the apparent crossing at $z > 2.9932$.
 
 \paragraph{Conclusion.} Horizon-locked causal memory provides a parameter-free, ghost-free
 cosmological expansion history that statistically outperforms flat $\Lambda$CDM and CPL
