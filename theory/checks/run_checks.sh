@@ -12,7 +12,8 @@ for script in \
     check_gate3_quantum_born.py \
     check_gate4_gravity_dewitt.py \
     check_gate5_family.py \
-    check_gate6_mass_channels.py; do
+    check_gate6_mass_channels.py \
+    check_all_gates_empirical_confrontation.py; do
   if python3 -I -B "$script" > /dev/null; then
     echo "$script: all observed outcomes match expectations"
   else
