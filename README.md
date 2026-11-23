@@ -13,6 +13,18 @@ This repository provides the underlying physical and mathematical formulation fo
 - **Repository**: [H-XX-D/the-impedance-threshold](https://github.com/H-XX-D/the-impedance-threshold)
 - **Scope**: Explores the consequences of autonomous space avionics, real-time edge filtering under compute constraints, the rocket equation/oxygen band bottlenecks, and humanity's contact with abyssal exospecies.
 
+## Fundamental Theory: Quantum Relational Causality (QRC)
+
+The foundational mathematical preprint and theoretical derivations are part of this repository under [`theory/`](theory/):
+- **Preprint Paper (PDF)**: [`theory/paper/qrc_preprint.pdf`](theory/paper/qrc_preprint.pdf)
+- **Preprint Source (LaTeX)**: [`theory/paper/qrc_preprint.tex`](theory/paper/qrc_preprint.tex)
+- **Foundations & Exact Derivations**: [`theory/QRC_COMPLETE_FOUNDATIONS_MATHEMATICAL_DERIVATIONS.md`](theory/QRC_COMPLETE_FOUNDATIONS_MATHEMATICAL_DERIVATIONS.md)
+- **Resolution of Fundamental Paradoxes**: [`theory/QRC_GRAND_PARADOX_RESOLUTION_MASTER_SYNTHESIS.md`](theory/QRC_GRAND_PARADOX_RESOLUTION_MASTER_SYNTHESIS.md)
+- **Mathematical Checks**: Executable tests in [`theory/checks/`](theory/checks/) verifying Gate 1 rank selection, heat kernel spectral dimensions, and Gate 5 anomaly-free chiral families.
+
+### Foundational Principle: Einstein Was Right
+Quantum Relational Causality (QRC) does **not** try to remake physics in its own image or overturn General Relativity. It proves that **Einstein was correct**: spacetime is not an abstract, absolute Newtonian container, but a dynamic, invariant network of physical relations, proper times, and clocks. Distance is the inferred measurement of causal impedance. By stripping away smuggled parameters, arbitrary coordinate origins, and empirical fudge factors, QRC makes physics make sense through measurable relational observables (Roemer delays, proper times, and invariant phase-space geometries).
+
 ## Scope
 
 The intended next application is **autonomous onboard orbit estimation for

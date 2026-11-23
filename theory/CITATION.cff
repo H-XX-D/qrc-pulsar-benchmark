@@ -1,0 +1,25 @@
+cff-version: 1.2.0
+message: "If you use this preprint or its checks, please cite it as below."
+title: "Quantum Relational Causality: Rank-Three Selection from a Nested-Reciprocity Source Law, and Conditional Gauge Structure"
+type: software
+version: "1.0.0"
+license: MIT
+authors:
+  - name: "Hendrixx"
+keywords:
+  - quantum relational causality
+  - causal impedance
+  - relational geometry
+  - spectral dimension
+  - rank selection
+  - anomaly cancellation
+  - Standard Model gauge group
+  - dark energy
+preferred-citation:
+  type: article
+  status: preprint
+  title: "Quantum Relational Causality: Rank-Three Selection from a Nested-Reciprocity Source Law, and Conditional Gauge Structure"
+  authors:
+    - name: "Hendrixx"
+  year: 2026
+  month: 11

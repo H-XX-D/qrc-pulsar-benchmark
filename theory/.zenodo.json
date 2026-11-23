@@ -1,0 +1,23 @@
+{
+  "upload_type": "publication",
+  "publication_type": "preprint",
+  "title": "Quantum Relational Causality: Rank-Three Selection from a Nested-Reciprocity Source Law, and Conditional Gauge Structure",
+  "creators": [
+    {
+      "name": "Hendrixx"
+    }
+  ],
+  "description": "<p>Preprint and reproducibility package for Quantum Relational Causality (QRC), a research program in which spatial distance is treated as the inferred measurement of causal impedance between relational excitations.</p><p>Main result: for a declared source law S_pre^NR on finite sets of excitation types with transverse matchings to their binary spans, the unique ground state for activity 0 &lt; h &lt; 2&lambda; has three excitation types with the complement matching, with an exact gap. Under two further declared laws (least endpoint completion and a centred unit-rate walk) the selected carrier has cubic word-ball growth, return probability e^{-t} I_0(t/3)^3, spectral dimension three and one infrared co-metric. These are implication theorems for a declared law; the law is not derived from more primitive principles and is not empirically confirmed.</p><p>Conditional on a supplied Hermitian 2+3 internal carrier with one determinant record: the stabilizer (SU(2) x SU(3) x U(1))/Z_6, one anomaly-free 15-state chiral family, and a pair-dual anomaly selector for ranks 2+3. Dynamical selection of the carrier, mirror removal and a joint gauge continuum are open, as are Gates 2, 3, 4 and 6.</p><p>The preprint lists corrections to earlier claims of the program, including six that failed independent audit, and fits the remaining cosmology candidates to public supernova, BAO and chronometer data. The package contains exhaustive and numerical checks, each shown to fail on deliberately wrong input, and the cosmology harness (data not redistributed).</p>",
+  "license": "mit",
+  "keywords": [
+    "quantum relational causality",
+    "causal impedance",
+    "relational geometry",
+    "spectral dimension",
+    "rank selection",
+    "anomaly cancellation",
+    "Standard Model gauge group",
+    "dark energy"
+  ],
+  "version": "1.0.0"
+}

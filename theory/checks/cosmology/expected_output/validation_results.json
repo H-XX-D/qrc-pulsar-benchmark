@@ -1,0 +1,339 @@
+{
+ "criteria": {
+  "PantheonPlus": {
+   "ref": "Brout et al. 2022, Pantheon+ only, flat LCDM: Om = 0.334 +- 0.018",
+   "Om": [
+    0.334,
+    0.01
+   ],
+   "sOm": [
+    0.018,
+    0.004
+   ]
+  },
+  "PantheonPlusSH0ES": {
+   "ref": "Brout et al. 2022, Pantheon+ & SH0ES, flat LCDM: H0 = 73.6 +- 1.1",
+   "H0": [
+    73.6,
+    0.5
+   ],
+   "sH0": [
+    1.1,
+    0.3
+   ],
+   "Om": [
+    0.334,
+    0.01
+   ]
+  },
+  "DESI-DR1": {
+   "ref": "DESI 2024 VI (arXiv:2404.03002), BAO only flat LCDM: Om = 0.295 +- 0.015, h r_d = 101.8 +- 1.3 Mpc",
+   "Om": [
+    0.295,
+    0.008
+   ],
+   "sOm": [
+    0.015,
+    0.004
+   ],
+   "hrd": [
+    101.8,
+    1.0
+   ],
+   "shrd": [
+    1.3,
+    0.4
+   ]
+  },
+  "DES-Dovekie": {
+   "ref": "Popovic et al. 2025 (arXiv:2511.07517) abstract: Om = 0.330 +- 0.015 flat LCDM (SN-only inferred, not stated)",
+   "Om": [
+    0.33,
+    0.01
+   ],
+   "sOm": [
+    0.015,
+    0.004
+   ]
+  },
+  "EdS_negative_control": {
+   "ref": "Einstein-de Sitter (Om=1) must be rejected: delta chi2 vs LCDM > 25 on SN and BAO"
+  }
+ },
+ "results": {
+  "PantheonPlus": {
+   "fit": {
+    "Om": 0.33313361528101,
+    "sOm": 0.018255764935665535,
+    "Om_best": 0.33250000000000024,
+    "chi2_min": 1386.40700385347,
+    "N": 1580,
+    "chi2_per_dof": 0.8785849200592333
+   },
+   "checks": {
+    "Om": {
+     "got": 0.33313361528101,
+     "ref": 0.334,
+     "tol": 0.01,
+     "pass": true
+    },
+    "sOm": {
+     "got": 0.018255764935665535,
+     "ref": 0.018,
+     "tol": 0.004,
+     "pass": true
+    }
+   },
+   "pass": true
+  },
+  "PantheonPlusSH0ES": {
+   "fit": {
+    "H0": 73.52874602278392,
+    "sH0": 1.0169554056068801,
+    "Om": 0.3323285219730735,
+    "sOm": 0.018057422475767373,
+    "chi2_min": 1452.0173928839185,
+    "N": 1657,
+    "chi2_per_dof": 0.8778823415259484
+   },
+   "checks": {
+    "H0": {
+     "got": 73.52874602278392,
+     "ref": 73.6,
+     "tol": 0.5,
+     "pass": true
+    },
+    "sH0": {
+     "got": 1.0169554056068801,
+     "ref": 1.1,
+     "tol": 0.3,
+     "pass": true
+    },
+    "Om": {
+     "got": 0.3323285219730735,
+     "ref": 0.334,
+     "tol": 0.01,
+     "pass": true
+    }
+   },
+   "pass": true
+  },
+  "DESI-DR1": {
+   "fit": {
+    "Om": 0.29463473223723463,
+    "sOm": 0.014627032246497702,
+    "hrd": 101.89662643624057,
+    "shrd": 1.267277376322555,
+    "chi2_min": 12.737370187845954,
+    "Om_best": 0.2935000000000001,
+    "hrd_best": 101.95000000001123,
+    "N": 12,
+    "chi2_per_dof": 1.2737370187845953
+   },
+   "checks": {
+    "Om": {
+     "got": 0.29463473223723463,
+     "ref": 0.295,
+     "tol": 0.008,
+     "pass": true
+    },
+    "sOm": {
+     "got": 0.014627032246497702,
+     "ref": 0.015,
+     "tol": 0.004,
+     "pass": true
+    },
+    "hrd": {
+     "got": 101.89662643624057,
+     "ref": 101.8,
+     "tol": 1.0,
+     "pass": true
+    },
+    "shrd": {
+     "got": 1.267277376322555,
+     "ref": 1.3,
+     "tol": 0.4,
+     "pass": true
+    }
+   },
+   "pass": true
+  },
+  "DES-Dovekie": {
+   "fit": {
+    "Om": 0.3306890609693779,
+    "sOm": 0.015275955331245062,
+    "Om_best": 0.3300000000000002,
+    "chi2_min": 1631.4220739462069,
+    "N": 1820,
+    "chi2_per_dof": 0.8973718778581996
+   },
+   "checks": {
+    "Om": {
+     "got": 0.3306890609693779,
+     "ref": 0.33,
+     "tol": 0.01,
+     "pass": true
+    },
+    "sOm": {
+     "got": 0.015275955331245062,
+     "ref": 0.015,
+     "tol": 0.004,
+     "pass": true
+    }
+   },
+   "pass": true
+  },
+  "EdS_negative_control": {
+   "rows": {
+    "PantheonPlus": {
+     "chi2_EdS": 2079.6829990148544,
+     "chi2_LCDM": 1386.40700385347,
+     "delta_chi2": 693.2759951613843,
+     "p_EdS": 2.2812514521456835e-16,
+     "rejected": true
+    },
+    "DES-Dovekie": {
+     "chi2_EdS": 2558.52098361145,
+     "chi2_LCDM": 1631.4220739462069,
+     "delta_chi2": 927.0989096652431,
+     "p_EdS": 4.694264390735217e-28,
+     "rejected": true
+    },
+    "DESI-DR1": {
+     "chi2_EdS": 495.1196118959342,
+     "chi2_LCDM": 12.737370187845954,
+     "delta_chi2": 482.38224170808826,
+     "p_EdS": 3.5219270146413517e-99,
+     "rejected": true
+    },
+    "CC_info": {
+     "chi2_EdS": 21.919769948625266,
+     "chi2_LCDM": 6.113893067857117,
+     "delta_chi2": 15.80587688076815,
+     "p_EdS": 0.08027798038754243,
+     "note": "CC alone is reported, not used as a pass/fail control"
+    }
+   },
+   "pass": true
+  }
+ },
+ "mutants": {
+  "PP_dL_without_(1+z)": {
+   "fit": {
+    "Om": 0.100117317797361,
+    "sOm": 0.0002454977401995304,
+    "Om_best": 0.1,
+    "chi2_min": 4048.261924531311,
+    "N": 1580,
+    "chi2_per_dof": 2.5654384819590055
+   },
+   "caught": true
+  },
+  "PP_diagonal_errors_only": {
+   "fit": {
+    "Om": 0.35046944993180495,
+    "sOm": 0.013692240964191901,
+    "Om_best": 0.3500000000000002,
+    "chi2_min": 1320.0910239443183,
+    "N": 1580,
+    "chi2_per_dof": 0.8365595842486174
+   },
+   "caught": true
+  },
+  "PP_cut_applied_to_inverse_cov": {
+   "fit": {
+    "Om": 0.3348844351505852,
+    "sOm": 0.017845916127373636,
+    "Om_best": 0.3340000000000002,
+    "chi2_min": 1391.1926507093012,
+    "N": 1580,
+    "chi2_per_dof": 0.8816176493721808
+   },
+   "caught": false
+  },
+  "DESI_DM_DH_labels_swapped": {
+   "fit": {
+    "Om": 0.499993196945074,
+    "sOm": 5.8710102226189446e-05,
+    "hrd": 124.99506096559617,
+    "shrd": 0.00858636481078228,
+    "chi2_min": 15624.758865941265,
+    "Om_best": 0.5000000000000003,
+    "hrd_best": 125.00000000002302,
+    "N": 12,
+    "chi2_per_dof": 1562.4758865941265
+   },
+   "caught": true
+  },
+  "DES_npz_read_as_covariance": {
+   "fit": {
+    "Om": 0.6000000000000004,
+    "sOm": 9.445482530922513e-24,
+    "Om_best": 0.6000000000000004,
+    "chi2_min": 1984378.8711007861,
+    "N": 1820,
+    "chi2_per_dof": 1091.5175308585183
+   },
+   "caught": true
+  }
+ },
+ "data_facts": {
+  "pantheon_rows": 1701,
+  "pantheon_used_hubbleflow": 1580,
+  "pantheon_used_shoes_mode": 1657,
+  "des_rows": 1820,
+  "des_diag_cov_over_MUERR2+MUERR_SYS2_median": 1.00000002933673,
+  "des_invcov_min_eigenvalue": 4.565498796804842e-06,
+  "desi_points": 12,
+  "cc_points": 15
+ },
+ "analytic_checks": {
+  "values": {
+   "EdS_DM_vs_closed_form": 1.3191936085177325e-09,
+   "deSitter_DM_vs_z": 0.0,
+   "Rhct_DM_vs_ln1pz": 9.273843498691647e-10,
+   "age_eta1_vs_exact": 4.888978111239339e-12,
+   "age_rad_era_w_plus_1/3": -0.0005517371507694491,
+   "age_rad_era_Oq/(n^2a^2)-1": -0.001654526521069788,
+   "age_a1e-2_w_minus_matrad_exact": -3.14347037138063e-05,
+   "info_age_a1e-2_w_plus_2/3": 0.05697852995414243,
+   "age_wa_numeric_minus_analytic": -3.1585742354955926e-10,
+   "age_E(z=0)-1": 8.43769498715119e-15,
+   "rt_port_rel_diff_a0.5": 0.00024837651719700204,
+   "rt_port_rel_diff_a0.8": -2.9372260521687288e-05,
+   "rt_repo_algorithm_w0": -0.8033988794788207,
+   "rt_repo_algorithm_wa": -0.22710580652248008,
+   "rt_harness_w0": -0.8046337908137657,
+   "rt_harness_wa": -0.13942560155966177
+  },
+  "tolerances": {
+   "EdS_DM_vs_closed_form": 1e-06,
+   "deSitter_DM_vs_z": 1e-09,
+   "Rhct_DM_vs_ln1pz": 1e-07,
+   "age_eta1_vs_exact": 1e-06,
+   "age_rad_era_w_plus_1/3": 0.001,
+   "age_rad_era_Oq/(n^2a^2)-1": 0.01,
+   "age_a1e-2_w_minus_matrad_exact": 0.001,
+   "age_wa_numeric_minus_analytic": 0.0001,
+   "age_E(z=0)-1": 1e-06,
+   "rt_port_rel_diff_a0.5": 0.02,
+   "rt_port_rel_diff_a0.8": 0.02
+  },
+  "pass": {
+   "EdS_DM_vs_closed_form": true,
+   "deSitter_DM_vs_z": true,
+   "Rhct_DM_vs_ln1pz": true,
+   "age_eta1_vs_exact": true,
+   "age_rad_era_w_plus_1/3": true,
+   "age_rad_era_Oq/(n^2a^2)-1": true,
+   "age_a1e-2_w_minus_matrad_exact": true,
+   "age_wa_numeric_minus_analytic": true,
+   "age_E(z=0)-1": true,
+   "rt_port_rel_diff_a0.5": true,
+   "rt_port_rel_diff_a0.8": true
+  }
+ },
+ "all_mutants_caught": false,
+ "ALL_PASS": true,
+ "runtime_s": 11.9
+}

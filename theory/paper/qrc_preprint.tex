@@ -1,0 +1,1160 @@
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[margin=0.85in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{microtype}
+\makeatletter
+\renewcommand\@listI{\leftmargin\leftmargini\parsep 0pt\topsep 3pt plus 1pt\itemsep 1pt plus 1pt}
+\let\@listi\@listI
+\makeatother
+\usepackage[hidelinks]{hyperref}
+\hypersetup{pdftitle={Quantum Relational Causality: Rank-Three Selection from a Nested-Reciprocity Source Law, and Conditional Gauge Structure},pdfauthor={Hendrixx}}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\Spre}{S^{\mathrm{NR}}_{\mathrm{pre}}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\ch}{\operatorname{ch}}
+\newcommand{\Aut}{\operatorname{Aut}}
+\newcommand{\doc}[1]{\nolinkurl{#1}}
+\makeatletter\g@addto@macro\UrlBreaks{\do\_}\makeatother
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+
+\title{Quantum Relational Causality: Rank-Three Selection from a\\
+Nested-Reciprocity Source Law, and Conditional Gauge Structure}
+\author{Hendrixx (independent researcher)}
+\date{Version 1.0.0, November 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Quantum Relational Causality (QRC) is a research program in which spatial distance is
+treated as the inferred measurement of causal impedance between relational excitations,
+starting from a nonlocal zero-dimensional condition. This preprint states what the
+program has established mathematically, under which assumptions, and what is open. The
+main result concerns a declared source law $\Spre$ on a groupoid of finite sets $D$ of
+excitation types with transverse matchings between $D$ and its binary spans. For activity
+$0<h<2\lambda$ the unique ground state up to relabelling has $|D|=3$ and the complement
+matching, with excitation gap $\min(3h,2\lambda-h)$. Two further declared laws (least
+endpoint completion and a centred unit-rate response) then give the endpoint group
+$\Z[D]$ of rank three, exact word-ball counts $V_3(R)=(4R^3+6R^2+8R+3)/3$, return
+probability $e^{-t}I_0(t/3)^3$, spectral dimension three and one co-metric
+$q^\sharp=\tfrac13\sum_{d\in D}d\otimes d$. These are implication theorems for a declared
+law; the law is not derived from more primitive principles, and nothing here shows that
+nature obeys it. Separately, on a supplied Hermitian $2+3$ internal carrier with one
+determinant record, the stabilizer is $(SU(2)\times SU(3)\times U(1))/\Z_6$, one
+anomaly-free 15-state chiral family follows, and a pair-dual anomaly polynomial
+$(m+n-5)\ch_3(E)$ selects the ranks $2+3$ within its own hypotheses; dynamical selection
+of the carrier, mirror removal and a joint gauge continuum are not proved. We record
+corrections to earlier claims, including six that failed independent audit, and fit the
+remaining cosmology candidates to public supernova, BAO and chronometer data: one
+phenomenological causal-memory dark-energy model fits at the level of $\Lambda$CDM, and
+the data neither prefer nor exclude it. Every numerical statement is reproducible with
+scripts in the accompanying package, each shown to fail on deliberately wrong input.
+\end{abstract}
+
+%======================================================================
+\section{Introduction and scope}
+\label{sec:intro}
+
+QRC starts from an ontological proposal: space in its underlying condition is
+zero-dimensional and nonlocal, particle fields are one-dimensional excitations,
+electromagnetic excitations are two-dimensional, and their composition supports the
+three-dimensional world, with time as the fourth dimension that encompasses its history.
+The program organises the work needed to turn that proposal into physics as a sequence
+of \emph{gates} (Section~\ref{sec:gates}). Each gate is a proof obligation with an
+explicit pass condition.
+
+This preprint has a narrow purpose: to state exactly which of those obligations have
+been met as mathematics, under which hypotheses, and which have not. It is written for
+readers who want to check the work, not for readers who want to be persuaded by it.
+
+\paragraph{What is claimed.}
+\begin{enumerate}
+\item For the declared source law $\Spre$ (Definition~\ref{def:action}), rank three with
+  the complement matching is the unique ground state in the open window $0<h<2\lambda$,
+  with an exact gap (Theorem~\ref{thm:selection}). This is proved here in full and checked
+  by exhaustive enumeration (Section~\ref{sec:g1numerics}).
+\item Under two further declared laws (least endpoint completion and a centred response),
+  the selected carrier has cubic word-ball growth, the stated heat kernel, spectral
+  dimension three and a single infrared co-metric (Sections~\ref{sec:endpoint}
+  to~\ref{sec:cometric}).
+\item On a supplied internal carrier, the stated gauge group, family decomposition,
+  anomaly cancellation and pair-dual rank selection (Section~\ref{sec:gate5}).
+\end{enumerate}
+
+\paragraph{What is not claimed.} That the source law follows from the foundational
+statement or from nonlocality; that any QRC law is realised in nature; that word length
+or diffusion time has been identified with measured distance or elapsed time; Lorentzian
+spacetime; a quantum continuum; gravity; gauge dynamics; a particle spectrum; an absolute
+length scale. Section~\ref{sec:open} lists these as open problems.
+
+\paragraph{Claim discipline.} A theorem proved after adopting an explicit source or
+quantisation law is an implication theorem for that law. An implication theorem for a
+declared law is not evidence that nature obeys the law, and it is not evidence that more
+generic premises force the law. Where this paper writes ``Gate~1 is passed'' it means
+``passed as mathematics for the declared source law'', which is the wording of the
+project status record.
+
+\paragraph{Evidence labels.} ``Proved'' means a complete proof is given in this paper.
+``Sketched'' means the argument is outlined here and written out in a repository
+document named by file in Appendix~\ref{app:repro}; the author's repository is not yet
+public, so sketched results should be read as claims until those documents are released.
+``Checked'' means executed by a package script that is also shown failing on
+deliberately wrong input. ``Cited'' means taken from the literature, not re-derived.
+
+%======================================================================
+\section{Foundational statement and measurement definition}
+\label{sec:foundation}
+
+The foundational statement, in the author's formulation, is:
+
+\begin{quote}
+Space in its underlying condition is 0D and nonlocal; particle fields are 1D
+excitations; electromagnetic excitations are 2D; their composition supports the
+experienced 3D world, retaining its lower-dimensional constituents; and time is the
+fourth dimension encompassing its history. The limiting causal-update and propagation
+role is assigned to $c$.
+\end{quote}
+
+The governing measurement distinction is stated exactly:
+
+\begin{quote}
+Distance is the inferred measurement of causal impedance. Causal impedance does not
+cause a separate quantity or substance called distance.
+\end{quote}
+
+These are starting claims. Their mathematical realisation and physical adequacy are what
+the gates must establish. ``Nonlocal'' here means that spatial locality has not yet been
+inferred, not that a superluminal speed has been measured. No background metric,
+elementary graviton or universal synchronised update clock is supplied by the statement.
+
+\paragraph{Response data.} Let $H$ denote a relational configuration or history and
+$Z_H$ its causal-impedance response data. The type of $Z_H$ is deliberately not fixed in
+advance: it is not assumed to be an electrical resistance, a scalar edge length, an
+update frequency or a dissipative coefficient. Gate~0 must specify its mathematical type
+and composition law.
+
+\paragraph{Measurement definition.} For a declared measurement protocol $P$,
+\begin{equation}
+d_P(a,b) := \mathcal M_P[Z_H; a,b].
+\label{eq:measurement}
+\end{equation}
+This is a measurement definition, not an equation of motion, and no particular map
+$\mathcal M_P$ has been derived. It is not permitted to choose $Z_H$ from an independently
+supplied Euclidean distance and then present the recovered distance as a derivation.
+
+\paragraph{Three meanings of ``dimension''.} The formulation keeps apart (i) the
+dimensionality of a primitive excitation, (ii) the algebraic or form degree used to
+describe it and (iii) the operational spatial or spectral dimension of the assembled
+world; form degree alone proves neither an ontology nor the dimension of space. In
+Section~\ref{sec:gate1}
+the numerals $0,1,2,3$ attached to relational grades denote composition depth, and the
+``three'' of the conclusion is an operational exponent of a declared walk and ball count.
+Identifying that exponent with the dimension of physical space requires the response and
+clock bridge of Gates~1 and~2, which is open.
+
+%======================================================================
+\section{The gate structure and current status}
+\label{sec:gates}
+
+The gates are proof dependencies, not stages that the universe passed through in an
+external time.
+
+Gate~0 specifies the nonlocal 0D condition (states, excitations, response observables,
+composition rules) with causal impedance defined without a prior distance. Gate~1
+recovers measured three-dimensional space: cubic volume growth and spectral dimension
+three, with metric, measure, operator and clock identified as outputs of the declared
+response. Gate~2 recovers time, the causal limit $c$ and one Lorentzian cone shared by
+every physical mode. Gate~3 recovers quantum preparation, evolution and measurement,
+including $p(i)=\operatorname{Tr}(\rho E_i)$ and the Tsirelson bound. Gate~4 recovers
+gravity as the matter-dependent response of causal impedance, classically and in a
+quantum completion. Gate~5 identifies the electromagnetic, weak and strong sectors in one
+interacting phase. Gate~6 derives the particle spectrum and discriminating predictions.
+A seventh stage collects cosmological and other observational consequences.
+
+Table~\ref{tab:status} reproduces the status table of the current integrated position
+(project status record, review completed 2026-11-19). Dated sections of that record
+written before this position, in particular the September 2026 entries headed
+``Level-4'' to ``Level-7'' (triality generations, spectral triples, asymptotic safety,
+horizon-impedance dark energy, leptogenesis and others), are historical. None of them is
+claimed here; Section~\ref{sec:corrections} reports audits of several.
+
+\begin{table}[ht]
+\centering\small
+\begin{tabularx}{\textwidth}{@{}c Y Y@{}}
+\toprule
+Stage & What the reviewed mathematics supports & Open physical dependency \\
+\midrule
+0 & Relabelling-invariant premetric interface and candidate dynamics & Selection of a
+source and physical history law \\
+1 & Exact rank selection under transverse reciprocity, with cubic growth and diffusion
+under the specified completion and walk & Source selection and operational
+identification of the clock and ruler \\
+2 & Exact bracket tests for the declared scalar coefficients, finite cochain
+certificates and conditional continuum results & One complete interacting mode inventory
+and a common physical cone \\
+3 & Finite record/Born construction, separated marginal tests and CHSH bound &
+Operational frequency law on the same positive interacting histories \\
+4 & Conditional ADM coefficient and traceless kinetic-form calculation & Positive
+two-helicity interacting response and universal stress coupling \\
+5 & Finite exterior family, quotient descent, anomaly cancellation and charge
+decomposition on a supplied internal seed & Dynamical selection, mirror removal and a
+joint gauge continuum \\
+6 & Allowed mass channels, exact one-family seesaw and freedom of flavour matrices &
+Generation count, matrix entries, vacuum and physical spectrum \\
+7 & Conditional observable calculations and a constant-equation-of-state bounce for the
+displayed effective law & Source-derived predictions, independent likelihoods and
+continuum-to-poset return map \\
+\bottomrule
+\end{tabularx}
+\caption{Gate status from the project status record (current integrated position,
+2026-11-19), reproduced verbatim. ``Certificate'' there means a finite computation on a
+declared object, not an external certification.}
+\label{tab:status}
+\end{table}
+
+The status record summarises Gates~1 and~5 with these tags:
+\begin{center}\small\ttfamily
+\begin{tabular}{@{}l@{}}
+MATHEMATICAL\_GATE1\_PASSED\_FOR\_DECLARED\_SOURCE\_LAW\\
+EMPIRICAL\_SOURCE\_LAW\_UNCONFIRMED\\
+ABSOLUTE\_SCALE\_UNDETERMINED\\
+CONDITIONAL\_INTERNAL\_GROUP\_AND\_ANOMALY\_THEOREMS\_AVAILABLE\\
+FULL\_GATE5\_NOT\_PASSED
+\end{tabular}
+\end{center}
+Gates 2, 4, 5 and 6 are marked not passed. Gate~3 is marked closed only within an
+adopted sharp-record quantum law.
+
+%======================================================================
+\section{Gate 1: rank selection and the cubic-diffusive phase}
+\label{sec:gate1}
+
+\subsection{State space and source law}
+\label{sec:state}
+
+\begin{definition}[Source groupoid]
+\label{def:groupoid}
+An object is a pair $(D,M)$ where
+\begin{enumerate}
+\item $D$ is a finite unlabelled set of primitive reversible excitation types;
+\item $P_2(D)=\binom{D}{2}$ is the set of all unordered binary spans (every pair is present);
+\item $M\subseteq D\times P_2(D)$ is a partial matching, injective in both projections;
+\item every matched pair is transverse: $(d,p)\in M \Rightarrow d\notin p$.
+\end{enumerate}
+Morphisms are bijections of $D$ that carry $M$ to $M$. The empty object $D=\varnothing$
+represents the undifferentiated 0D condition: it has no move, adjacency or distance.
+\end{definition}
+
+No coordinate, metric, orientation, rank or length is part of an object. The relational
+grades $\Lambda^0,\dots,\Lambda^3$ of $\R[D]$ (undifferentiated condition, primitive
+excitation, coupled binary span, transverse interleaving) form an increasing filtration,
+so every higher grade retains the lower ones; the numerals are composition depth.
+
+\begin{definition}[Nested-reciprocity activity law]
+\label{def:action}
+Write $n=|D|$ and $m=|M|$. The reciprocity defect is
+$\Delta(D,M)=(n-m)+\bigl(\binom n2-m\bigr)$, the number of unmatched primitives plus the
+number of unmatched spans. For $\lambda>0$ and $h\in\R$,
+\begin{equation}
+\Spre(D,M)=\lambda\,\Delta(D,M)-h\,n .
+\label{eq:action}
+\end{equation}
+The groupoid partition function is
+$Z_\beta=\sum_{n\ge0}\frac{1}{n!}\sum_{M}e^{-\beta \Spre([n],M)}$, where the inner sum runs
+over labelled matchings on $[n]$; the factor $1/n!$ gives each isomorphism class the
+weight $1/|\Aut(D,M)|$.
+\end{definition}
+
+This is schema \texttt{qrc.spre.nested\_reciprocity\_activity.v1} in the repository. The
+load-bearing physical assumptions of the selection result are:
+\begin{enumerate}
+\item[(H1)] every unordered binary span of excitation types is present;
+\item[(H2)] matching is transverse and one-use (injective on both sides);
+\item[(H3)] unmatched primitives and unmatched spans both cost a positive amount (equal
+  costs in~\eqref{eq:action}; Proposition~\ref{prop:unequal} relaxes this);
+\item[(H4)] the activity lies in the open window $0<h<2\lambda$.
+\end{enumerate}
+None of (H1) to (H4) is derived from the foundational statement. The repository records
+explicitly that generic nonlocality does not force this law.
+
+\subsection{The selection theorem}
+\label{sec:selection}
+
+\begin{lemma}[Maximal transverse matching]
+\label{lem:maxmatch}
+The largest transverse matching has size $0$ for $n\le2$ and size $n$ for every $n\ge3$.
+Hence $\min_M\Delta=0,1,3$ for $n=0,1,2$ and $\min_M\Delta=\binom n2-n=n(n-3)/2$ for
+$n\ge3$.
+\end{lemma}
+
+\begin{proof}
+For $n=1$ there are no spans; for $n=2$ the only span contains both elements, so
+transversality forbids every match. For $n\ge3$ place $D$ temporarily in a cyclic order
+$d_1,\dots,d_n$ and match $d_i\mapsto\{d_{i+1},d_{i+2}\}$ (indices mod $n$). The target
+spans are distinct and omit their sources, so this is a transverse matching of size $n$.
+No matching is larger because the projection to $D$ is injective. The cyclic order is
+discarded afterwards. Substituting $m$ into $\Delta$ gives the minima.
+\end{proof}
+
+In particular $\Delta=0$ exactly when $n=0$, or $n=3$ and $M=\{(d,D\setminus\{d\}):d\in D\}$:
+at $n=3$ each element is transverse only to its complementary pair, so the lossless
+matching is forced.
+
+\begin{theorem}[Rank selection and gap]
+\label{thm:selection}
+The ground states of~\eqref{eq:action} over all objects of all ranks are: the empty
+object alone if $h<0$; the empty object and the rank-three complement matching if $h=0$;
+the rank-three complement matching alone, up to relabelling, if $0<h<2\lambda$. In the
+last case the gap to the first excited object is exactly
+\begin{equation}
+g=\min\{3h,\;2\lambda-h\}>0 .
+\label{eq:gap}
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+Since $\Spre$ decreases in $m$ at fixed $n$, the minimum at rank $n\ge3$ is
+$E_n=\frac{\lambda}{2}n(n-3)-hn$ by Lemma~\ref{lem:maxmatch}. Then $E_3=-3h$ and, for
+$n\ge4$,
+\begin{equation}
+E_n-E_3=(n-3)\Bigl(\frac{\lambda n}{2}-h\Bigr),
+\label{eq:diff}
+\end{equation}
+which on $0<h<2\lambda$ is positive and smallest at $n=4$, where it equals $2\lambda-h$.
+The empty object has energy $0=E_3+3h$. Rank one has energy $\lambda-h=E_3+\lambda+2h$,
+rank two $3\lambda-2h=E_3+3\lambda+h$, and removing one match from the rank-three ground
+state costs $2\lambda$. Each of these is at least $\min\{3h,2\lambda-h\}$: if
+$h\le\lambda/3$ then $3h\le\lambda+2h$, and if $h\ge\lambda/3$ then
+$2\lambda-h\le\lambda+2h$. For $h<0$ every nonempty object has $\Spre\ge-hn>0$, and at
+$h=0$ the zero-energy objects are those with $\Delta=0$.
+\end{proof}
+
+\begin{proposition}[Unequal costs]
+\label{prop:unequal}
+Replace~\eqref{eq:action} by $\lambda_1(n-m)+\lambda_2\bigl(\binom n2-m\bigr)-hn$ with
+$\lambda_1,\lambda_2>0$. For $0<h<2\lambda_2$ the rank-three complement matching is the
+unique ground state and the gap is
+$g_{12}=\min\{3h,\ \lambda_1+2h,\ \lambda_1+\lambda_2,\ 2\lambda_2-h\}$. The window is set
+by $\lambda_2$, the cost of unmatched spans.
+\end{proposition}
+
+\begin{proof}[Proof (complete)]
+At maximal matching $E_n=\frac{\lambda_2}{2}n(n-3)-hn$ for $n\ge3$, so $E_{n+1}-E_n=
+\lambda_2(n-1)-h>0$ for $n\ge3$ on the window. The empty, rank-one, rank-two,
+one-missing-match and rank-four gaps are $3h$, $\lambda_1+2h$, $2\lambda_1+\lambda_2+h$,
+$\lambda_1+\lambda_2$ and $2\lambda_2-h$; the rank-two value exceeds the
+one-missing-match value, and every further missing match adds $\lambda_1+\lambda_2$.
+\end{proof}
+
+\begin{proposition}[The activation boundary does not select activation]
+\label{prop:boundary}
+At $h=0$ the zero-temperature groupoid probabilities are $\Pr(n=3)=1/7$ and
+$\Pr(n=0)=6/7$.
+\end{proposition}
+
+\begin{proof}
+The two zero-energy classes have $|\Aut|=1$ (empty) and $|\Aut|=|S_3|=6$ (complement
+matching, which every permutation preserves). Their weights are $1$ and $1/6$.
+\end{proof}
+
+So neither zero defect nor groupoid entropy derives the activated phase; $h>0$ is an
+assumption. (A repository variant inserts one abstract excitation as a boundary source;
+that lifts the degeneracy but explains neither the source nor a transition out of the
+empty sector.)
+
+\begin{theorem}[All-rank Gibbs concentration; sketched]
+\label{thm:gibbs}
+$Z_\beta<\infty$ for every $\beta>0$, and for each $\beta_0>0$ there is a finite
+$C_{\beta_0}$ with $\Pr_\beta[(D,M)\not\cong\text{ground}]\le C_{\beta_0}e^{-(\beta-\beta_0)g}$
+for $\beta\ge\beta_0$.
+\end{theorem}
+
+\begin{proof}[Sketch]
+The number of labelled partial matchings at rank $n$ is at most
+$\sum_{m\le n}\binom nm\binom{\binom n2}{m}m!=e^{O(n\log n)}$, while the minimal action grows
+as $\lambda n^2/2$. The sum therefore converges, and every excited term carries an extra
+factor $e^{-(\beta-\beta_0)g}$ relative to its $\beta_0$ value.
+\end{proof}
+
+\begin{remark}[Where the three comes from]
+\label{rem:three}
+No numeral three is placed in~\eqref{eq:action}; it comes from (H1), since lossless
+reciprocity requires $n=\binom n2$. With $k$-ary spans the condition is $n=\binom nk$,
+solved by $n=k+1$ (the check confirms that ternary spans select rank four). The result
+reads ``binary coupling plus lossless transverse reciprocity selects three excitation
+types'' and stands or falls with that premise. Three types are not yet a spatial
+dimension; that needs Sections~\ref{sec:endpoint} to~\ref{sec:heat}.
+\end{remark}
+
+\subsection{Least endpoint completion}
+\label{sec:endpoint}
+
+\begin{definition}[Endpoint law]
+Signed finite words in $D$ are identified under the least congruence generated by
+$dd^{-1}\sim1$ and $de\sim ed$ for $d,e\in D$ (each interchange is witnessed by the span
+$\{d,e\}$). ``Least'' means that no other identification is imposed.
+\end{definition}
+
+The resulting endpoint group is the universal abelian group on $D$: $A(D)=\Z[D]$, free
+abelian of rank $|D|$. Equivalently, rotor characters $D\to SO(2)$ separate distinct
+exponent vectors. Relational positions form an $A(D)$-torsor, so no origin is chosen.
+The word distance is $r_D(x,y)=\sum_d|k_d|$ for $y-x=\sum_dk_d[d]$; it is invariant
+under translation, reversal of each primitive and every relabelling. Finite regulators
+are the characteristic quotients $Q_m=A(D)/mA(D)$, which choose no axes and have word
+systole exactly $m$.
+
+The completion clause is load bearing, and each alternative is a countermodel:
+the extra relation $\sum_{d}d=0$ reduces the rank to two and gives quadratic growth;
+omitting interchange gives the free non-abelian group and exponential growth; letting the
+three types act trivially gives no extended space at all.
+
+\subsection{Word-ball growth}
+\label{sec:volume}
+
+\begin{proposition}[Exact ball count]
+\label{prop:volume}
+For $|D|=n$, the number of elements of $A(D)$ within word radius $R$ is
+$V_n(R)=\sum_{j=0}^{n}2^j\binom nj\binom Rj$. In the selected phase
+\begin{equation}
+V_3(R)=\frac{4R^3+6R^2+8R+3}{3}\;\sim\;\frac43R^3 ,
+\label{eq:v3}
+\end{equation}
+and on $Q_m$ the same count holds exactly for $2R<m$.
+\end{proposition}
+
+\begin{proof}
+Choose the $j$ nonzero coefficients ($\binom nj$ ways), their signs ($2^j$) and positive
+magnitudes with sum at most $R$ ($\binom Rj$ ways). Summing for $n=3$ gives
+\eqref{eq:v3}. On $Q_m$ the quotient map is injective on balls of radius $R$ when the
+systole $m$ exceeds $2R$.
+\end{proof}
+
+Equation~\eqref{eq:v3} is the standard lattice-point count of the octahedron
+$|x|+|y|+|z|\le R$ in $\Z^3$; the mathematics is classical, and the content of
+Gate~1 lies in the chain that leads to it. Two limits on what it shows: no bounded-radius
+test can certify asymptotic dimension (the map $\Z^4\to\Z^3$,
+$e_4\mapsto\sum_iN_ie_i$ with $1+\sum_i|N_i|>2R$, is injective on every radius-$R$ ball),
+and a constant physical length per step, if one is later assigned, changes only the
+coefficient $4/3$.
+
+\subsection{Centred response, heat kernel and spectral dimension}
+\label{sec:heat}
+
+Declare the response generator to be (R1) conservative and translation invariant,
+(R2) invariant under reversal of each primitive and under relabelling, (R3) supported on
+single primitive moves $\pm[d]$, (R4) free of killing, drift and long jumps, and (R5)
+normalised to total jump rate one. The empty object has generator $0$ and return
+probability $1$.
+
+\begin{proposition}[Unique generator]
+For nonempty $D$, (R1) to (R5) give exactly
+\begin{equation}
+L_Df(x)=\frac{1}{2|D|}\sum_{d\in D}\bigl[f(x+[d])+f(x-[d])-2f(x)\bigr].
+\label{eq:generator}
+\end{equation}
+\end{proposition}
+
+\begin{proof}
+By (R1) and (R3) the generator is determined by rates $r_{\pm d}$. Reversal invariance
+gives $r_{+d}=r_{-d}$, relabelling invariance makes all rates equal, and (R5) fixes the
+common value $1/(2|D|)$.
+\end{proof}
+
+(R1) to (R5) are a declared clock class; the parameter $t$ below is a dimensionless
+diffusion parameter, not physical time (Gate~2).
+
+\begin{proposition}[Return probability]
+On the infinite cover,
+\begin{equation}
+p_D(t;0,0)=e^{-t}\,I_0\!\left(t/|D|\right)^{|D|}.
+\label{eq:heat}
+\end{equation}
+\end{proposition}
+
+\begin{proof}
+Under~\eqref{eq:generator} the $|D|$ coefficients evolve as independent continuous-time
+symmetric walks on $\Z$, each with total jump rate $1/|D|$. A symmetric walk on $\Z$ with
+total rate $\nu$ returns with probability $e^{-\nu t}I_0(\nu t)$; take the product.
+\end{proof}
+
+\begin{theorem}[Spectral dimension three]
+\label{thm:ds}
+For $|D|=3$,
+\begin{equation}
+d_s(t):=-2t\frac{d}{dt}\log p_D(t;0,0)=2t\Bigl[1-\frac{I_1(t/3)}{I_0(t/3)}\Bigr]
+\;\longrightarrow\;3\qquad(t\to\infty).
+\label{eq:ds}
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+Differentiate~\eqref{eq:heat} using $I_0'=I_1$. The large-argument expansion
+$1-I_1(x)/I_0(x)=\frac{1}{2x}+O(x^{-2})$ with $x=t/3$ gives $d_s(t)=3+O(1/t)$. The
+logarithmic definition $-2\log p/\log t$ also tends to $3$, since
+$p_D\sim(3/2\pi t)^{3/2}$.
+\end{proof}
+
+\paragraph{Finite regulators.} On $Q_m$ a return that is not a return on the cover needs
+a displacement in $mA(D)\setminus\{0\}$, hence at least $m$ jumps. So
+$|p_m(t)-p_\infty(t)|\le\Pr\{\mathrm{Pois}(t)\ge m\}$, and termwise differentiation gives
+$|p_m'(t)-p_\infty'(t)|\le2\Pr\{\mathrm{Pois}(t)\ge m-1\}$. Along $t_m=\sqrt m$ both are
+superpolynomially small compared with $t_m^{-3/2}$, so $d_{s,m}(t_m)\to3$. A fixed finite
+quotient eventually mixes and has late-time spectral dimension $0$; the cofinal order of
+limits is part of the statement.
+
+\paragraph{Joint source and heat limit (sketched).} Instead of selecting the ground state
+first, take $t_m=\sqrt m$ and $\beta_m=\beta_0+\frac2g\log m$. Theorem~\ref{thm:gibbs}
+gives $\Pr_{\beta_m}(\text{not ground})=O(m^{-2})=O(t_m^{-4})$. Every nonempty normalised
+generator has return in $[0,1]$ and a bounded time derivative, and the empty generator
+has return $1$ and derivative $0$, so the annealed derivative spectral dimension, taken
+at fixed $(\beta,m)$ and then evaluated on the diagonal, also tends to $3$. The integer
+window $R_m=\lfloor\sqrt m\rfloor$ stays prewrap, so~\eqref{eq:v3} holds there with
+probability tending to one.
+
+\subsection{The infrared co-metric}
+\label{sec:cometric}
+
+\begin{proposition}[Acoustic co-metric]
+\label{prop:cometric}
+For a character $\theta\in\operatorname{Hom}(A(D),\R)$ the Bloch eigenvalue of $-L_D$ at
+$|D|=3$ is
+\begin{equation}
+\varepsilon_D(\theta)=\frac13\sum_{d\in D}\bigl(1-\cos\theta(d)\bigr)
+=\frac12\,q^\sharp(\theta,\theta)+O(|\theta|^4),\qquad
+q^\sharp=\frac13\sum_{d\in D}d\otimes d .
+\label{eq:cometric}
+\end{equation}
+\end{proposition}
+
+\begin{proof}
+Apply~\eqref{eq:generator} to $e^{i\theta(x)}$ and expand $1-\cos u=u^2/2+O(u^4)$.
+\end{proof}
+
+The tensor $q^\sharp$ is coordinate free and invariant under relabelling and
+reversal. Three elementary consequences: (i) in the one-vertex periodic cell each
+unoriented edge pair has conductance $1/3$ and the corrector incidence vanishes, so the
+effective tensor is $A_{\mathrm{eff}}=q^\sharp$, and $K_q=-2L_D$ has principal symbol
+$q^\sharp$; this fixes the factor of two between the Markov clock and the wave
+normalisation, so word distance, volume, diffusion and the scalar seed use one metric.
+(ii) The $q$-ball count is $\#\{a: q(a,a)\le R^2\}=\frac{4\pi}{9\sqrt3}R^3+O(R^2)$, with
+$q=(q^\sharp)^{-1}$. (iii) A scalar Hamiltonian built on $c^2K_q$ has infrared dispersion
+$\omega^2=c^2q^\sharp(k,k)+m^2+O(|k|^4)$. Item (iii) is only a principal seed for Gate~2:
+it does not show that every physical species shares this symbol, and $q^\sharp$ selects
+an $O(3)$ frame orbit, not an oriented coframe or a Lorentzian history.
+
+\subsection{Numerical verification}
+\label{sec:g1numerics}
+
+Two scripts check the Gate~1 statements. Each records an expected outcome for every
+test, including tests on deliberately wrong inputs that must fail, and exits with status
+$0$ only if every observed outcome matches its expectation. Table~\ref{tab:g1checks}
+summarises them; full output is in the package.
+
+\begin{table}[ht]
+\centering\small
+\begin{tabularx}{\textwidth}{@{}Y Y Y@{}}
+\toprule
+Statement & Independent computation & Result \\
+\midrule
+Theorem~\ref{thm:selection}, Proposition~\ref{prop:unequal} &
+Exhaustive enumeration of every labelled object for $n\le6$ (772{,}621 objects at
+$n=6$), exact rational arithmetic, 11 parameter points; bound $m\le n$ for
+$6<n\le400$ & Unique ground state is the rank-three complement matching, $|\Aut|=6$;
+gaps equal~\eqref{eq:gap} and $g_{12}$ exactly \\
+Lemma~\ref{lem:maxmatch} & Enumeration ($n\le6$), augmenting-path matching ($n\le12$) &
+max $m=0,0,0,3,4,\dots,12$ \\
+Enumerator & Independent bitmask dynamic programme & counts agree for $n\le6$ \\
+Proposition~\ref{prop:boundary} & Groupoid weights of the zero-energy classes &
+$\Pr(n=3)=1/7$ exactly \\
+Equation~\eqref{eq:v3} & Breadth-first search on the Cayley graph of $\Z[D]$, $R\le30$;
+torus $Q_{15}$ & exact; fails after wrap ($R>7$) as stated \\
+Equation~\eqref{eq:heat} & Poissonised multinomial series; $\exp(tL_D)$ on a $41^3$
+torus & relative error $3\times10^{-15}$ and $8\times10^{-16}$ \\
+Theorem~\ref{thm:ds} & Finite-difference derivative of $\log p$ & $d_s=3.362$, $3.023$,
+$3.002$, $3.0002$, $3.00002$ at $t=10$ to $10^5$ \\
+Equation~\eqref{eq:cometric} & Symbol of $L_D$ on plane waves, random non-orthogonal
+realisation of $D$ & relative error $1.6\times10^{-7}$ \\
+\bottomrule
+\end{tabularx}
+\caption{Gate~1 checks. Rows 1 to 4: \texttt{check\_gate1\_selection.py} (47 tests, 14
+of them on wrong inputs). Rows 5 to 8: \texttt{check\_gate\_results.py} (from an
+independent audit; 26 tests, 13 on wrong inputs, covering Gate~5 as well).}
+\label{tab:g1checks}
+\end{table}
+
+The wrong inputs, all of which fail as required, are: $h=2\lambda$, $h>2\lambda$, $h=0$
+and $h<0$; dropping transversality (six labelled lossless matchings at rank three);
+ternary spans (rank four selected); no cost for unmatched spans (no minimum); a window
+set by $\lambda_1$ instead of $\lambda_2$; wrong gap formulas; labelled instead of
+groupoid weights; and an enumerator without span-side injectivity.
+
+\subsection{What Gate 1 does not establish}
+\label{sec:g1scope}
+
+\begin{enumerate}
+\item The source law (H1) to (H4), the endpoint law and the response class (R1) to (R5)
+  are declared, not derived. The repository states that generic nonlocality does not
+  force them.
+\item The selected ``three'' is the rank of an endpoint group and the exponent of a
+  declared ball count and walk. Identifying word length with measured distance and the
+  diffusion parameter with elapsed time requires a protocol $\mathcal M_P$ in
+  \eqref{eq:measurement} and a clock, which are open (Section~\ref{sec:open}).
+\item Positive activity is assumed (Proposition~\ref{prop:boundary}).
+\item No absolute length is determined, and none is needed for the exponents.
+\item The repository's complete Gate~1 contract (schema version 2, ``refinement
+  stationary'') replaces the characteristic quotients by random prime-cyclic regulators
+  with a Haar-distributed quenched response. Its additional premises (strong monoidality
+  and split-and-recombine stationarity of the response, quenched response, independent
+  additive gluing of singleton attempt clocks) are load bearing, are not derived from the
+  rank action, and are not reviewed here. The characteristic-quotient construction above
+  is an explicit witness under its own stated assumptions.
+\end{enumerate}
+
+%======================================================================
+\section{Gate 5: conditional internal-group and anomaly results}
+\label{sec:gate5}
+
+Everything in this section is conditional on a supplied internal carrier. Nothing here
+derives that carrier from Gate~1 or from any earlier QRC structure, and nothing here
+establishes a gauge phase.
+
+\subsection{The internal-spacetime type wall}
+
+Let $\mathcal A_{\mathrm{st}}$ be the algebra generated by spacetime propagation, clock
+and frame operations on a low-energy state space $\mathcal H$. The internal algebra is
+its commutant $\mathcal A_{\mathrm{st}}'$; for $\mathcal H=\bigoplus_\lambda V_\lambda
+\otimes M_\lambda$ with $\mathcal A_{\mathrm{st}}=\bigoplus_\lambda\mathcal B(V_\lambda)
+\otimes1$ it is $\bigoplus_\lambda1\otimes\mathcal B(M_\lambda)$.
+
+\begin{proposition}[Non-identifiability of internal multiplicity]
+\label{prop:amplification}
+The replacement $(\mathcal H,\mathcal A_{\mathrm{st}})\mapsto(\mathcal H\otimes\C^r,
+\mathcal A_{\mathrm{st}}\otimes1_r)$ leaves every spacetime observable unchanged and
+multiplies the commutant by $M_r(\C)$. Hence spatial rank three and the nested spatial
+grades do not determine internal ranks.
+\end{proposition}
+
+The proof is the statement itself: expectation values of $\mathcal A_{\mathrm{st}}\otimes
+1_r$ in states $\psi\otimes\chi$ do not depend on $r$. This is why the internal carrier
+below must be supplied.
+
+\subsection{Supplied seed and stabilizer}
+
+\paragraph{Hypotheses.} (G1) A Hermitian complex space $E\subset\mathcal A_{\mathrm{st}}'$
+with $\dim_\C E=5$. (G2) An orthogonal projector $P$ of rank two, giving
+$E=W\oplus C$ with $W=\operatorname{im}P$, $C=\ker P$. (G3) One unit vector
+$\Omega\in\det E$, including its phase. (G4) No other invariant internal tensor, and local
+frame changes preserving $(P,\Omega)$ are gauge redundancies.
+
+\begin{theorem}[Stabilizer]
+\label{thm:stabilizer}
+The unitary stabilizer of $(P,\Omega)$ is $G=S(U(2)\times U(3))=\{(u_2,u_3):\det u_2
+\det u_3=1\}$. The map $\phi(g_2,g_3,z)=(z^3g_2,z^{-2}g_3)$ from $SU(2)\times SU(3)\times
+U(1)$ is surjective with kernel generated by $(-I_2,\omega I_3,e^{i\pi/3})$,
+$\omega=e^{2\pi i/3}$, of order six, so
+\begin{equation}
+G\cong\frac{SU(2)\times SU(3)\times U(1)}{\Z_6}.
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+Preserving $P$ means preserving the splitting, giving $U(2)\times U(3)$; the action on
+$\det E$ is multiplication by $\det u_2\det u_3$, and fixing $\Omega$ imposes the
+determinant condition. Given $(u_2,u_3)\in G$ pick $z$ with $z^6=\det u_2$; then
+$g_2=z^{-3}u_2$ and $g_3=z^2u_3$ have unit determinant, so $\phi$ is onto. The kernel
+requires $z^3g_2=I$ and $z^{-2}g_3=I$, so $g_2,g_3$ are central and $z^6=1$, which gives
+the stated cyclic group of order six.
+\end{proof}
+
+The hypercharge generator is $Y=\frac12P-\frac13(1-P)$, which acts on
+$\Lambda^pW\otimes\Lambda^qC$ as $Y=p/2-q/3$.
+
+\subsection{One anomaly-free chiral family}
+
+\begin{theorem}[Exterior family]
+\label{thm:family}
+Under $SU(3)\times SU(2)\times U(1)_Y$,
+\begin{equation}
+\Lambda^2E\oplus\Lambda^4E=(\mathbf3,\mathbf2)_{1/6}\oplus(\bar{\mathbf3},\mathbf1)_{-2/3}
+\oplus(\bar{\mathbf3},\mathbf1)_{1/3}\oplus(\mathbf1,\mathbf2)_{-1/2}\oplus(\mathbf1,\mathbf1)_{1},
+\end{equation}
+fifteen left-handed Weyl states with the quantum numbers of $Q,u^c,d^c,L,e^c$.
+\end{theorem}
+
+\begin{proof}
+$\Lambda^2E=\Lambda^2W\oplus(W\otimes C)\oplus\Lambda^2C$ gives $(\mathbf1,\mathbf1)_1$,
+$(\mathbf3,\mathbf2)_{1/6}$, $(\bar{\mathbf3},\mathbf1)_{-2/3}$; $\Lambda^4E=(W\otimes
+\Lambda^3C)\oplus(\Lambda^2W\otimes\Lambda^2C)$ gives $(\mathbf1,\mathbf2)_{-1/2}$ and
+$(\bar{\mathbf3},\mathbf1)_{1/3}$, using $Y=p/2-q/3$ and $\Lambda^2\mathbf3=\bar{\mathbf3}$.
+\end{proof}
+
+Adding $\Lambda^0E$ gives a neutral singlet with the quantum numbers of a sterile
+$\nu^c$ (sixteen states). Neither the group nor anomaly cancellation forces or forbids
+it. The physical realisation of this fermionic module, its chirality and its
+multiplicity one are hypotheses.
+
+\begin{proposition}[Anomalies; checked]
+\label{prop:anomaly}
+With $T(\mathbf3)=T(\mathbf2)=\tfrac12$ and all fields left handed, the coefficients
+$SU(3)^3$, $SU(3)^2Y$, $SU(2)^2Y$, $\mathrm{grav}^2Y$ and $Y^3$ are
+$2-1-1$, $\tfrac16-\tfrac13+\tfrac16$, $\tfrac14-\tfrac14$, $1-2+1-1+1$ and
+$(1-32+4-9+36)/36$, all zero. There are four weak doublets, so the Witten $SU(2)$
+anomaly~\cite{witten1982} cancels. Every multiplet satisfies $3s+2t+6Y\equiv0\pmod6$ ($s$ the doublet
+parity, $t$ the triality), so it descends to the $\Z_6$ quotient.
+\end{proposition}
+
+That the quotient group has no further four-dimensional spin global anomaly once the
+local conditions hold is cited from the bordism computation of Davighi, Gripaios and
+Lohitsiri~\cite{davighi2020} and is not checked here. Anomaly freedom of the
+representation does not construct a fermion measure.
+
+\subsection{The pair-dual rank selector}
+
+\begin{theorem}[Pair-dual anomaly selector; sketched and checked]
+\label{thm:pairdual}
+Let $E=A_m\oplus B_n$ with $m,n\ge2$, $N=m+n$, one combined determinant record (so
+$c_1(E)=0$) and stabilizer $S(U(m)\times U(n))$. Assume one nonzero net-chirality copy
+of $F_N=\Lambda^2E\oplus E^*$ and no other chiral cancellation sector, Green-Schwarz or
+Wess-Zumino term, or inflow. Then
+\begin{equation}
+I_6(F_N)=(N-5)\,\ch_3(E),
+\end{equation}
+which vanishes identically if and only if $N=5$; with $m,n\ge2$ this forces
+$\{m,n\}=\{2,3\}$.
+\end{theorem}
+
+\begin{proof}[Sketch]
+From $\ch(\Lambda^2E)=\frac12[(\ch E)^2-\ch(\Psi^2E)]$ and $\ch_1(E)=0$, the degree-three
+part is $\ch_3(\Lambda^2E)=\frac12(2N-8)\ch_3(E)=(N-4)\ch_3(E)$, and
+$\ch_3(E^*)=-\ch_3(E)$. For $m,n\ge2$, $\ch_3(E)$ is not the zero polynomial: if a pure
+cubic term vanishes, a mixed term proportional to $f\operatorname{tr}F_m^2$ remains. The
+case $(2,2)$ also has three doublets per $SU(2)$ factor and fails the Witten test.
+\end{proof}
+
+The identity is checked numerically for $(m,n)\in\{(2,2),(2,3),(3,3),(2,4),(3,4),(4,4)\}$
+with explicit $\Lambda^2$ matrices on random traceless block curvatures
+(Appendix~\ref{app:repro}). The selector moves the question rather than answering it:
+it does not derive two blocks, the determinant record or the pair-dual package.
+
+\subsection{Higgs channel}
+
+Requiring the three charged Yukawa channels $Qu^cH$, $Qd^cH^*$ and $Le^cH^*$ forces a
+weak doublet $H$ with $Y_H=\tfrac12$. A nonzero neutral vector of $H$ has stabilizer
+$S(U(1)\times U(3))\cong U(3)\cong(SU(3)\times U(1)_{\mathrm{em}})/\Z_3$ with unbroken
+generator $Q=T_3+Y$, and with a positive gauge kinetic term $Q$ is the unique tree-level
+massless electroweak direction. This is representation theory. It does not determine
+the sign of the Higgs mass term, a Higgs phase, Yukawa values, or a physical photon.
+
+At one loop, $N_g$ families and one Higgs doublet give $(B_3,B_2,B_Y)=(-11+\tfrac43N_g,
+\tfrac{-43+8N_g}{6},\tfrac{40N_g+3}{18})$ (checked from the field content). These signs
+are perturbative flow polarity only. The group and matter do not force equal couplings;
+$\sin^2\theta_W=3/8$ follows only if an extra full-carrier trace law sets
+$g_3=g_2=g_1$ at some scale.
+
+\subsection{What is not proved in Gate 5}
+
+\begin{enumerate}
+\item Derivation of the seed (G1) to (G4) from the physical operator algebra of earlier
+  gates; Proposition~\ref{prop:amplification} shows spacetime observables cannot do it.
+\item A finite-regulator measure that is simultaneously one-family chiral, local on the
+  required rough colour support, quotient-global, reflection positive and cofinally
+  compatible. The repository proves a same-cutoff obstruction: the rank of a continuous
+  exact-index projector is constant on the connected space of unrestricted links, while
+  the index must change between topological sectors.
+\item Removal of the mirror sector with a uniform relative gap.
+\item A physical photon: a positive-residue massless pole with two helicities and a
+  nonzero charge vertex.
+\item Colour confinement with string breaking and no coloured asymptotic states, in a
+  continuum limit. Fixed-cutoff strong coupling does not give this.
+\item One joint measure realising all of these together. Separate sector results do not
+  compose, because the chiral determinant and the $\Z_6$ flux class couple all factors.
+\item Family number, Higgs uniqueness, Yukawa couplings and masses (Gate~6).
+\end{enumerate}
+The repository states a conditional theorem that derives the stated family, one
+interacting two-helicity photon, screened $SU(3)$ confinement and no mirror family from a
+cofinal family of local $G$ Hamiltonians satisfying all of these requirements uniformly.
+It is an implication whose hypotheses have not been constructed.
+
+%======================================================================
+\section{Open problems}
+\label{sec:open}
+
+\paragraph{Gate 0: selection of the source law.} No argument selects
+$\Spre$, the endpoint law or the response class from the bare relational condition.
+Generic nonlocality does not force them. This is the first unproved implication in the
+chain.
+
+\paragraph{Gate 1 bridge: ruler and clock.} The measurement definition
+\eqref{eq:measurement} has not been instantiated. Repository experiments on the native
+source give partial results (a direct incidence readout that distinguishes launches a
+scalar mediator cannot, an embedded six-way walk extracted from shortest returns of a
+marked triad, a passive output instrument with a finite sampling budget), but equal
+response-time laws at different graph separations prevent the tested protocol from
+assigning distinct ranges. Physical sensors, a co-located marker, an independently
+calibrated length and a common laboratory clock are open; no physical Gate~1 range has
+been obtained.
+
+\paragraph{Gate 2: one causal cone.} Finite and free results exist (finite marked-cut
+brackets, free mode inventories, a scalar principal seed). Static Gate~1 data cannot fix
+a temporal structure: an explicit two-species family preserves every Gate~1 datum while
+carrying unequal limiting speeds, and reversible Markov time cannot be transformed into
+hyperbolic Hamiltonian evolution. A complete interacting mode inventory with one common
+cone, controlled refinement and reflection positivity is not constructed.
+
+\paragraph{Gate 3: quantum rules.} Within an adopted sharp-record Clifford-circuit law
+the repository derives Born probabilities, separated no-signalling and Tsirelson
+saturation; the prelocal law does not select this quantum extension, and its interacting
+continuum carrier depends on Gate~2.
+
+\paragraph{Gate 4: gravity.} Under one-metric hypersurface-deformation hypotheses the
+nonlinear ADM action and two massless helicities are reconstructed. A positive
+interacting graviton continuum, positive residue, absence of extra poles and a
+same-metric matter Ward identity are open. Inserting a free transverse-traceless block
+would not derive the matter-to-impedance mechanism.
+
+\paragraph{Gate 6: spectrum.} Conditional on the $2+3$ carrier, exterior occupation
+gives the charge types and allowed mass channels. Amplification and Yukawa countermodels
+show that the preceding gates do not determine the number of generations, masses,
+hierarchies, mixing matrices, CP phases or the Dirac versus Majorana branch.
+
+\paragraph{Gate 5, observations and scale.} For Gate~5 see the end of
+Section~\ref{sec:gate5}. Source-derived cosmological predictions, independent likelihoods
+and a map from continuum observables back to the relational poset are open; the models of
+Section~\ref{sec:cosmo} are not derived from the source law. Gate~1 neither needs nor
+determines a physical length per step or a time per unit of diffusion parameter.
+
+\paragraph{Empirical status of the source law.} The premises (H1) to (H4) are
+falsifiable in principle, but no observable consequence that distinguishes them from
+standard physics has yet been derived. Producing one is a precondition for the source
+law to count as physics rather than as a mathematical model.
+
+%======================================================================
+\section{Corrections and negative results}
+\label{sec:corrections}
+
+The program has made claims that did not survive checking. Two independent audits run on
+2026-11-22 (one of cosmology scripts, one of other numerical claims) recomputed them
+from scratch. Their findings are part of the research record and are reported here as
+corrections. The policy is to withdraw a failed identification or mechanism and to
+return the question to the QRC obligation it was meant to discharge, not to substitute a
+standard result for it. Observations remain the test throughout.
+
+\begin{enumerate}
+\item \textbf{The identification $Z_H=c^3/G$ is withdrawn as underived.} Earlier
+  documents assert $Z_H=\delta\Pi_{ab}/\delta\sigma^{ab}=c^3/G$ in one line, with no
+  intermediate step, using $H$ for a horizon rather than a relational history. $c^3/G\approx4.04\times10^{35}$~kg\,s$^{-1}$ is the
+  Planck mass divided by the Planck time, a unit rather than a derived response. The
+  step was also internally inconsistent: it started from the Einstein-Hilbert and
+  Gibbons-Hawking-York action, and with that same action the horizon shear response is
+  $c^3/(8\pi G)$~\cite{price1986,brown1993}, not $c^3/G$. QRC adopts neither value. The
+  identification conflicts with QRC's own measurement definition
+  (Section~\ref{sec:foundation}): it fixes the type of $Z_H$ as a dissipative scalar,
+  presupposes $G$, $c$, a smooth horizon and Einstein dynamics (outputs of Gates~2
+  and~4, which are not passed), and fixes a Planck scale while the absolute scale is
+  undetermined. Under that definition the type, composition law and value of $Z_H$
+  remain open; specifying them is the Gate~0 obligation. The bound
+  $P_{\mathrm{GW}}\le c^5/G=Z_Hc^2$ is a pre-existing conjecture and is withdrawn as a
+  QRC output.
+\item \textbf{The horizon-impedance (holographic) dark-energy mechanism is withdrawn.}
+  The proposal $E=TS=c^5/(2GH)$ divided by the Hubble volume gives
+  $3c^2H^2/(8\pi G)=\rho_{\mathrm{crit}}c^2$ exactly, so $\Omega_{\mathrm{DE}}=1$: a
+  restatement of the Friedmann equation, not a prediction. Against the Planck value
+  $\Omega_\Lambda=0.6847\pm0.0073$~\cite{planck2018} it is a factor $1.46$ too large. The
+  claimed resolution of the $10^{122}$ problem is the identity $(3/8\pi)(R_H/\ell_P)^2$.
+  Any law $\rho_{\mathrm{DE}}\propto H^2$ with coefficient below one gives
+  $H\propto a^{-3/2}$~\cite{hsu2004}, which the data reject (Section~\ref{sec:cosmo}).
+\item \textbf{The causal-boundary expansion law ($H_0=1/t_0$, $R_h=ct$) is withdrawn.}
+  The value $977.79/13.787=70.92$~km\,s$^{-1}$\,Mpc$^{-1}$ uses $t_0=13.787$~Gyr, the
+  Planck $\Lambda$CDM age, which is a fitted output; in $\Lambda$CDM $H_0t_0\approx0.951$,
+  so the input fixes the output and the result is not parameter-free. Taken as an
+  expansion law, $H=1/t$ is the coasting $R_h=ct$ history~\cite{melia2012}, which the data
+  reject (Section~\ref{sec:cosmo}); within it the chronometers give $H_0=61.2\pm1.7$, and
+  $H_0=70.92$ gives $\chi^2=42.0$ for 15 points. The constant 0.22~mag void
+  backreaction proposed alongside it is absorbed by the supernova absolute magnitude
+  and is withdrawn with it.
+\item \textbf{The agegraphic dark-energy route has the wrong-sign drift.} For the agegraphic
+  model of Wei and Cai~\cite{wei2008} solved self-consistently with
+  $\Omega_{\mathrm{DE},0}=0.685$: $n=2.558$, $w_0=-0.784$, $w_a=+0.136$. The sign is
+  structural: $w$ goes from $-1/3$ in the radiation era to about $-2/3$ in the matter era
+  and then decreases towards $-1$, so $w_a=-dw/da>0$. DESI combinations prefer
+  $w_a<0$~\cite{desi2024}. The earlier script computed $w_a=+0.20$ yet passed a ``$w_a<0$''
+  claim because it tested only $|w_a|<1$. The ``parameter-free'' coupling $n=1$ forces
+  $\Omega_m\approx0.79$ and is withdrawn; with $n$ fitted the route survives only as a
+  mildly disfavoured candidate (Section~\ref{sec:cosmo}).
+\item \textbf{PSR J0337+1715 does not distinguish QRC from general relativity.} QRC
+  documents assert a strong-equivalence-principle parameter $\Delta=0$ exactly, which is
+  the general-relativistic value and is consistent with the published bounds
+  $|\Delta|<2.6\times10^{-6}$~\cite{archibald2018} and
+  $|\Delta|<1.8\times10^{-6}$~\cite{voisin2020}. The accompanying ``unitarity proof''
+  returns whatever $\Delta$ its ansatz contains, and the ``forward walk'' estimator, run
+  on post-fit residuals in which $\Delta$ was already fitted, returns $\Delta\approx0$
+  even on synthetic data generated with $\Delta=5\times10^{-6}$.
+\item \textbf{Earlier multi-survey ``confirmations'' used no catalogue data.} All five
+  datasets in that script were hand-typed tables with diagonal errors: ``Pantheon+'' was
+  17 rows, departing from the binned real data by up to 0.20~mag with errors three to
+  five times the real bin errors; ``quasars'' was 14 rows; the DESI table had misplaced
+  entries. The quoted reduced $\chi^2$ values (0.259 for QRC against 1.483 for
+  $\Lambda$CDM on Pantheon+) are not printed by the current script and were not
+  reproduced by 96 variants. On the real Pantheon+ data with full covariance,
+  $\Lambda$CDM fits better than the script's QRC model ($\Delta\chi^2=+10.6$).
+\end{enumerate}
+
+\paragraph{What remains of the cosmology.} With items 2 and 3 withdrawn and item 4
+weakened, the surviving QRC cosmological route is the causal-memory kernel of
+Section~\ref{sec:cosmo}, in which dark energy is a retarded response to the matter
+content of the past. Its earlier derivation from the conformal trace anomaly fails
+(below), so a QRC-native derivation of the kernel, its source and its relaxation time is
+open; until one exists the kernel is phenomenological.
+
+\paragraph{Further corrections.} The retarded-trace model's $w_a=-0.227$ was a
+one-sided finite-difference artefact (converged $-0.14$ as written, $-0.18$
+self-consistent); its trace-anomaly mechanism fails because $z=1100$ is matter
+dominated; its early-dark-energy bound holds for any non-negative source and so cannot
+fail. The September 2026 strong-CP and baryon-asymmetry claims fail as tested (the
+determinant phase is $\pi$ for 91 of 200 random seeds; with the standard efficiency
+coefficient the asymmetry is $1.16\times10^{-10}$, not $6.12\times10^{-10}$). The
+unimodular-gravity scripts restate known physics and do not predict $\Lambda$. The
+2026-11-18 dependency audit found that a proposed formula for $1/\alpha$ gives
+$137.0360824$, about 3965 quoted standard uncertainties from the CODATA 2022 value
+$137.035999177(21)$, and that a one-loop $\Lambda_{\mathrm{QCD}}$ claim of $0.332$~GeV
+contradicts its own equation, which gives $6.46\times10^{11}$~GeV. Applied-physics
+simulations in the archive (navigation, a decihertz clock telescope, Casimir forces)
+contained hard-coded results and are not part of this preprint.
+
+%======================================================================
+\section{Cosmology candidates against data}
+\label{sec:cosmo}
+
+The cosmology models below are motivated by QRC language about causal memory and the
+past light cone, but none is derived from the Gate~1 source law. They are tested as
+phenomenological expansion laws. The withdrawn mechanisms of
+Section~\ref{sec:corrections} ($R_h=ct$, the constant backreaction, the $H^2$ law, the
+$n=1$ agegraphic coupling) are included to show the data behind their withdrawal; the
+candidates still open are the causal-memory kernel and, more weakly, the agegraphic
+model with $n$ fitted.
+
+\paragraph{Harness validation.} Before any QRC model was fitted, the harness reproduced
+published flat-$\Lambda$CDM results with tolerances fixed before the first run:
+Pantheon+ alone gives $\Omega_m=0.3331\pm0.0183$ (published $0.334\pm0.018$~\cite{brout2022});
+Pantheon+ with SH0ES calibrators gives $H_0=73.53\pm1.02$ (published $73.6\pm1.1$);
+DESI DR1 BAO gives $\Omega_m=0.2946\pm0.0146$ and $hr_d=101.90\pm1.27$~Mpc (published
+$0.295\pm0.015$ and $101.8\pm1.3$~\cite{desi2024}); DES-SN5YR Dovekie gives
+$\Omega_m=0.3307\pm0.0153$ (published $0.330\pm0.015$~\cite{popovic2025}). As a negative
+control, Einstein-de Sitter is rejected with $\Delta\chi^2=+693$ (Pantheon+), $+927$
+(DES) and $+482$ (DESI). Five deliberately wrong harness variants were run: four were
+caught; the fifth (applying the redshift cut to the inverse covariance instead of the
+covariance) shifts $\Omega_m$ by only $0.002$, below tolerance, so it was not caught, and
+the correct ordering was confirmed by reading the code.
+
+\paragraph{Data and method.} Pantheon+ (1580 Hubble-flow supernovae, full statistical
+and systematic covariance, $M$ profiled)~\cite{brout2022}; DES-SN5YR Dovekie (1820
+supernovae, offset profiled)~\cite{popovic2025}; DESI DR1 BAO (12 numbers, full
+covariance, $hr_d$ profiled)~\cite{desi2024}; 15 cosmic-chronometer points
+(BC03, diagonal errors, $h$ profiled)~\cite{moresco2012,moresco2015,moresco2016}.
+Pantheon+ and DES are never combined because they share supernovae. $\Omega_r$ is
+fixed and neutrinos are massless. $k$ counts cosmological plus nuisance parameters,
+$\mathrm{AIC}=\chi^2+2k$, $\mathrm{BIC}=\chi^2+k\ln N$, both relative to $\Lambda$CDM on
+the same data. No CMB likelihood is used.
+
+\paragraph{The causal-memory model.} The harness implements
+\begin{equation}
+\rho_{\mathrm{DE}}(t)=K\int_0^t e^{-(t-t')/\tau}\,S(t')\,dt',\qquad
+S=\frac{\rho_m}{\rho_m+2\rho_r}\sqrt{\rho_m},
+\label{eq:memory}
+\end{equation}
+with $K$ fixed by $\Omega_{\mathrm{DE},0}$ and $\tau$ in units of $1/H_0$, solved either on
+a $\Lambda$CDM background (``as written'') or self-consistently. Its proposed derivation
+from the conformal trace anomaly does not hold (Section~\ref{sec:corrections}), so the
+kernel is phenomenological. The value $\tau=1.35$ was chosen by hand, not derived, and
+it sets $w_0$; with $\tau$ free, $\tau$ is fitted. On the earlier $\Lambda$CDM background
+$w$ crosses $-1$ near $z\approx2.6$, so the history is phantom at earlier times.
+
+\begin{table}[t]
+\centering\footnotesize\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}l c l r r r r@{}}
+\toprule
+Model & $k$ & Best fit & $\chi^2$ & $\Delta\chi^2$ & $\Delta$AIC & $\Delta$BIC \\
+\midrule
+\multicolumn{7}{@{}l}{\emph{Pantheon+ + DESI DR1 + CC} ($N=1607$)}\\
+$\Lambda$CDM & 4 & $\Omega_m=0.310$ & 1408.1 & 0 & 0 & 0 \\
+CPL $w_0w_a$CDM & 6 & $\Omega_m=0.311$, $w_0=-0.876$, $w_a=-0.454$ & 1404.7 & $-3.4$ & $+0.6$ & $+11.3$ \\
+Agegraphic, $n$ free & 4 & $n=2.85$ ($\Omega_m=0.261$), $w_0=-0.80$, $w_a=+0.14$ & 1412.5 & $+4.4$ & $+4.4$ & $+4.4$ \\
+Agegraphic, $n=1$ & 3 & $\Omega_m=0.788$ (derived) & 2190.1 & $+782.0$ & $+780.0$ & $+774.6$ \\
+$R_h=ct$ & 3 & none & 1581.3 & $+173.2$ & $+171.2$ & $+165.8$ \\
+$R_h=ct$ + 0.22 mag & 3 & none & 1581.3 & $+173.2$ & $+171.2$ & $+165.8$ \\
+Holographic $H^2$ law & 3 & none ($H\propto a^{-3/2}$) & 2596.7 & $+1188.6$ & $+1186.6$ & $+1181.2$ \\
+Memory, $\tau=1.35$ & 4 & $\Omega_m=0.292$, $w_0=-0.80$, $w_a=-0.17$ & 1409.8 & $+1.7$ & $+1.7$ & $+1.7$ \\
+Memory, $\tau$ free & 5 & $\Omega_m=0.302$, $\tau=2.58$, $w_0=-0.91$, $w_a=-0.10$ & 1405.0 & $-3.1$ & $-1.1$ & $+4.2$ \\
+\midrule
+\multicolumn{7}{@{}l}{\emph{DES-SN5YR Dovekie + DESI DR1 + CC} ($N=1847$)}\\
+$\Lambda$CDM & 4 & $\Omega_m=0.313$ & 1653.3 & 0 & 0 & 0 \\
+CPL $w_0w_a$CDM & 6 & $\Omega_m=0.323$, $w_0=-0.798$, $w_a=-0.999$ & 1647.2 & $-6.1$ & $-2.1$ & $+9.0$ \\
+Agegraphic, $n$ free & 4 & $n=2.87$ ($\Omega_m=0.257$), $w_0=-0.80$, $w_a=+0.14$ & 1657.5 & $+4.2$ & $+4.2$ & $+4.2$ \\
+Agegraphic, $n=1$ & 3 & $\Omega_m=0.788$ (derived) & 2589.8 & $+936.5$ & $+934.5$ & $+929.0$ \\
+$R_h=ct$ & 3 & none & 1850.6 & $+197.3$ & $+195.3$ & $+189.8$ \\
+$R_h=ct$ + 0.22 mag & 3 & none & 1850.6 & $+197.3$ & $+195.3$ & $+189.8$ \\
+Holographic $H^2$ law & 3 & none ($H\propto a^{-3/2}$) & 3075.6 & $+1422.3$ & $+1420.3$ & $+1414.7$ \\
+Memory, $\tau=1.35$ & 4 & $\Omega_m=0.290$, $w_0=-0.80$, $w_a=-0.17$ & 1653.5 & $+0.2$ & $+0.2$ & $+0.2$ \\
+Memory, $\tau$ free & 5 & $\Omega_m=0.301$, $\tau=2.38$, $w_0=-0.90$, $w_a=-0.10$ & 1649.2 & $-4.1$ & $-2.1$ & $+3.4$ \\
+\bottomrule
+\end{tabular}
+\caption{Fits to real data. ``Memory'' is~\eqref{eq:memory} solved self-consistently;
+$w_0,w_a$ are CPL-equivalent values at $a=1$. For the agegraphic model $\Omega_m$ is
+derived from $n$ through $E(a=1)=1$, so $n$ is its only cosmological parameter.}
+\label{tab:cosmo}
+\end{table}
+
+\paragraph{Results by model.} The agegraphic model with $n$ free is mildly disfavoured
+($\Delta\chi^2\approx+4$ at equal $k$) and has the wrong-sign drift; in the CPL plane
+with $\Omega_m$ profiled its $(w_0,w_a)$ point lies $\Delta\chi^2=7.9$ (Pantheon+) and
+$10.4$ (DES) above the CPL best fit. With $n=1$ it forces $\Omega_m\approx0.79$ and is
+rejected. $R_h=ct$ is rejected (DESI alone gives $\chi^2=83.1$ for 12 points even with
+$hr_d$ free, which had to be treated as a free ruler because the sound horizon diverges
+logarithmically when $a\propto t$); the constant 0.22~mag backreaction is absorbed by the
+supernova absolute magnitude and changes nothing. Within $R_h=ct$ the chronometers give
+$H_0=61.2\pm1.7$ while SH0ES-calibrated supernovae give $71.6\pm1.0$. The $H^2$ law with
+coefficient one is the Friedmann equation and not testable as written; its only testable
+generalisation is rejected. The causal-memory model with $\tau=1.35$ has
+$w_0\approx-0.80$, $w_a\approx-0.17$ and $\Delta\mathrm{AIC}=+1.7$ (Pantheon+) and $+0.2$
+(DES); with $\tau$ free, $\Delta\mathrm{AIC}=-1.1$ and $-2.1$ but $\Delta\mathrm{BIC}=+4.2$
+and $+3.4$. For comparison, CPL itself lands in the DESI quadrant ($w_0>-1$, $w_a<0$) with
+a preference over $\Lambda$CDM of about $1.3\sigma$ to $2.1\sigma$ for two extra
+parameters, and BIC prefers $\Lambda$CDM.
+
+\paragraph{Conclusion.} One QRC-motivated causal-memory dark-energy model is consistent
+with current supernova, BAO and chronometer data at the level of $\Lambda$CDM and has the
+DESI-preferred sign of drift. The data neither prefer nor exclude it, and its physical
+origin is open.
+
+\paragraph{Limitations.} No CMB likelihood was used, so the early-time behaviour of
+both dark-energy laws and the low $\Omega_m\approx0.26$ of the agegraphic fit are not
+checked against Planck. Chronometer errors are diagonal and omit correlated
+stellar-population systematics. DESI's compressed BAO assumes a near-fiducial cosmology,
+which matters most for $R_h=ct$. BIC uses $N$ equal to all supernovae, which penalises
+extra parameters heavily. Quasar and lensing claims were not testable for lack of data.
+
+%======================================================================
+\appendix
+\section{Reproducibility}
+\label{app:repro}
+\small\sloppy
+
+\paragraph{Package layout.} The directory \texttt{paper} holds this document's source
+and PDF, and \texttt{build.sh} compiles it with \texttt{pdflatex}. The directory
+\texttt{checks} holds the mathematical checks, with their saved output in
+\texttt{checks/expected\_output}. The directory \texttt{checks/cosmology} holds the
+real-data harness, a README with data sources and SHA-256 sums, and the result files of
+the run reported in Section~\ref{sec:cosmo}.
+
+\paragraph{Mathematical checks.} Each needs Python 3 with numpy and scipy (tested with
+Python 3.13.9, numpy 2.4.2, scipy 1.16.3), reads no files and writes nothing:
+\begin{verbatim}
+cd checks
+python3 -I -B check_gate1_selection.py   # 47 tests, about 1 s
+python3 -I -B check_gate_results.py      # 26 tests, about 1 s
+python3 -I -B check_gate5_family.py      # 18 tests, under 1 s
+\end{verbatim}
+Each prints one line per test with the observed and expected outcome and exits with
+status 0 only if every outcome matches. Of the 91 tests, 35 run on deliberately wrong
+inputs and are expected to fail.
+
+\paragraph{Test quality.} Hand-made mutants of \texttt{check\_gate1\_selection.py}
+(sign of $h$ flipped, transversality or span injectivity ignored, $\lambda_1$ and
+$\lambda_2$ swapped, groupoid weight dropped, tail bound weakened, matching algorithm or
+dynamic programme broken) were each detected. Line coverage (coverage.py 6.5) is
+99 percent for the selection check and 100 percent for the other two. Three survived, each equivalent on the
+tested inputs: skipping the tail check, accepting any lossless rank-three configuration
+as the complement matching (it is the only transverse one), and ignoring the tail in the
+gap. No automated mutation tool was run.
+
+\paragraph{Cosmology harness.} Download the public files listed in
+\texttt{checks/cosmology/README.md} into a directory \texttt{DATA}, then
+\begin{verbatim}
+cd checks/cosmology
+python3 -I -B validate.py   --data DATA   # about 12 s; exit 0 only if all pass
+python3 -I -B run_models.py --data DATA   # about 200 s; refuses to run unless
+                                          # validation passed
+\end{verbatim}
+The data files are not redistributed in the package.
+
+\paragraph{Repository documents.} The theory statements are taken from the following
+files in \texttt{docs/} of the author's QRC repository: {\footnotesize
+\doc{QRC_CAUSAL_IMPEDANCE_GATE_FORMULATION.md} (foundational statement, gates);
+\doc{QRC_PROJECT_STATUS.md} (current integrated position, 2026-11-19);
+\doc{QRC_SPRE_AUTHORITATIVE_NESTED_RECIPROCITY_SOURCE_AND_COORDINATE_FREE_GATE1_THEOREM.md};
+\doc{QRC_GATE1_PARAMETER_FREE_NESTED_RECIPROCITY_AND_CUBIC_DIFFUSIVE_PHASE_THEOREM.md};
+\doc{QRC_GATE1_CANONICAL_NESTED_SOURCE_SOLE_Q_EXPORT_BINDER_THEOREM.md};
+\doc{QRC_GATE1_FINAL_COORDINATE_FREE_RELATIONAL_PHASE_THEOREM.md};
+\doc{QRC_GATE1_REFINEMENT_STATIONARY_HAAR_RESPONSE_AND_COORDINATE_FREE_DS3_CLOSURE_THEOREM.md};
+\doc{QRC_GATE5_INTERNAL_COMMUTANT_STANDARD_MODEL_AND_PHASE_THEOREM.md};
+\doc{QRC_GATE5_UNIFIED_GAUGE_PHASE_AND_PAIR_DUAL_ANOMALY_SELECTOR_THEOREM.md};
+\doc{QRC_GATE5_FINAL_INTERNAL_GROUP_ANOMALY_AND_JOINT_PHASE_FRONTIER.md};
+\doc{QRC_END_TO_END_GATE_TRAVERSAL_AND_PAIRWISE_REPAIR_LEDGER.md} (2026-11-18 audit).}
+The audits of Section~\ref{sec:corrections} are in \texttt{audits/2026-11-22\_noncosmo},
+\texttt{audits/2026-11-22\_code} and \texttt{audits/2026-11-22\_real\_data} of the same
+repository.
+
+\paragraph{Not verified for this preprint.} The Gibbs concentration constant
+(Theorem~\ref{thm:gibbs}) and the joint source and heat limit were checked by reading the
+argument, not by computation. The spin-bordism global-anomaly statement is cited. The
+horizon shear-response coefficient quoted in correction~1 (used only to show that the
+withdrawn step was inconsistent with its own starting action) is a standard result cited
+from the literature and was not re-derived by the audit. The refinement-stationary v2 contract
+was not reviewed.
+
+\begin{thebibliography}{99}\footnotesize\setlength{\itemsep}{0pt}
+\bibitem{archibald2018} A.~M. Archibald et al., \emph{Universality of free fall from the
+orbital motion of a pulsar in a stellar triple system}, Nature \textbf{559}, 73 (2018).
+\bibitem{brout2022} D.~Brout et al., \emph{The Pantheon+ analysis: cosmological
+constraints}, Astrophys.\ J.\ \textbf{938}, 110 (2022).
+\bibitem{brown1993} J.~D. Brown and J.~W. York, \emph{Quasilocal energy and conserved
+charges derived from the gravitational action}, Phys.\ Rev.\ D \textbf{47}, 1407 (1993).
+\bibitem{davighi2020} J.~Davighi, B.~Gripaios and N.~Lohitsiri, \emph{Global anomalies in
+the Standard Model(s) and beyond}, JHEP \textbf{07}, 232 (2020), arXiv:1910.11277.
+\bibitem{desi2024} DESI Collaboration, \emph{DESI 2024 VI: cosmological constraints from
+the measurements of baryon acoustic oscillations}, arXiv:2404.03002.
+\bibitem{hsu2004} S.~D.~H. Hsu, \emph{Entropy bounds and dark energy}, Phys.\ Lett.\ B
+\textbf{594}, 13 (2004).
+\bibitem{melia2012} F.~Melia and A.~S.~H. Shevchuk, \emph{The $R_h=ct$ universe}, Mon.\
+Not.\ R.\ Astron.\ Soc.\ \textbf{419}, 2579 (2012).
+\bibitem{moresco2012} M.~Moresco et al., \emph{Improved constraints on the expansion rate
+of the Universe up to $z\sim1.1$ from the spectroscopic evolution of cosmic chronometers},
+JCAP \textbf{08}, 006 (2012).
+\bibitem{moresco2015} M.~Moresco, \emph{Raising the bar: new constraints on the Hubble
+parameter with cosmic chronometers at $z\sim2$}, Mon.\ Not.\ R.\ Astron.\ Soc.\
+\textbf{450}, L16 (2015).
+\bibitem{moresco2016} M.~Moresco et al., \emph{A 6\% measurement of the Hubble parameter
+at $z\sim0.45$: direct evidence of the epoch of cosmic re-acceleration}, JCAP
+\textbf{05}, 014 (2016).
+\bibitem{planck2018} Planck Collaboration, \emph{Planck 2018 results VI: cosmological
+parameters}, Astron.\ Astrophys.\ \textbf{641}, A6 (2020).
+\bibitem{popovic2025} B.~Popovic et al., DES-SN5YR Dovekie recalibration,
+arXiv:2511.07517.
+\bibitem{price1986} R.~H. Price and K.~S. Thorne, \emph{Membrane viewpoint on black holes:
+properties and evolution of the stretched horizon}, Phys.\ Rev.\ D \textbf{33}, 915 (1986).
+\bibitem{voisin2020} G.~Voisin et al., \emph{An improved test of the strong equivalence
+principle with the pulsar in a triple star system}, Astron.\ Astrophys.\ \textbf{638},
+A24 (2020).
+\bibitem{wei2008} H.~Wei and R.-G. Cai, \emph{A new model of agegraphic dark energy},
+Phys.\ Lett.\ B \textbf{660}, 113 (2008).
+\bibitem{witten1982} E.~Witten, \emph{An SU(2) anomaly}, Phys.\ Lett.\ B \textbf{117},
+324 (1982).
+\end{thebibliography}
+
+\end{document}

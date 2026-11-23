@@ -1,0 +1,38 @@
+1. Exterior family Lambda^2 E + Lambda^4 E with Y = p/2 - q/3
+     (1, 1)_1
+     (1, 2)_-1/2
+     (3, 2)_1/6
+     (3b, 1)_-2/3
+     (3b, 1)_1/3
+  [ok] decomposition equals the claimed 15-state family: observed PASS, expected PASS
+  [ok] state count is 15: observed PASS, expected PASS
+  [ok] Lambda^even adds one neutral singlet (sterile nu^c), 16 states: observed PASS, expected PASS
+  [ok] [wrong input] Y = p/2 - q/2 reproduces the family: observed FAIL, expected FAIL
+
+2. Local anomalies and Witten parity
+     SU3^3 = 0, SU3^2 Y = 0, SU2^2 Y = 0, grav^2 Y = 0, Y^3 = 0; doublets = 4
+  [ok] all five local anomaly sums vanish: observed PASS, expected PASS
+  [ok] number of SU(2) doublets is even: observed PASS, expected PASS
+  [ok] [wrong input] family without e^c is anomaly free: observed FAIL, expected FAIL
+  [ok] [wrong input] Y = p/2 - q/2 family is anomaly free: observed FAIL, expected FAIL
+  [ok] [wrong input] family without L has even doublet count: observed FAIL, expected FAIL
+  [ok] sterile singlet leaves anomalies unchanged: observed PASS, expected PASS
+
+3. Descent to the Z_6 quotient
+  [ok] every multiplet satisfies 3s + 2t + 6Y = 0 mod 6: observed PASS, expected PASS
+  [ok] [wrong input] (3,1)_0 descends: observed FAIL, expected FAIL
+
+4. Higgs hypercharge from the charged Yukawa channels
+     required Y_H per channel: Q u^c H: 1/2, Q d^c H*: 1/2, L e^c H*: 1/2
+  [ok] all three channels require Y_H = 1/2: observed PASS, expected PASS
+  [ok] [wrong input] Y_H = 1/6 neutralises Q u^c H: observed FAIL, expected FAIL
+
+5. One-loop coefficients and the unification-normalised angle
+     N_g=1: (B3, B2, BY) = (-29/3, -35/6, 43/18); doc -29/3, -35/6, 43/18
+     N_g=3: (B3, B2, BY) = (-7, -19/6, 41/6); doc -7, -19/6, 41/6
+  [ok] B3, B2, BY from field content equal the document's closed forms: observed PASS, expected PASS
+  [ok] [wrong input] B3 with the sterile line counted as coloured: observed FAIL, expected FAIL
+  [ok] sin^2 theta_W = 3/8 at g_1 = g_2: observed PASS, expected PASS
+  [ok] [wrong input] sin^2 theta_W = 3/8 with g_1 = g_Y (no 5/3): observed FAIL, expected FAIL
+
+Summary: 18 checks, 0 mismatches with expectation
