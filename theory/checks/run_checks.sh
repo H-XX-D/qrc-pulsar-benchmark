@@ -16,7 +16,8 @@ for script in \
     check_all_gates_empirical_confrontation.py \
     check_all_gates_truthful_equations.py \
     check_qrc_grand_synthesis_first_principles.py \
-    check_qrc_truthful_lagrangian.py; do
+    check_qrc_truthful_lagrangian.py \
+    check_cosmic_spring_theory.py; do
   if python3 -I -B "$script" > /dev/null; then
     echo "$script: all observed outcomes match expectations"
   else
